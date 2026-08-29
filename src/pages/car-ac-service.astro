@@ -1,0 +1,1573 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Car AC Service - Taqwa Automobile Service Center"
+  description="Professional car AC service and repair in Uttara, Dhaka. Gas refill, leak detection, compressor repair, and full AC diagnostics at Taqwa Automobile Service Center."
+  path="car-ac-service.html"
+  current="services"
+>
+
+<style>
+  :root{
+    --red:#F97316;
+    --red-dark:#CE5805;
+    --green:#16A34A;
+    --ink:#101318;
+    --charcoal:#162336;
+    --charcoal-2:#1E304A;
+    --line:#293C58;
+    --paper:#F8FAFC;
+    --muted:#9A9AA0;
+    --off:#E9E9EC;
+
+    /* ===== Surface tokens (matches homepage design system) ===== */
+    --surface-0:#F8FAFC;
+    --surface-1:#F1F3F7;
+    --surface-2:#EEF1F6;
+    --surface-3:#EBEEF3;
+    --text-strong:#101318;
+    --text-muted:#5a5a5e;
+    --card-bg:#EFF2F6;
+    --surface-border:#EAEDF2;
+
+    /* ===== Typography scale (matches homepage design system) ===== */
+    --font-display:'Poppins', "Arial Narrow", Arial, sans-serif;
+    --font-body:'Inter', "Segoe UI", Arial, sans-serif;
+    --text-xs:13px;
+    --text-sm:14px;
+    --text-base:15px;
+    --text-md:16px;
+    --text-lg:clamp(15px, 14.6px + 0.15vw, 16px);
+    --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
+    --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
+    --text-3xl:clamp(20px, 17.7px + 0.9vw, 24px);
+    --text-4xl:clamp(24px, 20.2px + 1.5vw, 30px);
+    --text-5xl:clamp(28px, 21.9px + 2.5vw, 40px);
+    --text-6xl:clamp(32px, 23.4px + 3.4vw, 52px);
+
+    /* ===== Spacing scale (matches homepage design system) ===== */
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:clamp(14px, 13.4px + 0.24vw, 16px);
+    --space-5:clamp(18px, 16.5px + 0.6vw, 24px);
+    --space-6:clamp(22px, 19.7px + 0.9vw, 32px);
+    --space-7:clamp(32px, 28.1px + 1.5vw, 48px);
+    --space-8:clamp(40px, 33.8px + 2.4vw, 64px);
+
+    /* ===== Radius scale (matches homepage design system) ===== */
+    --radius-sm:3px;
+    --radius-md:4px;
+    --radius-lg:6px;
+    --radius-xl:10px;
+    --radius-full:50%;
+
+    /* ===== Elevation / shadow scale (matches homepage design system) ===== */
+    --shadow-1:0 2px 6px rgba(0,0,0,0.08);
+    --shadow-2:0 8px 20px -8px rgba(0,0,0,0.18);
+    --shadow-3:0 14px 34px -18px rgba(0,0,0,0.3);
+    --shadow-4:0 20px 50px -20px rgba(0,0,0,0.25);
+    --shadow-5:0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family: 'Inter', "Segoe UI", Arial, sans-serif;
+    background:var(--ink);
+    color:var(--off);
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{
+    font-family: 'Poppins', "Arial Narrow", Arial, sans-serif;
+    font-weight:800;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer; border:none;}
+
+  /* ===== HEADER ===== */
+  header{
+    background:var(--paper);
+    border-bottom:1px solid #EAEDF2;
+    position:sticky; top:0; z-index:50;
+  }
+  .header-inner{
+    max-width:1280px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 32px;
+  }
+  .logo{display:flex; align-items:center;}
+  .logo-img{height:46px; width:auto; display:block;}
+  nav.main-nav{display:flex; align-items:center; gap:30px;}
+  nav.main-nav > ul{display:flex; align-items:center; gap:26px;}
+  nav.main-nav a{
+    font-size:14.5px; font-weight:700; letter-spacing:0.4px;
+    color:var(--ink); text-transform:uppercase; position:relative; padding:6px 0;
+    display:flex; align-items:center; gap:4px;
+  }
+  nav.main-nav li.active > a{color:var(--red);}
+  nav.main-nav a.accent{color:var(--red);}
+  nav.main-nav a:hover{color:var(--red);}
+  .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
+
+  /* dropdown */
+  .has-dropdown{position:relative;}
+  .has-dropdown:hover > a .caret{transform:rotate(180deg);}
+  .dropdown-menu{
+    position:absolute; top:100%; left:-18px; margin-top:14px;
+    background:#F8FAFC; min-width:220px; border-radius:4px;
+    box-shadow:0 18px 40px -12px rgba(0,0,0,0.25); border:1px solid #EAEDF2;
+    padding:8px; opacity:0; visibility:hidden; transform:translateY(6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:60;
+  }
+  .has-dropdown:hover .dropdown-menu{
+    opacity:1; visibility:visible; transform:translateY(0);
+  }
+  .dropdown-menu::before{
+    content:""; position:absolute; top:-6px; left:28px;
+    width:12px; height:12px; background:#F8FAFC; border-left:1px solid #EAEDF2; border-top:1px solid #EAEDF2;
+    transform:rotate(45deg);
+  }
+  .dropdown-menu li{width:100%;}
+  .dropdown-menu a{
+    display:block; padding:10px 12px; font-size:13.5px; font-weight:700;
+    text-transform:none; letter-spacing:0.2px; color:var(--ink);
+    border-radius:3px; white-space:nowrap;
+  }
+  .dropdown-menu a:hover{background:#EEF1F6; color:var(--red);}
+  .call-btn{
+    background:var(--red); color:#fff; font-size:14px; font-weight:700;
+    letter-spacing:0.4px; padding:11px 22px; border-radius:3px;
+    display:flex; align-items:center; gap:8px; text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .call-btn:hover{background:var(--red-dark);}
+  .hamburger{
+    display:none; flex-direction:column; justify-content:center; gap:5px;
+    background:none; width:32px; height:32px; flex-shrink:0;
+  }
+  .hamburger span{
+    width:24px; height:2px; background:var(--ink); display:block;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ===== MOBILE NAV DRAWER ===== */
+  .mobile-nav{
+    display:none; background:#F8FAFC; border-top:1px solid #EAEDF2;
+  }
+  .mobile-nav.open{display:block;}
+  .mobile-nav > ul{padding:6px 20px 18px;}
+  .mobile-nav > ul > li{border-bottom:1px solid #EEF1F5;}
+  .mobile-nav > ul > li:last-child{border-bottom:none;}
+  .mobile-nav > ul > li > a{
+    display:flex; align-items:center; padding:14px 2px;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .mobile-nav li.active > a{color:var(--red);}
+  .mobile-sub-toggle{
+    display:flex; align-items:center; justify-content:space-between; width:100%;
+    background:none; text-align:left; padding:14px 2px;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--ink); font-family:inherit;
+  }
+  .mobile-has-sub .caret{transition:transform .2s ease;}
+  .mobile-has-sub.open .caret{transform:rotate(180deg);}
+  .mobile-submenu{
+    display:none; padding-left:10px; padding-bottom:6px;
+  }
+  .mobile-has-sub.open .mobile-submenu{display:block;}
+  .mobile-submenu a{
+    display:block; padding:11px 2px; font-size:14px; font-weight:600;
+    text-transform:none; color:#555;
+  }
+  .mobile-submenu a:hover{color:var(--red);}
+
+  /* ===== HERO ===== */
+  .hero{
+  position:relative;
+  background:
+    linear-gradient(rgba(16,19,24,0.65), rgba(16,19,24,0.75)),
+    url('img/hero-background.jpg') center/cover no-repeat;
+  overflow:hidden;
+  padding:64px 32px 48px;
+}
+
+
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 60% at 30% 40%, black, transparent);
+    pointer-events:none;
+  }
+  .hero-engine{
+    position:absolute; right:-60px; top:50%; transform:translateY(-50%);
+    width:640px; height:640px; opacity:0.9; pointer-events:none;
+  }
+  .hero-inner{
+    position:relative; max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:48px; align-items:start;
+  }
+
+  .eyebrow{
+    color:var(--red); font-size:13.5px; font-weight:800; letter-spacing:3px;
+    margin-bottom:16px;
+  }
+  .hero-copy h1{
+    font-size:52px; line-height:1.06; color:#fff; margin-bottom:18px;
+  }
+  .hero-copy h1 .accent{color:var(--red);}
+  .hero-sub{
+    font-family:'Poppins', "Arial Narrow", Arial, sans-serif; font-weight:700;
+    letter-spacing:1.5px; text-transform:uppercase; color:var(--off);
+    font-size:15px; margin-bottom:18px;
+  }
+  .hero-copy p{
+    color:var(--muted); font-size:15px; line-height:1.7; max-width:480px; margin-bottom:28px;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px;}
+  .btn{
+    display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:3px;
+  }
+  .btn-red{background:var(--red); color:#fff;}
+  .btn-red:hover{background:var(--red-dark);}
+  .btn-green{background:var(--green); color:#fff;}
+  .btn-green:hover{background:#1C8A45;}
+
+  .feature-strip{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:22px 20px;
+    padding-top:24px; border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .feature-strip .item{
+    display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;
+    color:var(--off); text-transform:uppercase; letter-spacing:0.3px;
+  }
+  .feature-strip svg{flex-shrink:0;}
+
+  /* ===== SPECIALIST INFO CARD ===== */
+  .specialist-card{
+    background:var(--charcoal);
+    border:1.5px solid var(--red);
+    border-radius:4px;
+    position:relative;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7), 0 0 40px -10px rgba(249,115,22,0.15);
+    padding:30px 28px 28px;
+  }
+  .specialist-title{
+    text-align:center; font-size:19px; font-weight:800; letter-spacing:0.5px;
+    color:#fff; margin-bottom:6px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .specialist-sub{
+    text-align:center; font-size:16.5px; font-weight:800; letter-spacing:0.6px;
+    color:var(--red); text-transform:uppercase; margin-bottom:22px;
+  }
+  .specialist-list{margin-bottom:22px;}
+  .specialist-list li{
+    display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--off);
+    margin-bottom:13px; line-height:1.4;
+  }
+  .specialist-list li svg{flex-shrink:0; margin-top:1px;}
+  .specialist-actions{display:flex; gap:12px; margin-bottom:22px;}
+  .specialist-actions .btn{flex:1; justify-content:center; padding:13px 10px; font-size:14px;}
+  .specialist-address{
+    display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--off);
+    line-height:1.5; margin-bottom:20px; padding-bottom:20px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .specialist-address svg{flex-shrink:0; margin-top:2px;}
+  .get-direction{
+    width:100%; background:#F8FAFC; color:var(--ink); font-size:13.5px; font-weight:800;
+    letter-spacing:0.6px; text-transform:uppercase; padding:15px; border-radius:3px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .get-direction:hover{background:#E2E6ED;}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:980px){
+    .hero-inner{grid-template-columns:1fr;}
+    .hero-engine{display:none;}
+    .hero-copy h1{font-size:40px;}
+    nav.main-nav > ul{display:none;}
+    .hamburger{display:flex;}
+    .call-btn{display:none;}
+    .feature-strip{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:760px){
+    .header-inner{padding:12px 20px;}
+    .logo-img{height:38px;}
+    .call-btn span.txt{display:none;}
+    .call-btn{padding:11px 14px;}
+    .hero{padding:40px 20px 36px;}
+    .hero-copy h1{font-size:32px;}
+    .hero-actions{gap:10px;}
+    .btn{padding:12px 18px; font-size:13px;}
+    .specialist-card{padding:24px 20px 22px;}
+    .specialist-actions{flex-direction:column;}
+  }
+  @media (max-width:420px){
+    .header-inner{padding:10px 16px;}
+    .logo-img{height:32px;}
+    .hero{padding:32px 16px 28px;}
+    .hero-copy h1{font-size:27px;}
+    .hero-sub{font-size:13px;}
+    .eyebrow{font-size:13.5px; letter-spacing:2px;}
+    .feature-strip{grid-template-columns:1fr; gap:16px;}
+    .specialist-title{font-size:16px;}
+    .specialist-sub{font-size:14.5px;}
+    .mobile-nav ul{padding:6px 16px 16px;}
+  }
+
+  /* Reduced motion / focus */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--red); outline-offset:2px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    background:#172539;
+    border-top:1px solid var(--line);
+    padding:64px 32px 0;
+  }
+  .footer-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:1.3fr 1fr 1fr 1.2fr 1fr; gap:40px;
+    padding-bottom:44px;
+  }
+  .footer-col .flogo{display:flex; align-items:center; margin-bottom:18px;}
+  .footer-logo-img{height:38px; width:auto; display:block;}
+  .footer-col p.about{color:var(--muted); font-size:14.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
+  .footer-social{display:flex; gap:10px;}
+  .footer-social a{
+    width:32px; height:32px; border-radius:50%; background:var(--charcoal-2);
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line);
+  }
+  .footer-social a:hover{background:var(--red); border-color:var(--red);}
+
+  .fhead{
+    font-size:14.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+    color:#fff; margin-bottom:8px; position:relative; padding-bottom:12px;
+  }
+  .fhead::after{
+    content:""; position:absolute; left:0; bottom:0; width:100%; height:3px;
+    background:var(--red); border-radius:2px;
+  }
+  .flist{margin-top:20px;}
+  .flist li{margin-bottom:12px;}
+  .flist a{
+    font-size:14.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    transition:color .15s;
+  }
+  .flist a:hover{color:#fff;}
+  .flist a .arrow{color:var(--red); font-size:13px; font-weight:800;}
+
+  .fcontact{margin-top:20px;}
+  .fcontact li{
+    display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:var(--muted);
+    margin-bottom:16px; line-height:1.55;
+  }
+  .fcontact li svg{flex-shrink:0; margin-top:2px;}
+  .fcontact li a{color:var(--muted);}
+  .fcontact li a:hover{color:#fff;}
+
+  .fcallnow{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--red); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:3px;
+    margin-top:22px;
+  }
+  .fcallnow:hover{background:var(--red-dark);}
+  .fwhatsapp{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--green); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:3px;
+    margin-top:14px;
+  }
+  .fwhatsapp:hover{background:#1C8A45;}
+
+  .footer-bottom{
+    border-top:1px solid var(--line);
+    padding:22px 0;
+    text-align:center;
+  }
+  .footer-bottom p{font-size:13.5px; color:var(--muted); letter-spacing:0.3px;}
+
+  @media (max-width:980px){
+    .footer-inner{grid-template-columns:1fr 1fr; gap:36px;}
+  }
+  @media (max-width:600px){
+    .footer-inner{grid-template-columns:1fr; gap:32px;}
+    footer{padding:48px 20px 0;}
+  }
+  @media (max-width:420px){
+    footer{padding:40px 16px 0;}
+    .footer-logo-img{height:32px;}
+    .fhead{font-size:13.5px;}
+  }
+
+  /* ===== CAR WASH & DETAILING ===== */
+  .carwash-section{
+    background:#F3F5F8;
+    padding:56px 32px;
+  }
+  .carwash-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:1.5fr 1.15fr 0.65fr;
+    border-radius:6px; overflow:hidden;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,0.25);
+  }
+
+  /* left image / illustration panel */
+  .carwash-visual{
+    position:relative;
+    background:
+      radial-gradient(ellipse 500px 400px at 70% 30%, rgba(255,255,255,0.06), transparent 60%),
+      linear-gradient(135deg, #2A3E5A 0%, #121C2A 100%);
+    aspect-ratio:420 / 260;
+    min-height:220px;
+    overflow:hidden;
+  }
+  .carwash-visual::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:36px 36px;
+  }
+  .carwash-visual svg{
+    position:absolute; left:50%; top:52%; transform:translate(-50%,-50%);
+    width:88%; height:auto;
+  }
+
+  /* middle content panel */
+  .carwash-content{
+    background:#F8FAFC;
+    padding:40px 40px;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .carwash-content h2{
+    font-size:26px; color:var(--ink); margin-bottom:14px; letter-spacing:0.3px;
+  }
+  .carwash-content h2 .accent{color:var(--red);}
+  .carwash-content > p{
+    font-size:15px; line-height:1.75; color:#5a5a5e; max-width:420px; margin-bottom:26px;
+  }
+  .carwash-features{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px 28px;
+  }
+  .carwash-features .cf-item{
+    display:flex; align-items:center; gap:10px;
+    font-size:14px; font-weight:700; color:var(--ink);
+  }
+  .carwash-features svg{flex-shrink:0;}
+
+  /* right CTA panel */
+  .carwash-cta{
+    position:relative;
+    background:linear-gradient(160deg, #1A293F 0%, #0B121B 100%);
+    padding:32px 20px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    overflow:hidden;
+  }
+  .carwash-cta .sparkle{
+    position:absolute; color:var(--red); opacity:0.7; font-size:14px;
+  }
+  .carwash-cta .car-icon{margin-bottom:16px;}
+  .carwash-cta .cta-lead{
+    color:var(--red); font-size:13px; font-weight:800; letter-spacing:1px;
+    text-transform:uppercase; margin-bottom:6px;
+  }
+  .carwash-cta h3{
+    color:#fff; font-size:19px; line-height:1.3; margin-bottom:20px;
+  }
+  .carwash-book-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--red); color:#fff; font-size:13.5px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:12px 18px; border-radius:3px;
+    white-space:nowrap;
+  }
+  .carwash-book-btn:hover{background:var(--red-dark);}
+
+  @media (max-width:980px){
+    .carwash-inner{grid-template-columns:1fr;}
+  }
+  @media (max-width:600px){
+    .carwash-section{padding:40px 20px;}
+    .carwash-content{padding:32px 24px;}
+    .carwash-features{grid-template-columns:1fr;}
+  }
+  @media (max-width:420px){
+    .carwash-section{padding:32px 16px;}
+    .carwash-content{padding:26px 20px;}
+    .carwash-content h2{font-size:22px;}
+    .carwash-cta{padding:28px 18px;}
+  }
+
+  /* ===== OUR SERVICES ===== */
+  .services-section{
+    background:#F8FAFC;
+    padding:64px 32px;
+  }
+  .services-inner{max-width:1280px; margin:0 auto;}
+  .services-header{text-align:center; margin-bottom:42px;}
+  .services-header h2{
+    font-size:30px; color:var(--ink); letter-spacing:0.4px;
+  }
+  .services-header h2 .accent{color:var(--red);}
+  .section-divider{
+    display:flex; align-items:center; justify-content:center; gap:6px; margin-top:14px;
+  }
+  .section-divider .dash{
+    width:26px; height:2px;
+    background-image:repeating-linear-gradient(90deg, var(--red) 0 4px, transparent 4px 8px);
+  }
+  .section-divider .bar{width:70px; height:3px; background:var(--red); border-radius:2px;}
+
+  .services-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:26px;
+  }
+  .service-card{
+    background:var(--ink); border-radius:4px; overflow:hidden;
+    display:flex; flex-direction:column;
+    box-shadow:0 14px 34px -18px rgba(0,0,0,0.35);
+  }
+  .service-card .icon-panel{
+    position:relative; overflow:hidden; flex-shrink:0;
+    background:var(--red); padding:32px 20px; display:flex;
+    align-items:center; justify-content:center;
+  }
+  .service-card .icon-panel svg{position:relative; z-index:1; width:58px; height:58px;}
+  .service-card .body{
+    position:relative; overflow:hidden;
+    background:var(--ink); padding:24px 22px 26px; text-align:center;
+    flex:1 1 auto; display:flex; flex-direction:column; justify-content:center;
+  }
+  .service-card p{
+    color:var(--muted); font-size:13.5px; line-height:1.7; margin-bottom:18px;
+  }
+  .service-card .read-more{
+    color:#fff; font-size:13px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .service-card .read-more svg{width:15px; height:15px; transition:transform .2s ease;}
+  .service-card .read-more:hover svg{transform:translateX(4px);}
+
+  .extra-services{display:none;}
+  .extra-services.show{display:contents;}
+
+  .services-toggle-wrap{text-align:center; margin-top:40px;}
+  .services-toggle-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:800;
+    letter-spacing:0.5px; text-transform:uppercase; padding:14px 30px; border-radius:3px;
+  }
+  .services-toggle-btn:hover{background:var(--red);}
+  .services-toggle-btn .chev{transition:transform .2s ease;}
+  .services-toggle-btn.expanded .chev{transform:rotate(180deg);}
+
+  @media (max-width:1024px){
+    .services-grid{grid-template-columns:repeat(2, 1fr);}
+    .services-section{padding:48px 20px;}
+    .services-header h2{font-size:24px;}
+  }
+  @media (max-width:480px){
+    .services-grid{grid-template-columns:1fr; gap:18px;}
+  }
+
+  /* ===== HYBRID SPECIAL SERVICES ===== */
+  .hybrid-section{
+    background:#F1F3F7;
+    padding:56px 32px;
+  }
+  .hybrid-inner{max-width:1280px; margin:0 auto;}
+
+  .hybrid-panel{
+    background:linear-gradient(150deg, #18263A 0%, #0A0F17 100%);
+    border-radius:6px;
+    padding:34px 38px 32px;
+    position:relative; overflow:hidden;
+  }
+  .hybrid-panel::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(ellipse 60% 70% at 75% 50%, black, transparent);
+    pointer-events:none;
+  }
+  .hybrid-header{margin-bottom:26px; position:relative;}
+  .hybrid-header h2{font-size:21px; color:#fff; letter-spacing:0.4px; text-transform:uppercase;}
+  .hybrid-header h2 .accent{color:var(--red);}
+
+  .hybrid-content{
+    display:grid; grid-template-columns:1.65fr 1fr; gap:24px; align-items:center;
+    position:relative;
+  }
+  .hybrid-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:26px 22px;
+  }
+  .hybrid-item{display:flex; gap:11px;}
+  .hybrid-num{
+    flex-shrink:0; width:32px; height:32px; border:1.5px solid var(--red); border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--red); font-size:13px; font-weight:800;
+  }
+  .hybrid-num svg{width:18px; height:18px;}
+  .hybrid-item h4{color:#fff; font-size:13.5px; letter-spacing:0.2px; margin-bottom:6px; line-height:1.3;}
+  .hybrid-item p{color:var(--muted); font-size:13.5px; line-height:1.6;}
+
+  .hybrid-illustration{
+    position:relative; display:flex; align-items:center; justify-content:center;
+    min-height:200px;
+  }
+  .hybrid-illustration svg{width:100%; height:auto;}
+
+  .hybrid-features-strip{
+    background:#EBEEF3; border-radius:6px; margin-top:18px;
+    padding:22px 28px;
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:18px;
+  }
+  .hf-item{display:flex; align-items:center; gap:11px;}
+  .hf-item svg{flex-shrink:0;}
+  .hf-item span{font-size:14px; font-weight:700; color:var(--ink); line-height:1.35;}
+
+  @media (max-width:1100px){
+    .hybrid-content{grid-template-columns:1fr;}
+  }
+  @media (max-width:900px){
+    .hybrid-grid{grid-template-columns:repeat(2, 1fr);}
+    .hybrid-features-strip{grid-template-columns:repeat(3, 1fr);}
+  }
+  @media (max-width:760px){
+    .hybrid-section{padding:44px 20px;}
+    .hybrid-panel{padding:26px 22px 24px;}
+  }
+  @media (max-width:560px){
+    .hybrid-grid{grid-template-columns:1fr;}
+    .hybrid-features-strip{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:400px){
+    .hybrid-features-strip{grid-template-columns:1fr; padding:18px 16px; gap:14px;}
+  }
+
+  /* ===== WHY CHOOSE TAQWA ===== */
+  .why-choose-section{
+    background:#F8FAFC;
+    padding:60px 32px;
+  }
+  .why-choose-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:0.85fr 2.3fr; gap:36px;
+    align-items:center;
+  }
+  .why-choose-content .eyebrow-line{
+    font-size:15px; color:var(--ink); font-weight:800; letter-spacing:0.3px;
+    text-transform:uppercase; line-height:1.3;
+  }
+  .why-choose-content h2{
+    font-size:24px; letter-spacing:0.3px; margin-bottom:16px; line-height:1.3;
+    color:var(--ink);
+  }
+  .why-choose-content h2 .accent{color:var(--red);}
+  .why-choose-content p{
+    color:#666; font-size:13.5px; line-height:1.75; margin-bottom:22px; max-width:280px;
+  }
+  .btn-learn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--red); color:#fff; font-size:13.5px; font-weight:800;
+    letter-spacing:0.5px; text-transform:uppercase; padding:12px 22px; border-radius:3px;
+  }
+  .btn-learn:hover{background:var(--red-dark);}
+
+  .why-choose-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;
+  }
+  .wc-card{
+    position:relative; border-radius:4px; overflow:hidden;
+    aspect-ratio:3/4;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .wc-card::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .wc-card.tech{background:radial-gradient(ellipse at 35% 25%, #2A3F5E, #0A0F17 70%);}
+  .wc-card.tools{background:radial-gradient(ellipse at 60% 30%, #25364E, #0A0F17 70%);}
+  .wc-card.parts{background:radial-gradient(ellipse at 40% 40%, #283A54, #0A0F17 70%);}
+  .wc-card.service{background:radial-gradient(ellipse at 50% 25%, #1F314C, #0A0F17 70%);}
+  .wc-card .wc-icon{position:relative; z-index:1;}
+  .wc-card .wc-label{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding:16px 8px 14px;
+    background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    text-align:center;
+    color:#fff; font-size:13px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
+  }
+
+  @media (max-width:980px){
+    .why-choose-inner{grid-template-columns:1fr;}
+    .why-choose-content p{max-width:none;}
+  }
+  @media (max-width:700px){
+    .why-choose-grid{grid-template-columns:repeat(2, 1fr); gap:14px;}
+  }
+  @media (max-width:560px){
+    .why-choose-section{padding:44px 20px;}
+    .why-choose-content h2{font-size:21px;}
+  }
+
+  /* ===== OUR ENVIRONMENT ===== */
+  .env-section{
+    background:#F1F3F7;
+    padding:60px 32px;
+  }
+  .env-inner{max-width:1280px; margin:0 auto;}
+  .env-header{text-align:center; margin-bottom:42px;}
+  .env-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
+  .env-header h2 .accent{color:var(--red);}
+
+  .env-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:26px;
+  }
+  .env-card{
+    border-radius:4px; overflow:hidden; display:flex; flex-direction:column;
+    box-shadow:0 14px 34px -18px rgba(0,0,0,0.3);
+  }
+  .env-image{
+    aspect-ratio:4/3.4; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .env-image::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .env-image.ac{background:radial-gradient(ellipse at 35% 25%, #1B2B42, #0A1019 70%);}
+  .env-image.oil{background:radial-gradient(ellipse at 55% 30%, #293B56, #0D121A 70%);}
+  .env-image.advice{background:radial-gradient(ellipse at 40% 25%, #283A54, #0A0F17 70%);}
+  .env-image.full{background:radial-gradient(ellipse at 50% 30%, #22324A, #0A0F17 70%);}
+  .env-image svg{position:relative; z-index:1;}
+
+  .env-caption{
+    background:linear-gradient(165deg, var(--red) 0%, var(--red-dark) 100%);
+    padding:22px 22px 24px; text-align:center; flex:1;
+  }
+  .env-card h3{color:#fff; font-size:16.5px; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:10px;}
+  .env-card p{color:rgba(255,255,255,0.85); font-size:13px; line-height:1.65;}
+
+  @media (max-width:1024px){
+    .env-grid{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:600px){
+    .env-section{padding:44px 20px;}
+    .env-header h2{font-size:24px;}
+    .env-grid{grid-template-columns:1fr; gap:20px;}
+  }
+
+  /* ===== OUR FEATURES ===== */
+  .features-section{
+    display:grid; grid-template-columns:1fr 1fr;
+    background:#F1F3F7;
+    align-items:stretch;
+    max-width:1800px; margin:0 auto;
+  }
+  .features-left{
+    padding:60px 44px 60px 48px;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .features-header h2{
+    font-size:26px; color:var(--ink); letter-spacing:0.4px; margin-bottom:26px;
+  }
+  .features-header h2 .accent{color:var(--red);}
+  .features-grid-2x2{
+    display:grid; grid-template-columns:1fr 1fr;
+  }
+  .feat-card{
+    padding:28px 26px; display:flex; flex-direction:column; gap:14px;
+    cursor:pointer; position:relative;
+    transition:box-shadow .2s ease, transform .15s ease;
+  }
+  .feat-card:hover{transform:translateY(-2px);}
+  .feat-card.active{box-shadow:inset 0 0 0 3px rgba(255,255,255,0.85);}
+  .feat-card.c-red{background:var(--red);}
+  .feat-card.c-black{background:var(--ink);}
+  .feat-card h4{
+    color:#fff; font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
+    display:flex; align-items:center; gap:14px;
+  }
+  .feat-icon-wrap{
+    flex-shrink:0; width:42px; height:42px; border-radius:50%;
+    background:rgba(255,255,255,0.16);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .feat-card p{color:rgba(255,255,255,0.85); font-size:13px; line-height:1.65;}
+
+  .features-right{
+    position:relative; overflow:hidden; min-width:0; min-height:460px;
+    background:linear-gradient(150deg, #22324A 0%, #0A0F17 100%);
+  }
+  .features-right::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:40px 40px;
+  }
+  .features-right svg{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:80%; height:auto; z-index:1;
+  }
+  .features-right img{
+    position:relative; z-index:1;
+    transition:opacity .25s ease;
+  }
+  .features-right .feat-caption{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding:20px 24px;
+    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    color:#fff; font-size:14px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
+    opacity:0; transition:opacity .25s ease;
+  }
+  .features-right .feat-caption.show{opacity:1;}
+
+  @media (max-width:980px){
+    .features-section{grid-template-columns:1fr;}
+    .features-left{padding:48px 24px;}
+    .features-right{min-height:0; aspect-ratio:220/170;}
+  }
+  @media (max-width:560px){
+    .features-grid-2x2{grid-template-columns:1fr;}
+    .features-header h2{font-size:22px;}
+    .feat-card{padding:22px 20px;}
+  }
+
+  /* ===== FAQ ===== */
+  .faq-section{
+    background:#F8FAFC;
+    padding:64px 32px;
+  }
+  .faq-inner{max-width:1280px; margin:0 auto;}
+  .faq-header{text-align:center; margin-bottom:42px;}
+  .faq-header h2{font-size:28px; color:var(--ink); letter-spacing:0.4px;}
+  .faq-header h2 .accent{color:var(--red);}
+
+  .faq-grid{
+    max-width:820px; margin:0 auto;
+  }
+  .faq-column{display:flex; flex-direction:column; gap:16px;}
+  .faq-column + .faq-column{margin-top:16px;}
+  .faq-item{border-radius:2px; overflow:hidden;}
+  .faq-question{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:#2A3E5C; color:#fff; border:none; text-align:left;
+    padding:20px 22px; font-family:inherit;
+    font-size:14px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
+    cursor:pointer;
+  }
+  .faq-question:hover{background:#354B6A;}
+  .faq-question .faq-arrow{position:relative; flex-shrink:0; width:16px; height:16px; margin-left:16px;}
+  .faq-question .faq-arrow::before, .faq-question .faq-arrow::after{
+    content:""; position:absolute; top:50%; left:50%; background:#fff; border-radius:1px;
+    transform:translate(-50%,-50%); transition:transform .25s ease, opacity .25s ease;
+  }
+  .faq-question .faq-arrow::before{width:14px; height:2px;}
+  .faq-question .faq-arrow::after{width:2px; height:14px;}
+  .faq-item.open .faq-question .faq-arrow::after{transform:translate(-50%,-50%) rotate(90deg) scale(0); opacity:0;}
+  .faq-answer{
+    max-height:0; overflow:hidden; background:#EFF2F6;
+    transition:max-height .3s ease;
+  }
+  .faq-item.open .faq-answer{max-height:220px;}
+  .faq-answer-inner{padding:22px 24px 26px; color:#5a5a5e; font-size:13.5px; line-height:1.75;}
+
+  @media (max-width:560px){
+    .faq-section{padding:44px 20px;}
+    .faq-header h2{font-size:21px;}
+    .faq-question{padding:16px 18px; font-size:13.5px;}
+    .faq-answer-inner{padding:18px 18px 22px; font-size:13px;}
+  }
+
+  /* ===== OUR LATEST NEWS ===== */
+  .news-section{
+    background:#F8FAFC;
+    padding:64px 32px;
+  }
+  .news-inner{max-width:1280px; margin:0 auto;}
+  .news-header{text-align:center; margin-bottom:42px;}
+  .news-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
+  .news-header h2 .accent{color:var(--red);}
+
+  .news-carousel{
+    overflow-x:auto; scroll-behavior:smooth; scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .news-carousel::-webkit-scrollbar{display:none;}
+  .news-track{display:flex; gap:28px;}
+  .news-card{
+    scroll-snap-align:start; flex-shrink:0;
+    border-radius:4px; overflow:hidden;
+    box-shadow:0 14px 34px -18px rgba(0,0,0,0.3);
+    display:flex; flex-direction:column;
+  }
+  .news-image{
+    position:relative; aspect-ratio:4/3; overflow:hidden; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .news-image::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .news-image.lpg{background:radial-gradient(ellipse at 35% 25%, #23334A, #0A0F17 70%);}
+  .news-image.oil{background:radial-gradient(ellipse at 55% 30%, #293B56, #0D121A 70%);}
+  .news-image.brake{background:radial-gradient(ellipse at 40% 30%, #233248, #0A0F17 70%);}
+  .news-image.maint{background:radial-gradient(ellipse at 45% 25%, #1B2A40, #0A0F17 70%);}
+  .news-image.battery{background:radial-gradient(ellipse at 55% 30%, #23344E, #0A0F17 70%);}
+  .news-image.engine{background:radial-gradient(ellipse at 40% 30%, #293B56, #0A0F17 70%);}
+  .news-image svg{position:relative; z-index:1;}
+  .news-date{
+    position:absolute; right:0; bottom:0; z-index:2;
+    background:var(--red); color:#fff;
+    font-size:13px; font-weight:800; letter-spacing:0.3px;
+    padding:10px 16px;
+  }
+
+  .news-body{
+    background:#EFF2F6; padding:24px 22px 26px;
+    flex:1 1 auto; display:flex; flex-direction:column;
+  }
+  .news-card h3{
+    color:var(--ink); font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
+    margin-bottom:12px; line-height:1.35;
+  }
+  .news-card p{color:#666; font-size:13.5px; line-height:1.7; margin-bottom:16px; flex:1;}
+  .news-read-more{
+    color:var(--red); font-size:13px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .news-read-more:hover{color:var(--red-dark);}
+  .news-read-more svg{width:16px; height:16px; transition:transform .2s ease;}
+  .news-read-more:hover svg{transform:translateX(4px);}
+
+  .news-nav{
+    display:flex; justify-content:center; align-items:center; gap:16px; margin-top:32px;
+  }
+  .news-nav-btn{
+    width:44px; height:44px; border-radius:50%;
+    background:var(--ink); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    transition:background-color .2s ease;
+  }
+  .news-nav-btn:hover{background:var(--red);}
+  .news-nav-btn:disabled{opacity:0.35; cursor:default; background:var(--ink);}
+
+  @media (max-width:640px){
+    .news-section{padding:44px 20px;}
+    .news-header h2{font-size:24px;}
+    .news-track{gap:18px;}
+  }
+
+  /* ===== ABOUT PAGE: PAGE BANNER ===== */
+  .page-banner{
+    position:relative;
+    background:linear-gradient(150deg, #18263A 0%, #0A0F17 100%);
+    overflow:hidden;
+    padding:68px 32px 58px;
+    text-align:center;
+  }
+  .page-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("img/background-2.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+  .page-banner-inner{position:relative; max-width:1280px; margin:0 auto;}
+  .page-banner .eyebrow{justify-content:center; display:flex;}
+  .page-banner h1{
+    font-size:44px; color:#fff; letter-spacing:0.4px; margin-bottom:16px;
+  }
+  .page-banner h1 .accent{color:var(--red);}
+  .breadcrumb{
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;
+    font-weight:700;
+  }
+  .breadcrumb a{color:var(--off);}
+  .breadcrumb a:hover{color:var(--red);}
+  .breadcrumb .sep{color:var(--red); font-size:13.5px;}
+  .breadcrumb .current{color:var(--red);}
+
+  @media (max-width:760px){
+    .page-banner{padding:44px 20px 40px;}
+    .page-banner h1{font-size:30px;}
+  }
+  @media (max-width:420px){
+    .page-banner{padding:36px 16px 32px;}
+    .page-banner h1{font-size:25px;}
+    .breadcrumb{font-size:14px;}
+  }
+
+  /* ===== ABOUT PAGE: OUR STORY ===== */
+  .story-section{background:#F8FAFC; padding:64px 32px 0;}
+  .story-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:1fr 0.95fr; gap:56px; align-items:center;
+    padding-bottom:56px;
+  }
+  .story-content h2{
+    font-size:32px; color:var(--ink); letter-spacing:0.3px; margin-bottom:18px; line-height:1.28;
+  }
+  .story-content h2 .accent{color:var(--red);}
+  .story-content p{color:#666; font-size:14px; line-height:1.85; margin-bottom:16px;}
+  .story-image{
+    position:relative; border-radius:6px; overflow:hidden; aspect-ratio:4/3.1;
+    box-shadow:0 24px 54px -22px rgba(0,0,0,0.35);
+  }
+  .story-image img{width:100%; height:100%; object-fit:cover; display:block;}
+
+  .commit-strip{
+    max-width:1280px; margin:0 auto; padding-bottom:56px;
+  }
+
+  @media (max-width:980px){
+    .story-inner{grid-template-columns:1fr; gap:32px;}
+    .story-image{order:-1;}
+  }
+  @media (max-width:600px){
+    .story-section{padding:44px 20px 0;}
+    .story-inner{padding-bottom:40px;}
+    .commit-strip{padding-bottom:40px;}
+    .story-content h2{font-size:24px;}
+  }
+
+  /* ===== ABOUT PAGE: STATS ===== */
+  .stats-section{background:var(--ink);}
+  .stats-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(4, 1fr);
+  }
+  .stat-card{
+    padding:46px 20px; text-align:center;
+    border-right:1px solid rgba(255,255,255,0.08);
+  }
+  .stat-card:last-child{border-right:none;}
+  .stat-number{
+    font-family:'Poppins', "Arial Narrow", Arial, sans-serif; font-weight:800;
+    font-size:40px; color:var(--red); letter-spacing:0.4px; margin-bottom:8px;
+  }
+  .stat-label{
+    color:var(--off); font-size:13.5px; text-transform:uppercase;
+    letter-spacing:0.4px; font-weight:700;
+  }
+  @media (max-width:760px){
+    .stats-inner{grid-template-columns:repeat(2, 1fr);}
+    .stat-card{border-bottom:1px solid rgba(255,255,255,0.08);}
+    .stat-card:nth-child(2n){border-right:none;}
+  }
+  @media (max-width:420px){
+    .stats-inner{grid-template-columns:1fr;}
+    .stat-card{border-right:none;}
+  }
+
+  /* ===== HYBRID SERVICE PROCESS ===== */
+  .hybrid-process-section{background:#F8FAFC; padding:60px 32px;}
+  .hybrid-process-inner{max-width:1280px; margin:0 auto;}
+  .hybrid-process-header{text-align:center; margin-bottom:42px;}
+  .hybrid-process-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
+  .hybrid-process-header h2 .accent{color:var(--red);}
+  .hybrid-process-header p{
+    color:#666; font-size:13.5px; max-width:640px; margin:12px auto 0; line-height:1.7;
+  }
+  .hybrid-process-steps{display:grid; grid-template-columns:repeat(3, 1fr); gap:26px;}
+  .hp-item{
+    background:#fff; border-radius:6px; padding:28px 24px 24px; position:relative;
+    box-shadow:0 14px 34px -20px rgba(0,0,0,0.18);
+  }
+  .hp-num{
+    width:38px; height:38px; border-radius:50%; margin-bottom:16px;
+    background:linear-gradient(150deg, var(--red) 0%, var(--red-dark) 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:800; font-size:14px;
+  }
+  .hp-item h3{font-size:14.5px; color:var(--ink); margin-bottom:8px; letter-spacing:0.2px; line-height:1.3;}
+  .hp-item p{color:#666; font-size:13.5px; line-height:1.7;}
+
+  @media (max-width:900px){
+    .hybrid-process-steps{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:600px){
+    .hybrid-process-section{padding:44px 20px;}
+    .hybrid-process-header h2{font-size:24px;}
+  }
+  @media (max-width:480px){
+    .hybrid-process-steps{grid-template-columns:1fr;}
+  }
+
+  /* ===== ABOUT PAGE: SERVICES RECAP ===== */
+  .services-recap-section{background:#F1F3F7; padding:60px 32px;}
+  .services-recap-inner{max-width:1280px; margin:0 auto;}
+  .services-recap-header{text-align:center; margin-bottom:42px;}
+  .services-recap-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
+  .services-recap-header h2 .accent{color:var(--red);}
+  .services-recap-cta{text-align:center; margin-top:40px;}
+
+  @media (max-width:600px){
+    .services-recap-section{padding:44px 20px;}
+    .services-recap-header h2{font-size:24px;}
+  }
+
+  /* ===== ABOUT PAGE: TEAM ===== */
+  .team-section{background:#F8FAFC; padding:60px 32px;}
+  .team-inner{max-width:1280px; margin:0 auto;}
+  .team-header{text-align:center; margin-bottom:42px;}
+  .team-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
+  .team-header h2 .accent{color:var(--red);}
+  .team-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:26px;}
+  .team-card{
+    background:#fff; border-radius:6px; overflow:hidden; text-align:center;
+    padding:38px 20px 32px; box-shadow:0 14px 34px -20px rgba(0,0,0,0.18);
+  }
+  .team-avatar{
+    width:84px; height:84px; border-radius:50%; margin:0 auto 18px;
+    background:linear-gradient(150deg, var(--red) 0%, var(--red-dark) 100%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .team-card h3{font-size:14.5px; color:var(--ink); margin-bottom:6px; letter-spacing:0.2px;}
+  .team-card p{color:var(--red); font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.4px;}
+
+  @media (max-width:900px){
+    .team-grid{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:600px){
+    .team-section{padding:44px 20px;}
+    .team-header h2{font-size:24px;}
+  }
+  @media (max-width:420px){
+    .team-grid{grid-template-columns:1fr;}
+  }
+
+  /* ===== ABOUT PAGE: CTA ===== */
+  .about-cta-section{
+    position:relative; overflow:hidden;
+    background:linear-gradient(135deg, #2A3E5A 0%, #121C2A 100%);
+    padding:60px 32px; text-align:center;
+  }
+  .about-cta-section::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(ellipse 70% 80% at 50% 40%, black, transparent);
+  }
+  .about-cta-inner{position:relative; max-width:760px; margin:0 auto;}
+  .about-cta-inner h2{color:#fff; font-size:28px; margin-bottom:14px; letter-spacing:0.3px;}
+  .about-cta-inner p{color:var(--muted); font-size:14.5px; margin-bottom:16px; line-height:1.75;}
+  .about-cta-address{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    color:var(--off); font-size:13px; margin-bottom:28px;
+  }
+  .about-cta-actions{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+
+  @media (max-width:600px){
+    .about-cta-section{padding:44px 20px;}
+    .about-cta-inner h2{font-size:22px;}
+  }
+</style>
+
+
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <div class="eyebrow">STAY COOL ALL YEAR</div>
+    <h1 class="display">CAR AC <span class="accent">SERVICE</span></h1>
+    <p style="color:var(--off); font-size:14px; line-height:1.75; max-width:620px; margin:0 auto 20px;">Full AC diagnostics, gas refill and repair to keep your car cool, whatever the weather — done right the first time.</p>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">»</span>
+      <span class="current">Car AC Service</span>
+    </div>
+  </div>
+</section>
+
+<section class="hybrid-section" style="padding-top:56px;">
+  <div class="hybrid-inner">
+    <div class="hybrid-panel">
+
+      <div class="hybrid-header">
+        <h2 class="display" style="letter-spacing:0.4px;">COLD AIR, EVERY TIME <span class="accent">YOU TURN THE KEY</span></h2>
+      </div>
+
+      <div class="hybrid-content">
+        <div class="story-content" style="position:relative;">
+          <p style="color:var(--muted); margin-bottom:16px;">Weak airflow, warm air, strange smells or noises from the vents — car AC problems are easy to ignore until the heat makes them impossible to. At Taqwa Automobile, we properly diagnose your AC system before recommending any repair, so you know exactly what's wrong and what it will cost.</p>
+          <p style="color:var(--muted);">From a simple gas refill to compressor replacement, our technicians handle it all with genuine refrigerant, proper leak detection equipment, and a careful process that keeps your cooling system reliable long after you leave.</p>
+        </div>
+
+        <div class="hybrid-illustration">
+          <img src="img/Car-ac-Service.jpg" alt="Car AC service and repair at Taqwa Automobile" style="width:100%; height:auto; border-radius:6px;">
+        </div>
+      </div>
+
+      <div class="hybrid-grid" style="margin-top:30px; padding-top:28px; border-top:1px solid rgba(255,255,255,0.08); position:relative;">
+
+        <div class="hybrid-item">
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><circle cx="10" cy="10" r="6.5" stroke="#F97316" stroke-width="1.4"/><line x1="14.5" y1="14.5" x2="20" y2="20" stroke="#F97316" stroke-width="1.5" stroke-linecap="round"/><path d="M7 10h1.5l1-2 1.5 4 1-2H13" stroke="#F97316" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h4>Full Leak Detection</h4>
+            <p>We trace the exact source of gas loss instead of just refilling and hoping the problem doesn't come back.</p>
+          </div>
+        </div>
+
+        <div class="hybrid-item">
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="15" height="10" rx="1.5" stroke="#F97316" stroke-width="1.4"/><rect x="18" y="10" width="2" height="4" fill="#F97316"/></svg></div>
+          <div>
+            <h4>Genuine Refrigerant &amp; Parts</h4>
+            <p>Only correct-grade refrigerant and manufacturer-approved parts, protecting your compressor and system.</p>
+          </div>
+        </div>
+
+        <div class="hybrid-item">
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V5l7-3z" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h4>Experienced AC Technicians</h4>
+            <p>Our team is trained on modern and older AC systems alike, including hybrid and CNG-converted vehicles.</p>
+          </div>
+        </div>
+
+        <div class="hybrid-item">
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F97316" stroke-width="1.5"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h4>Fast, Reliable Cooling</h4>
+            <p>Most AC services are completed the same day, so you're back on the road with cold air, fast.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="hybrid-features-strip">
+      <div class="hf-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Certified AC Technicians</span>
+      </div>
+      <div class="hf-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Genuine Refrigerant</span>
+      </div>
+      <div class="hf-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Leak Detection Equipment</span>
+      </div>
+      <div class="hf-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Warranty on Service</span>
+      </div>
+      <div class="hf-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Transparent Pricing</span>
+      </div>
+      <div class="hf-item">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Quick Same-Day Turnaround</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="hybrid-process-section">
+  <div class="hybrid-process-inner">
+    <div class="hybrid-process-header">
+      <h2 class="display" style="letter-spacing:0.4px;">OUR AC <span class="accent">SERVICE PROCESS</span></h2>
+      <p>From the first performance check to the final cooling test, every AC service at Taqwa Automobile follows the same careful process.</p>
+    </div>
+
+    <div class="hybrid-process-steps">
+
+      <div class="hp-item">
+        <div class="hp-num">01</div>
+        <h3>AC Performance Check</h3>
+        <p>We check cooling output, airflow and cabin temperature to understand exactly how your AC is performing.</p>
+      </div>
+
+      <div class="hp-item">
+        <div class="hp-num">02</div>
+        <h3>Refrigerant &amp; Pressure Test</h3>
+        <p>We measure refrigerant levels and system pressure to identify gas loss or component issues.</p>
+      </div>
+
+      <div class="hp-item">
+        <div class="hp-num">03</div>
+        <h3>Leak Detection</h3>
+        <p>If gas is low, we trace the exact leak point instead of just topping it up temporarily.</p>
+      </div>
+
+      <div class="hp-item">
+        <div class="hp-num">04</div>
+        <h3>Component Repair or Replacement</h3>
+        <p>Compressor, condenser, evaporator or other parts are repaired or replaced using genuine components.</p>
+      </div>
+
+      <div class="hp-item">
+        <div class="hp-num">05</div>
+        <h3>Re-Gas &amp; Cooling Test</h3>
+        <p>The system is recharged with the correct refrigerant and tested to confirm strong, cold airflow.</p>
+      </div>
+
+      <div class="hp-item">
+        <div class="hp-num">06</div>
+        <h3>Warranty &amp; Follow-Up</h3>
+        <p>We back our AC work with a service warranty and are here if you notice any issues afterward.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="services-recap-section">
+  <div class="services-recap-inner">
+    <div class="services-recap-header">
+      <h2 class="display" style="letter-spacing:0.4px;">OUR <span class="accent">CAR AC SERVICES</span></h2>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.4"/><path d="M8 12l2 2 4-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="body">
+          <h3>AC Gas Refill (Re-gas)</h3>
+          <p>Precise refrigerant top-up or full recharge to restore strong, cold airflow.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="10" rx="1.5" stroke="#fff" stroke-width="1.4"/><circle cx="12" cy="13" r="2.5" stroke="#fff" stroke-width="1.3"/></svg>
+        </div>
+        <div class="body">
+          <h3>Compressor Repair &amp; Replacement</h3>
+          <p>Diagnosis and repair of noisy, seized or failing AC compressors, the heart of your cooling system.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-5 4 10 2-5h6" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="body">
+          <h3>Condenser &amp; Evaporator Service</h3>
+          <p>Cleaning, repair or replacement of condenser and evaporator coils for efficient heat exchange.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="10" r="6.5" stroke="#fff" stroke-width="1.4"/><line x1="14.5" y1="14.5" x2="20" y2="20" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M7 10h1.5l1-2 1.5 4 1-2H13" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="body">
+          <h3>AC Leak Detection &amp; Repair</h3>
+          <p>Finding and fixing the exact source of refrigerant leaks so your cooling stays consistent.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="1.5" stroke="#fff" stroke-width="1.4"/><line x1="6" y1="10" x2="18" y2="10" stroke="#fff" stroke-width="1.2"/><line x1="6" y1="14" x2="18" y2="14" stroke="#fff" stroke-width="1.2"/></svg>
+        </div>
+        <div class="body">
+          <h3>Cabin Filter Replacement</h3>
+          <p>Fresh cabin air filters for cleaner air inside your car and better AC airflow.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="#fff" stroke-width="1.4"/><path d="M12 8v4l3 2" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="body">
+          <h3>Blower Motor Repair</h3>
+          <p>Repair or replacement of blower motors for strong, consistent cabin airflow.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" stroke="#fff" stroke-width="1.3"/><circle cx="16" cy="16" r="3" stroke="#fff" stroke-width="1.3"/><line x1="10.5" y1="10.5" x2="13.5" y2="13.5" stroke="#fff" stroke-width="1.3"/></svg>
+        </div>
+        <div class="body">
+          <h3>AC Belt &amp; Pulley Service</h3>
+          <p>Inspection and replacement of worn belts and pulleys that drive your AC compressor.</p>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="icon-panel">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#fff" stroke-width="1.4"/><path d="M8 8h8v8H8z" stroke="#fff" stroke-width="1.3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="body">
+          <h3>Full AC System Diagnostics</h3>
+          <p>Complete performance check covering pressure, temperature, airflow and every major component.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="why-choose-section">
+  <div class="why-choose-inner">
+
+    <div class="why-choose-content">
+      <div class="eyebrow-line">Why Trust Us</div>
+      <h2 class="display" style="letter-spacing:0.3px;">With Your <span class="accent">Car AC Service</span>?</h2>
+      <p>A quick gas top-up might feel like a fix, but it rarely lasts. Our workshop combines proper leak detection, genuine refrigerant and experienced technicians to solve the real problem, not just mask it.</p>
+      <a href="#contact" class="btn-learn">
+        Book Your AC Service
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="why-choose-grid">
+
+      <div class="wc-card tech">
+        <img src="img/expert-technitian.jpg" alt="Certified Car AC Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <div class="wc-label">Certified AC Technicians</div>
+      </div>
+
+      <div class="wc-card tools">
+        <img src="img/car-parts.jpg" alt="Genuine Refrigerant and AC Parts" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <div class="wc-label">Genuine Refrigerant &amp; Parts</div>
+      </div>
+
+      <div class="wc-card parts">
+        <img src="img/Car-ac-Service.jpg" alt="Advanced AC Leak Detection" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <div class="wc-label">Advanced Leak Detection</div>
+      </div>
+
+      <div class="wc-card service">
+        <img src="img/Trusted-Service.jpg" alt="Fast and Reliable AC Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <div class="wc-label">Fast, Reliable Service</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <h2 class="display" style="letter-spacing:0.4px;">CAR AC SERVICE <span class="accent">FAQ</span></h2>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-column">
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Why is my car AC not cooling properly?
+            <span class="faq-arrow" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Weak cooling is usually caused by low refrigerant, a leak, a failing compressor, or a clogged condenser. We run a full diagnostic to pinpoint the exact cause before recommending a fix.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            How often should I service my car AC?
+            <span class="faq-arrow" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">We recommend a check-up at least once a year, or sooner if you notice weaker cooling, unusual smells, or strange noises from the AC system.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Do you handle AC gas leaks?
+            <span class="faq-arrow" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Yes. We use proper leak detection equipment to find the exact source of the leak and repair it, rather than just refilling gas that will leak out again.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Can hybrid or CNG vehicles get AC service here too?
+            <span class="faq-arrow" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Absolutely. Our technicians are experienced with AC systems in hybrid and CNG-converted vehicles as well as standard petrol and diesel cars.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Do you offer warranty on AC repairs?
+            <span class="faq-arrow" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Yes, our AC repairs and part replacements come with a service warranty. Ask our team for details specific to the work done on your vehicle.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about-cta-section" id="contact">
+  <div class="about-cta-inner">
+    <h2>Beat the Heat — Book Your AC Service Today</h2>
+    <p>Book a full AC checkup or ask our specialists a question &mdash; call, message us on WhatsApp, or visit our workshop in Uttara.</p>
+    <div class="about-cta-address">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#F97316" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.3" stroke="#F97316" stroke-width="1.6"/></svg>
+      <span>Sector # 15, Block # C, Road # 3/A, Plot # 40, Diabari, Uttara, Dhaka.</span>
+    </div>
+    <div class="about-cta-actions">
+      <a href="tel:+8801854226757" class="btn btn-red">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Call Now
+      </a>
+      <a href="https://wa.me/8801854226757" class="btn btn-green">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.6 6.32A8.86 8.86 0 0012 4a8.94 8.94 0 00-7.75 13.4L3 21l3.7-1.23A8.94 8.94 0 0012 21a8.94 8.94 0 006.32-15.32z" stroke="#fff" stroke-width="1.6"/><path d="M9 8.5c.3-.6 1-1 1.6-.5.5.4.9 1.4.6 2-.3.6-1.1 1.1-.7 1.9.5.9 1.7 2.1 2.6 2.6.8.4 1.3-.4 1.9-.7.6-.3 1.6.1 2 .6.5.6.1 1.3-.5 1.6-1.2.6-2.7.4-4-.2-1.8-.8-3.4-2.4-4.2-4.2-.6-1.3-.8-2.8-.2-4z" fill="#fff"/></svg>
+        WhatsApp Us
+      </a>
+    </div>
+  </div>
+</section>
+
+
+</Layout>

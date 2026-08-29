@@ -1,0 +1,888 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Gallery - Taqwa Automobile Service Center"
+  description="See real photos from Taqwa Automobile's workshop in Uttara, Dhaka — LPG & CNG conversion, hybrid diagnostics, engine repair and premium car detailing in action."
+  path="gallery.html"
+  current="gallery"
+>
+
+<style>
+  :root{
+    /* ===== Brand colors ===== */
+    --red:#F97316;
+    --red-dark:#CE5805;
+    --green:#16A34A;
+    --ink:#101318;
+    --charcoal:#162336;
+    --charcoal-2:#1E304A;
+    --line:#293C58;
+    --paper:#F8FAFC;
+    --muted:#9A9AA0;
+    --off:#E9E9EC;
+
+    /* ===== Surface tokens (used by dark/light theme toggle) ===== */
+    --surface-0:#F8FAFC;   /* base page / header */
+    --surface-1:#F1F3F7;   /* alternate section tint */
+    --surface-2:#EEF1F6;   /* deeper alternate tint */
+    --surface-3:#EBEEF3;   /* trust-strip / feature-strip fill */
+    --text-strong:#101318; /* headings on light surfaces */
+    --text-muted:#5a5a5e;  /* paragraphs on light surfaces */
+    --card-bg:#EFF2F6;     /* card body fill on light surfaces */
+    --surface-border:#EAEDF2; /* hairline borders on light surfaces */
+
+    /* ===== Typography scale ===== */
+    --font-display:'Poppins', "Arial Narrow", Arial, sans-serif;
+    --font-body:'Inter', "Segoe UI", Arial, sans-serif;
+    /* Fluid via clamp(): scales smoothly between a 375px and 1440px viewport
+       instead of jumping at breakpoints. Layout still changes at @media steps;
+       only type size and spacing flow continuously. */
+    --text-xs:13px;
+    --text-sm:14px;
+    --text-base:15px;
+    --text-md:16px;
+    --text-lg:clamp(15px, 14.6px + 0.15vw, 16px);
+    --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
+    --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
+    --text-3xl:clamp(20px, 17.7px + 0.9vw, 24px);
+    --text-4xl:clamp(24px, 20.2px + 1.5vw, 30px);
+    --text-5xl:clamp(28px, 21.9px + 2.5vw, 40px);
+    --text-6xl:clamp(32px, 23.4px + 3.4vw, 52px);
+
+    /* ===== Spacing scale (8pt grid) ===== */
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:clamp(14px, 13.4px + 0.24vw, 16px);
+    --space-5:clamp(18px, 16.5px + 0.6vw, 24px);
+    --space-6:clamp(22px, 19.7px + 0.9vw, 32px);
+    --space-7:clamp(32px, 28.1px + 1.5vw, 48px);
+    --space-8:clamp(40px, 33.8px + 2.4vw, 64px);
+
+    /* ===== Radius scale ===== */
+    --radius-sm:3px;
+    --radius-md:4px;
+    --radius-lg:6px;
+    --radius-xl:10px;
+    --radius-full:50%;
+
+    /* ===== Elevation / shadow scale ===== */
+    --shadow-1:0 2px 6px rgba(0,0,0,0.08);
+    --shadow-2:0 8px 20px -8px rgba(0,0,0,0.18);
+    --shadow-3:0 14px 34px -18px rgba(0,0,0,0.3);
+    --shadow-4:0 20px 50px -20px rgba(0,0,0,0.25);
+    --shadow-5:0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: var(--font-body);
+    background:var(--surface-1);
+    color:var(--off);
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{
+    font-family: var(--font-display);
+    font-weight:800;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer; border:none;}
+
+  /* ===== ICON SPRITE UTILITY ===== */
+  .icon{width:1em; height:1em; display:inline-block; vertical-align:-0.125em; flex-shrink:0;}
+
+  /* ===== SCROLL-REVEAL MICRO-ANIMATIONS ===== */
+  @keyframes fadeInUp{
+    from{opacity:0; transform:translateY(28px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes floatBounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-6px);}
+  }
+  @keyframes shimmer{
+    0%{background-position:100% 0;}
+    100%{background-position:0 0;}
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity, transform;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .reveal.is-visible{opacity:1; transform:none; transition:none;}
+    .floatBounce, .sticky-actions .fab{animation:none !important;}
+  }
+
+  /* ===== LAZY-LOAD FADE-IN (blur-up placeholder) ===== */
+  .lazy-fade{opacity:0; transition:opacity .5s ease;}
+  .lazy-fade.is-loaded{opacity:1;}
+
+  /* ===== STICKY FLOATING WHATSAPP / CALL BUTTONS ===== */
+  .sticky-actions{
+    position:fixed; right:20px; bottom:20px; z-index:200;
+    display:flex; flex-direction:column; align-items:flex-end; gap:12px;
+  }
+  .sticky-actions .fab{
+    width:56px; height:56px; border-radius:var(--radius-full);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; box-shadow:var(--shadow-4);
+    animation:floatBounce 2.6s ease-in-out infinite;
+    position:relative;
+  }
+  .sticky-actions .fab .icon{width:26px; height:26px;}
+  .sticky-actions .fab.fab-whatsapp{background:var(--green);}
+  .sticky-actions .fab.fab-whatsapp:hover{background:#117F3A;}
+  .sticky-actions .fab.fab-call{background:var(--red); animation-delay:.4s;}
+  .sticky-actions .fab.fab-call:hover{background:var(--red-dark);}
+  .sticky-actions .fab::after{
+    content:""; position:absolute; inset:0; border-radius:var(--radius-full);
+    box-shadow:0 0 0 0 rgba(22,163,74,0.45);
+    animation:pulseRing 2.2s ease-out infinite;
+    pointer-events:none;
+  }
+  .sticky-actions .fab.fab-call::after{box-shadow:0 0 0 0 rgba(249,115,22,0.45);}
+  @keyframes pulseRing{
+    0%{box-shadow:0 0 0 0 rgba(22,163,74,0.45);}
+    70%{box-shadow:0 0 0 14px rgba(22,163,74,0);}
+    100%{box-shadow:0 0 0 0 rgba(22,163,74,0);}
+  }
+  @media (max-width:760px){
+    .sticky-actions{right:14px; bottom:14px; gap:10px;}
+    .sticky-actions .fab{width:48px; height:48px;}
+    .sticky-actions .fab .icon{width:22px; height:22px;}
+  }
+
+  /* ===== HEADER ===== */
+  header{
+    background:var(--surface-0);
+    border-bottom:1px solid var(--surface-border);
+    position:sticky; top:0; z-index:50;
+  }
+  .header-inner{
+    max-width:1280px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 32px;
+  }
+  .logo{display:flex; align-items:center;}
+  .logo-img{height:46px; width:auto; display:block;}
+  nav.main-nav{display:flex; align-items:center; gap:22px;}
+  nav.main-nav > ul{display:flex; align-items:center; gap:18px;}
+  nav.main-nav a{
+    font-size:14.5px; font-weight:700; letter-spacing:0.4px;
+    color:var(--text-strong); text-transform:uppercase; position:relative; padding:6px 0;
+    display:flex; align-items:center; gap:4px; white-space:nowrap;
+  }
+  nav.main-nav li.active > a{color:var(--red);}
+  nav.main-nav a.accent{color:var(--red);}
+  nav.main-nav a:hover{color:var(--red);}
+  .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
+
+  /* dropdown */
+  .has-dropdown{position:relative;}
+  .has-dropdown:hover > a .caret{transform:rotate(180deg);}
+  .dropdown-menu{
+    position:absolute; top:100%; left:-18px; margin-top:14px;
+    background:var(--surface-0); min-width:220px; border-radius:var(--radius-md);
+    box-shadow:0 18px 40px -12px rgba(0,0,0,0.25); border:1px solid var(--surface-border);
+    padding:8px; opacity:0; visibility:hidden; transform:translateY(6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:60;
+  }
+  .has-dropdown:hover .dropdown-menu{
+    opacity:1; visibility:visible; transform:translateY(0);
+  }
+  .dropdown-menu::before{
+    content:""; position:absolute; top:-6px; left:28px;
+    width:12px; height:12px; background:var(--surface-0); border-left:1px solid var(--surface-border); border-top:1px solid var(--surface-border);
+    transform:rotate(45deg);
+  }
+  .dropdown-menu li{width:100%;}
+  .dropdown-menu a{
+    display:block; padding:10px 12px; font-size:13.5px; font-weight:700;
+    text-transform:none; letter-spacing:0.2px; color:var(--text-strong);
+    border-radius:var(--radius-sm); white-space:nowrap;
+  }
+  .dropdown-menu a:hover{background:var(--surface-2); color:var(--red);}
+  .call-btn{
+    background:var(--red); color:#fff; font-size:14px; font-weight:700;
+    letter-spacing:0.4px; padding:11px 22px; border-radius:var(--radius-sm);
+    display:flex; align-items:center; gap:8px; text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .call-btn:hover{background:var(--red-dark);}
+  .hamburger{
+    display:none; flex-direction:column; justify-content:center; gap:5px;
+    background:none; width:32px; height:32px; flex-shrink:0;
+  }
+  .hamburger span{
+    width:24px; height:2px; background:var(--text-strong); display:block;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ===== MOBILE NAV DRAWER ===== */
+  .mobile-nav{
+    display:none; background:var(--surface-0); border-top:1px solid var(--surface-border);
+  }
+  .mobile-nav.open{display:block;}
+  .mobile-nav > ul{padding:6px 20px 18px;}
+  .mobile-nav > ul > li{border-bottom:1px solid #EEF1F5;}
+  .mobile-nav > ul > li:last-child{border-bottom:none;}
+  .mobile-nav > ul > li > a{
+    display:flex; align-items:center; padding:14px 2px;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--text-strong);
+  }
+  .mobile-nav li.active > a{color:var(--red);}
+  .mobile-sub-toggle{
+    display:flex; align-items:center; justify-content:space-between; width:100%;
+    background:none; text-align:left; padding:14px 2px;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--text-strong); font-family:inherit;
+  }
+  .mobile-has-sub .caret{transition:transform .2s ease;}
+  .mobile-has-sub.open .caret{transform:rotate(180deg);}
+  .mobile-submenu{
+    display:none; padding-left:10px; padding-bottom:6px;
+  }
+  .mobile-has-sub.open .mobile-submenu{display:block;}
+  .mobile-submenu a{
+    display:block; padding:11px 2px; font-size:14px; font-weight:600;
+    text-transform:none; color:#555;
+  }
+  .mobile-submenu a:hover{color:var(--red);}
+
+  /* ===== SHARED BUTTONS / EYEBROW LABEL ===== */
+  .eyebrow{
+    color:var(--red); font-size:13.5px; font-weight:800; letter-spacing:3px;
+    margin-bottom:16px;
+  }
+  .btn{
+    display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:var(--radius-sm);
+  }
+  .btn-red{background:var(--red); color:#fff;}
+  .btn-red:hover{background:var(--red-dark);}
+  .btn-green{background:var(--green); color:#fff;}
+  .btn-green:hover{background:#117F3A;}
+
+  /* ===== RESPONSIVE (shared header) ===== */
+  /* Collapses to the mobile drawer below this width instead of wrapping the full nav. */
+  @media (max-width:1024px){
+    nav.main-nav > ul{display:none;}
+    .hamburger{display:flex;}
+    .call-btn{display:none;}
+  }
+  @media (max-width:760px){
+    .header-inner{padding:12px 20px;}
+    .logo-img{height:38px;}
+    .call-btn span.txt{display:none;}
+    .call-btn{padding:11px 14px;}
+    .btn{padding:12px 18px; font-size:13px;}
+  }
+  @media (max-width:420px){
+    .header-inner{padding:10px 16px;}
+    .logo-img{height:32px;}
+    .eyebrow{font-size:13.5px; letter-spacing:2px;}
+    .mobile-nav ul{padding:6px 16px 16px;}
+  }
+
+  /* Reduced motion / focus */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--red); outline-offset:2px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    background:#172539;
+    border-top:1px solid var(--line);
+    padding:64px 32px 0;
+  }
+  .footer-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:1.3fr 1fr 1fr 1.2fr 1fr; gap:40px;
+    padding-bottom:44px;
+  }
+  .footer-col .flogo{display:flex; align-items:center; margin-bottom:18px;}
+  .footer-logo-img{height:38px; width:auto; display:block;}
+  .footer-col p.about{color:var(--muted); font-size:14.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
+  .footer-social{display:flex; gap:10px;}
+  .footer-social a{
+    width:32px; height:32px; border-radius:var(--radius-full); background:var(--charcoal-2);
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line);
+  }
+  .footer-social a:hover{background:var(--red); border-color:var(--red);}
+
+  .fhead{
+    font-size:14.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+    color:#fff; margin-bottom:8px; position:relative; padding-bottom:12px;
+  }
+  .fhead::after{
+    content:""; position:absolute; left:0; bottom:0; width:100%; height:3px;
+    background:var(--red); border-radius:var(--radius-sm);
+  }
+  .flist{margin-top:20px;}
+  .flist li{margin-bottom:12px;}
+  .flist a{
+    font-size:14.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    transition:color .15s;
+  }
+  .flist a:hover{color:#fff;}
+  .flist a .arrow{color:var(--red); font-size:13px; font-weight:800;}
+
+  .fcontact{margin-top:20px;}
+  .fcontact li{
+    display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:var(--muted);
+    margin-bottom:16px; line-height:1.55;
+  }
+  .fcontact li svg{flex-shrink:0; margin-top:2px;}
+  .fcontact li a{color:var(--muted);}
+  .fcontact li a:hover{color:#fff;}
+
+  .fcallnow{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--red); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
+    margin-top:22px;
+  }
+  .fcallnow:hover{background:var(--red-dark);}
+  .fwhatsapp{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--green); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
+    margin-top:14px;
+  }
+  .fwhatsapp:hover{background:#117F3A;}
+
+  .footer-bottom{
+    border-top:1px solid var(--line);
+    padding:22px 0;
+    text-align:center;
+  }
+  .footer-bottom p{font-size:13.5px; color:var(--muted); letter-spacing:0.3px;}
+
+  @media (max-width:980px){
+    .footer-inner{grid-template-columns:1fr 1fr; gap:36px;}
+  }
+  @media (max-width:600px){
+    .footer-inner{grid-template-columns:1fr; gap:32px;}
+    footer{padding:48px 20px 0;}
+  }
+  @media (max-width:420px){
+    footer{padding:40px 16px 0;}
+    .footer-logo-img{height:32px;}
+    .fhead{font-size:13.5px;}
+  }
+
+  /* ===== PAGE BANNER ===== */
+  .page-banner{
+    position:relative;
+    background:linear-gradient(150deg, var(--charcoal-2) 0%, var(--ink) 100%);
+    overflow:hidden;
+    padding:var(--space-8) var(--space-6) 58px;
+    text-align:center;
+  }
+  .page-banner::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 40%, black, transparent);
+    pointer-events:none;
+  }
+  .page-banner-inner{position:relative; max-width:1280px; margin:0 auto;}
+  .page-banner .eyebrow{justify-content:center; display:flex;}
+  .page-banner h1{
+    font-size:var(--text-5xl); color:#fff; letter-spacing:0.4px; margin-bottom:16px;
+  }
+  .page-banner h1 .accent{color:var(--red);}
+  .page-banner-inner > p{color:var(--off); font-size:var(--text-base); line-height:1.75; max-width:620px; margin:0 auto 20px;}
+  .breadcrumb{
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;
+    font-weight:700;
+  }
+  .breadcrumb a{color:var(--off);}
+  .breadcrumb a:hover{color:var(--red);}
+  .breadcrumb .sep{color:var(--red); font-size:13.5px;}
+  .breadcrumb .current{color:var(--red);}
+
+  @media (max-width:760px){
+    .page-banner{padding:var(--space-7) var(--space-5) 40px;}
+    .page-banner h1{font-size:var(--text-3xl);}
+  }
+  @media (max-width:420px){
+    .page-banner{padding:36px 16px 32px;}
+    .breadcrumb{font-size:14px;}
+  }
+
+  /* ===== ABOUT PAGE: CTA ===== */
+  .about-cta-section{
+    position:relative; overflow:hidden;
+    background:linear-gradient(135deg, var(--charcoal-2) 0%, var(--ink) 100%);
+    padding:var(--space-8) var(--space-6); text-align:center;
+  }
+  .about-cta-section::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(ellipse 70% 80% at 50% 40%, black, transparent);
+  }
+  .about-cta-inner{position:relative; max-width:760px; margin:0 auto;}
+  .about-cta-inner h2{color:#fff; font-size:var(--text-3xl); margin-bottom:14px; letter-spacing:0.3px;}
+  .about-cta-inner p{color:var(--muted); font-size:14.5px; margin-bottom:16px; line-height:1.75;}
+  .about-cta-address{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    color:var(--off); font-size:13px; margin-bottom:28px; line-height:1.5; flex-wrap:wrap;
+  }
+  .about-cta-actions{display:flex; gap:14px; flex-wrap:wrap; justify-content:center;}
+
+  @media (max-width:600px){
+    .about-cta-section{padding:var(--space-7) var(--space-5);}
+    .about-cta-inner h2{font-size:var(--text-2xl);}
+  }
+
+  /* ===== GALLERY PAGE ===== */
+  .gallery-section{background:var(--surface-1); padding:60px 32px;}
+  .gallery-inner{max-width:1280px; margin:0 auto;}
+
+  .gallery-filter{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:12px;
+    margin-bottom:42px;
+  }
+  .filter-btn{
+    background:#fff; color:var(--text-strong); font-size:13.5px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:12px 22px;
+    border-radius:30px; border:1.5px solid var(--surface-border);
+    transition:background-color .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .filter-btn:hover{border-color:var(--red); color:var(--red);}
+  .filter-btn.active{background:var(--red); color:#fff; border-color:var(--red);}
+
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:22px;
+  }
+  .gallery-item{
+    position:relative; border-radius:var(--radius-lg); overflow:hidden; cursor:pointer;
+    aspect-ratio:4/3.4;
+    box-shadow:var(--shadow-3);
+    transition:transform .2s ease;
+  }
+  .gallery-item:hover{transform:translateY(-4px);}
+  .gallery-item img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .35s ease;
+  }
+  .gallery-item:hover img{transform:scale(1.06);}
+  .gallery-item.hidden{display:none;}
+
+  .gallery-overlay{
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(to top, rgba(10,20,15,0.88) 0%, rgba(10,20,15,0.15) 55%, transparent 100%);
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:18px 18px 16px;
+  }
+  .gallery-cat{
+    color:var(--red); font-size:13px; font-weight:800; text-transform:uppercase;
+    letter-spacing:0.5px; margin-bottom:5px;
+  }
+  .gallery-title{
+    color:#fff; font-size:13.5px; font-weight:700; letter-spacing:0.2px; line-height:1.3;
+  }
+  .gallery-zoom{
+    position:absolute; top:14px; right:14px; z-index:2;
+    width:34px; height:34px; border-radius:var(--radius-full);
+    background:rgba(255,255,255,0.18); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity .2s ease;
+  }
+  .gallery-item:hover .gallery-zoom{opacity:1;}
+
+  @media (max-width:1024px){
+    .gallery-grid{grid-template-columns:repeat(3, 1fr);}
+  }
+  @media (max-width:760px){
+    .gallery-section{padding:44px 20px;}
+    .gallery-grid{grid-template-columns:repeat(2, 1fr); gap:14px;}
+    .filter-btn{padding:10px 16px; font-size:14px;}
+  }
+  @media (max-width:460px){
+    .gallery-grid{grid-template-columns:1fr;}
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .gallery-lightbox{
+    position:fixed; inset:0; z-index:300; padding:24px;
+    background:rgba(8,16,12,0.94);
+    display:none; align-items:center; justify-content:center;
+  }
+  .gallery-lightbox.open{display:flex;}
+  .gallery-lightbox-inner{position:relative; max-width:880px; width:100%;}
+  .gallery-lightbox-inner img{
+    width:100%; max-height:76vh; object-fit:contain; border-radius:var(--radius-lg); display:block;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,0.6);
+  }
+  .gallery-lightbox-caption{
+    text-align:center; margin-top:16px;
+  }
+  .gallery-lightbox-caption .gallery-cat{margin-bottom:6px;}
+  .gallery-lightbox-caption .gallery-title{color:#fff; font-size:15px;}
+  .gallery-lightbox-close{
+    position:absolute; top:-46px; right:0; width:38px; height:38px; border-radius:var(--radius-full);
+    background:rgba(255,255,255,0.14); display:flex; align-items:center; justify-content:center;
+  }
+  .gallery-lightbox-close:hover{background:var(--red);}
+  .gallery-lightbox-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border-radius:var(--radius-full);
+    background:rgba(255,255,255,0.14); display:flex; align-items:center; justify-content:center;
+  }
+  .gallery-lightbox-nav:hover{background:var(--red);}
+  .gallery-lightbox-prev{left:-56px;}
+  .gallery-lightbox-next{right:-56px;}
+
+  @media (max-width:900px){
+    .gallery-lightbox-prev{left:6px;}
+    .gallery-lightbox-next{right:6px;}
+    .gallery-lightbox-close{top:6px; right:6px;}
+  }
+</style>
+
+
+
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <div class="eyebrow reveal">SEE OUR WORK</div>
+    <h1 class="display reveal">OUR <span class="accent">GALLERY</span></h1>
+    <p class="reveal">A real look inside our Uttara workshop — from LPG &amp; CNG conversions and hybrid battery diagnostics to detailing and everyday engine care.</p>
+    <div class="breadcrumb reveal">
+      <a href="index.html">Home</a>
+      <span class="sep">»</span>
+      <span class="current">Gallery</span>
+    </div>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <div class="gallery-inner">
+
+    <div class="gallery-filter" id="galleryFilter">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="workshop">Workshop</button>
+      <button class="filter-btn" data-filter="lpgcng">LPG &amp; CNG Conversion</button>
+      <button class="filter-btn" data-filter="carwash">Car Wash &amp; Detailing</button>
+      <button class="filter-btn" data-filter="hybrid">Hybrid Service</button>
+      <button class="filter-btn" data-filter="engine">Engine &amp; Diagnostics</button>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid">
+
+      <div class="gallery-item" data-category="workshop" data-img="img/hero-background.jpg" data-title="Our Service Workshop" data-cat-label="Workshop">
+        <img src="img/hero-background.jpg" alt="Our Service Workshop">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Workshop</div>
+          <div class="gallery-title">Our Service Workshop</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="lpgcng" data-img="img/lpg-and-cng.jpg" data-title="LPG Conversion Kit Installation" data-cat-label="LPG & CNG Conversion">
+        <img src="img/lpg-and-cng.jpg" alt="LPG Conversion Kit Installation">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">LPG &amp; CNG Conversion</div>
+          <div class="gallery-title">LPG Conversion Kit Installation</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="carwash" data-img="img/car-wash.jpg" data-title="Premium Car Wash" data-cat-label="Car Wash & Detailing">
+        <img src="img/car-wash.jpg" alt="Premium Car Wash">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Car Wash &amp; Detailing</div>
+          <div class="gallery-title">Premium Car Wash</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="hybrid" data-img="img/hybrid-car.jpg" data-title="Hybrid Vehicle Bay" data-cat-label="Hybrid Service">
+        <img src="img/hybrid-car.jpg" alt="Hybrid Vehicle Bay">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Hybrid Service</div>
+          <div class="gallery-title">Hybrid Vehicle Bay</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/evn-1.jpg" data-title="Car AC Service" data-cat-label="Engine & Diagnostics">
+        <img src="img/evn-1.jpg" alt="Car AC Service">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">Car AC Service</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="workshop" data-img="img/features-car.jpg" data-title="Quality Service in Progress" data-cat-label="Workshop">
+        <img src="img/features-car.jpg" alt="Quality Service in Progress">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Workshop</div>
+          <div class="gallery-title">Quality Service in Progress</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="lpgcng" data-img="img/lpg.jpg" data-title="CNG Cylinder Fitting" data-cat-label="LPG & CNG Conversion">
+        <img src="img/lpg.jpg" alt="CNG Cylinder Fitting">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">LPG &amp; CNG Conversion</div>
+          <div class="gallery-title">CNG Cylinder Fitting</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/evn-2.jpg" data-title="Oil &amp; Filter Change" data-cat-label="Engine & Diagnostics">
+        <img src="img/evn-2.jpg" alt="Oil & Filter Change">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">Oil &amp; Filter Change</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="carwash" data-img="img/Car-Wash-detailing.jpg" data-title="Interior Detailing" data-cat-label="Car Wash & Detailing">
+        <img src="img/Car-Wash-detailing.jpg" alt="Interior Detailing">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Car Wash &amp; Detailing</div>
+          <div class="gallery-title">Interior Detailing</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="workshop" data-img="img/Expert-Technicians.jpg" data-title="Our Expert Technicians" data-cat-label="Workshop">
+        <img src="img/Expert-Technicians.jpg" alt="Our Expert Technicians">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Workshop</div>
+          <div class="gallery-title">Our Expert Technicians</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/evn-3.jpg" data-title="Expert Advice Session" data-cat-label="Engine & Diagnostics">
+        <img src="img/evn-3.jpg" alt="Expert Advice Session">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">Expert Advice Session</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="hybrid" data-img="img/latest-3.jpg" data-title="Hybrid Battery Diagnostics" data-cat-label="Hybrid Service">
+        <img src="img/latest-3.jpg" alt="Hybrid Battery Diagnostics">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Hybrid Service</div>
+          <div class="gallery-title">Hybrid Battery Diagnostics</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/evn-4.jpg" data-title="Full Vehicle Inspection" data-cat-label="Engine & Diagnostics">
+        <img src="img/evn-4.jpg" alt="Full Vehicle Inspection">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">Full Vehicle Inspection</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="lpgcng" data-img="img/latest-1.jpg" data-title="LPG vs CNG Consultation" data-cat-label="LPG & CNG Conversion">
+        <img src="img/latest-1.jpg" alt="LPG vs CNG Consultation">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">LPG &amp; CNG Conversion</div>
+          <div class="gallery-title">LPG vs CNG Consultation</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/car-servicing.jpg" data-title="Transparent Price Quote" data-cat-label="Engine & Diagnostics">
+        <img src="img/car-servicing.jpg" alt="Transparent Price Quote">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">Transparent Price Quote</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/Emergency-Roadside-Assistance.jpg" data-title="24x7 Roadside Assistance" data-cat-label="Engine & Diagnostics">
+        <img src="img/Emergency-Roadside-Assistance.jpg" alt="24x7 Roadside Assistance">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">24x7 Roadside Assistance</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="lpgcng" data-img="img/latest-2.jpg" data-title="Conversion Kit Testing" data-cat-label="LPG & CNG Conversion">
+        <img src="img/latest-2.jpg" alt="Conversion Kit Testing">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">LPG &amp; CNG Conversion</div>
+          <div class="gallery-title">Conversion Kit Testing</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+      <div class="gallery-item" data-category="engine" data-img="img/latest-4.jpg" data-title="Brake System Check" data-cat-label="Engine & Diagnostics">
+        <img src="img/latest-4.jpg" alt="Brake System Check">
+        <div class="gallery-overlay">
+          <div class="gallery-cat">Engine &amp; Diagnostics</div>
+          <div class="gallery-title">Brake System Check</div>
+        </div>
+        <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="gallery-lightbox" id="galleryLightbox">
+  <div class="gallery-lightbox-inner">
+    <div class="gallery-lightbox-close" id="lightboxClose">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="5" y1="5" x2="19" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="5" x2="5" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="gallery-lightbox-nav gallery-lightbox-prev" id="lightboxPrev">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="gallery-lightbox-nav gallery-lightbox-next" id="lightboxNext">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <img src="" alt="" id="lightboxImage">
+    <div class="gallery-lightbox-caption">
+      <div class="gallery-cat" id="lightboxCat"></div>
+      <div class="gallery-title" id="lightboxTitle"></div>
+    </div>
+  </div>
+</div>
+
+<section class="about-cta-section" id="contact">
+  <div class="about-cta-inner">
+    <h2 class="reveal">Like What You See?</h2>
+    <p class="reveal">Bring your car to Taqwa Automobile and experience the same quality of work in person.</p>
+    <div class="about-cta-address reveal">
+      <svg class="icon" width="15" height="15" style="color:#F97316"><use href="#icon-location"/></svg>
+      <span>Sector # 15, Block # C, Road # 3/A, Plot # 40, Diabari, Uttara, Dhaka.</span>
+    </div>
+    <div class="about-cta-actions reveal">
+      <a href="tel:+8801854226757" class="btn btn-red">
+        <svg class="icon" width="14" height="14"><use href="#icon-phone"/></svg>
+        Call Now
+      </a>
+      <a href="https://wa.me/8801854226757" class="btn btn-green">
+        <svg class="icon" width="14" height="14"><use href="#icon-whatsapp"/></svg>
+        WhatsApp Us
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  // ===== GALLERY FILTER =====
+  (function(){
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var items = document.querySelectorAll('.gallery-item');
+
+    filterBtns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        filterBtns.forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        var filter = btn.getAttribute('data-filter');
+
+        items.forEach(function(item){
+          if(filter === 'all' || item.getAttribute('data-category') === filter){
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      });
+    });
+  })();
+
+  // ===== GALLERY LIGHTBOX =====
+  (function(){
+    var items = Array.prototype.slice.call(document.querySelectorAll('.gallery-item'));
+    var lightbox = document.getElementById('galleryLightbox');
+    var lightboxImage = document.getElementById('lightboxImage');
+    var lightboxTitle = document.getElementById('lightboxTitle');
+    var lightboxCat = document.getElementById('lightboxCat');
+    var closeBtn = document.getElementById('lightboxClose');
+    var prevBtn = document.getElementById('lightboxPrev');
+    var nextBtn = document.getElementById('lightboxNext');
+    var currentIndex = 0;
+
+    function visibleItems(){
+      return items.filter(function(item){ return !item.classList.contains('hidden'); });
+    }
+
+    function openLightbox(index){
+      var visible = visibleItems();
+      if(visible.length === 0) return;
+      currentIndex = (index + visible.length) % visible.length;
+      var item = visible[currentIndex];
+      lightboxImage.setAttribute('src', item.getAttribute('data-img'));
+      lightboxImage.setAttribute('alt', item.getAttribute('data-title'));
+      lightboxTitle.textContent = item.getAttribute('data-title');
+      lightboxCat.textContent = item.getAttribute('data-cat-label');
+      lightbox.classList.add('open');
+    }
+
+    items.forEach(function(item, i){
+      item.addEventListener('click', function(){
+        var visible = visibleItems();
+        var idx = visible.indexOf(item);
+        openLightbox(idx);
+      });
+    });
+
+    closeBtn.addEventListener('click', function(){
+      lightbox.classList.remove('open');
+    });
+
+    lightbox.addEventListener('click', function(e){
+      if(e.target === lightbox){
+        lightbox.classList.remove('open');
+      }
+    });
+
+    prevBtn.addEventListener('click', function(){
+      openLightbox(currentIndex - 1);
+    });
+    nextBtn.addEventListener('click', function(){
+      openLightbox(currentIndex + 1);
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(!lightbox.classList.contains('open')) return;
+      if(e.key === 'Escape') lightbox.classList.remove('open');
+      if(e.key === 'ArrowLeft') openLightbox(currentIndex - 1);
+      if(e.key === 'ArrowRight') openLightbox(currentIndex + 1);
+    });
+  })();
+</script>
+</Layout>

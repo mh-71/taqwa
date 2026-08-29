@@ -1,0 +1,209 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import IconSprite from '../components/IconSprite.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path relative to site root used for canonical/OG URLs, e.g. "/", "about.html" */
+  path?: string;
+  ogImage?: string;
+  themeColor?: string;
+  /** Which top-level nav item to highlight - see Header.astro for valid values */
+  current?: string;
+  /** Optional Schema.org JSON-LD object; a sensible AutoRepair default is used if omitted */
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description,
+  path = '',
+  ogImage = '/img/hero-background.jpg',
+  themeColor = '#101318',
+  current = '',
+  jsonLd,
+} = Astro.props;
+
+const siteUrl = 'https://taqwaautomobile.com';
+const canonicalUrl = path ? `${siteUrl}/${path}` : `${siteUrl}/`;
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+
+const defaultJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AutoRepair',
+  name: 'Taqwa Automobile Service Center',
+  image: `${siteUrl}/img/logo.png`,
+  '@id': siteUrl,
+  url: canonicalUrl,
+  telephone: '+8801854226757',
+  email: 'mosharrafhossen090@gmail.com',
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Sector # 15, Block # C, Road # 3/A, Plot # 40, Diabari',
+    addressLocality: 'Uttara',
+    addressRegion: 'Dhaka',
+    addressCountry: 'BD',
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+      opens: '09:00',
+      closes: '20:00',
+    },
+  ],
+  sameAs: [
+    'https://www.facebook.com/',
+    'https://www.youtube.com/',
+    'https://www.instagram.com/',
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    reviewCount: '186',
+  },
+};
+
+const finalJsonLd = jsonLd ?? defaultJsonLd;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonicalUrl}>
+
+<!-- ===== Open Graph / Social sharing ===== -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taqwa Automobile Service Center">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonicalUrl}>
+<meta property="og:image" content={ogImageUrl}>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={ogImageUrl}>
+<meta name="theme-color" content={themeColor}>
+
+<!-- ===== Google Fonts: Poppins (display) + Inter (body) ===== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- ===== Schema.org structured data (SEO) ===== -->
+<script type="application/ld+json" set:html={JSON.stringify(finalJsonLd)} />
+</head>
+<body>
+
+<IconSprite />
+<Header current={current} />
+
+<slot />
+
+<Footer />
+
+<script>
+  var servicesToggleBtn = document.getElementById('servicesToggleBtn');
+  var servicesToggleLabel = document.getElementById('servicesToggleLabel');
+  var extraServices = document.getElementById('extraServices');
+
+  if (servicesToggleBtn && extraServices) {
+    servicesToggleBtn.addEventListener('click', function(){
+      var isShown = extraServices.classList.toggle('show');
+      servicesToggleBtn.classList.toggle('expanded', isShown);
+      if (servicesToggleLabel) servicesToggleLabel.textContent = isShown ? 'View Less Services' : 'View More Services';
+      if(!isShown){
+        servicesToggleBtn.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+  }
+
+  var allFaqItems = document.querySelectorAll('.faq-item');
+  document.querySelectorAll('.faq-question').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.closest('.faq-item');
+      var isOpen = item.classList.contains('open');
+      allFaqItems.forEach(function(other){ other.classList.remove('open'); });
+      if(!isOpen){
+        item.classList.add('open');
+      }
+    });
+  });
+
+  var hamburgerBtn = document.getElementById('hamburgerBtn');
+  var mobileNav = document.getElementById('mobileNav');
+  var servicesToggle = document.getElementById('mobileServicesToggle');
+  var servicesItem = document.getElementById('mobileServicesItem');
+
+  if (hamburgerBtn && mobileNav) {
+    hamburgerBtn.addEventListener('click', function(){
+      var isOpen = mobileNav.classList.toggle('open');
+      hamburgerBtn.classList.toggle('open', isOpen);
+      hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    if (servicesToggle && servicesItem) {
+      servicesToggle.addEventListener('click', function(){
+        var isOpen = servicesItem.classList.toggle('open');
+        servicesToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
+
+    // close the mobile menu after tapping a link (except the services toggle itself)
+    mobileNav.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        mobileNav.classList.remove('open');
+        hamburgerBtn.classList.remove('open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // ===== SCROLL-REVEAL MICRO-ANIMATIONS =====
+  (function(){
+    // Auto-tag common repeating components so every card/section fades in on scroll.
+    // This list is the union of every page's reveal targets (originally each page
+    // duplicated its own copy of this script with a page-specific selector list).
+    var autoSelectors = '.service-card, .feat-card, .env-card, .news-card, .wc-card, .testimonial-card, .faq-item, .gc-card, .hybrid-item, .gs-item, .team-card, .journey-item, .stat-card, .hf-item, .blog-card, .sidebar-widget, .sidebar-cta, .contact-info-card, .hp-item';
+    document.querySelectorAll(autoSelectors).forEach(function(el){
+      el.classList.add('reveal');
+    });
+
+    var revealEls = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)){
+      revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry, i){
+        if (entry.isIntersecting){
+          var el = entry.target;
+          var delay = (i % 4) * 90;
+          el.style.transitionDelay = delay + 'ms';
+          el.classList.add('is-visible');
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function(el){ io.observe(el); });
+  })();
+
+  // ===== LAZY-LOAD FADE-IN FALLBACK (covers cached / already-complete images) =====
+  (function(){
+    document.querySelectorAll('img.lazy-fade').forEach(function(img){
+      if (img.complete && img.naturalWidth > 0){
+        img.classList.add('is-loaded');
+      }
+    });
+  })();
+</script>
+</body>
+</html>

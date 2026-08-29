@@ -1,0 +1,929 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Blog - Taqwa Automobile Service Center"
+  description="Car care tips, LPG & CNG conversion advice, hybrid maintenance guides and news from Taqwa Automobile Service Center in Uttara, Dhaka."
+  path="blog.html"
+  current="blog"
+>
+
+<style>
+  :root{
+    /* ===== Brand colors ===== */
+    --red:#F97316;
+    --red-dark:#CE5805;
+    --green:#16A34A;
+    --ink:#101318;
+    --charcoal:#162336;
+    --charcoal-2:#1E304A;
+    --line:#293C58;
+    --paper:#F8FAFC;
+    --muted:#9A9AA0;
+    --off:#E9E9EC;
+
+    /* ===== Surface tokens (used by dark/light theme toggle) ===== */
+    --surface-0:#F8FAFC;   /* base page / header */
+    --surface-1:#F1F3F7;   /* alternate section tint */
+    --surface-2:#EEF1F6;   /* deeper alternate tint */
+    --surface-3:#EBEEF3;   /* trust-strip / feature-strip fill */
+    --text-strong:#101318; /* headings on light surfaces */
+    --text-muted:#5a5a5e;  /* paragraphs on light surfaces */
+    --card-bg:#EFF2F6;     /* card body fill on light surfaces */
+    --surface-border:#EAEDF2; /* hairline borders on light surfaces */
+
+    /* ===== Typography scale ===== */
+    --font-display:'Poppins', "Arial Narrow", Arial, sans-serif;
+    --font-body:'Inter', "Segoe UI", Arial, sans-serif;
+    /* Fluid via clamp(): scales smoothly between a 375px and 1440px viewport
+       instead of jumping at breakpoints. Layout still changes at @media steps;
+       only type size and spacing flow continuously. */
+    --text-xs:13px;
+    --text-sm:14px;
+    --text-base:15px;
+    --text-md:16px;
+    --text-lg:clamp(15px, 14.6px + 0.15vw, 16px);
+    --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
+    --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
+    --text-3xl:clamp(20px, 17.7px + 0.9vw, 24px);
+    --text-4xl:clamp(24px, 20.2px + 1.5vw, 30px);
+    --text-5xl:clamp(28px, 21.9px + 2.5vw, 40px);
+    --text-6xl:clamp(32px, 23.4px + 3.4vw, 52px);
+
+    /* ===== Spacing scale (8pt grid) ===== */
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:clamp(14px, 13.4px + 0.24vw, 16px);
+    --space-5:clamp(18px, 16.5px + 0.6vw, 24px);
+    --space-6:clamp(22px, 19.7px + 0.9vw, 32px);
+    --space-7:clamp(32px, 28.1px + 1.5vw, 48px);
+    --space-8:clamp(40px, 33.8px + 2.4vw, 64px);
+
+    /* ===== Radius scale ===== */
+    --radius-sm:3px;
+    --radius-md:4px;
+    --radius-lg:6px;
+    --radius-xl:10px;
+    --radius-full:50%;
+
+    /* ===== Elevation / shadow scale ===== */
+    --shadow-1:0 2px 6px rgba(0,0,0,0.08);
+    --shadow-2:0 8px 20px -8px rgba(0,0,0,0.18);
+    --shadow-3:0 14px 34px -18px rgba(0,0,0,0.3);
+    --shadow-4:0 20px 50px -20px rgba(0,0,0,0.25);
+    --shadow-5:0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: var(--font-body);
+    background:var(--surface-1);
+    color:var(--off);
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{
+    font-family: var(--font-display);
+    font-weight:800;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer; border:none;}
+
+  /* ===== ICON SPRITE UTILITY ===== */
+  .icon{width:1em; height:1em; display:inline-block; vertical-align:-0.125em; flex-shrink:0;}
+
+  /* ===== SCROLL-REVEAL MICRO-ANIMATIONS ===== */
+  @keyframes fadeInUp{
+    from{opacity:0; transform:translateY(28px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes floatBounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-6px);}
+  }
+  @keyframes shimmer{
+    0%{background-position:100% 0;}
+    100%{background-position:0 0;}
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity, transform;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .reveal.is-visible{opacity:1; transform:none; transition:none;}
+    .floatBounce, .sticky-actions .fab{animation:none !important;}
+  }
+
+  /* ===== LAZY-LOAD FADE-IN (blur-up placeholder) ===== */
+  .lazy-fade{opacity:0; transition:opacity .5s ease;}
+  .lazy-fade.is-loaded{opacity:1;}
+
+  /* ===== STICKY FLOATING WHATSAPP / CALL BUTTONS ===== */
+  .sticky-actions{
+    position:fixed; right:20px; bottom:20px; z-index:200;
+    display:flex; flex-direction:column; align-items:flex-end; gap:12px;
+  }
+  .sticky-actions .fab{
+    width:56px; height:56px; border-radius:var(--radius-full);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; box-shadow:var(--shadow-4);
+    animation:floatBounce 2.6s ease-in-out infinite;
+    position:relative;
+  }
+  .sticky-actions .fab .icon{width:26px; height:26px;}
+  .sticky-actions .fab.fab-whatsapp{background:var(--green);}
+  .sticky-actions .fab.fab-whatsapp:hover{background:#117F3A;}
+  .sticky-actions .fab.fab-call{background:var(--red); animation-delay:.4s;}
+  .sticky-actions .fab.fab-call:hover{background:var(--red-dark);}
+  .sticky-actions .fab::after{
+    content:""; position:absolute; inset:0; border-radius:var(--radius-full);
+    box-shadow:0 0 0 0 rgba(22,163,74,0.45);
+    animation:pulseRing 2.2s ease-out infinite;
+    pointer-events:none;
+  }
+  .sticky-actions .fab.fab-call::after{box-shadow:0 0 0 0 rgba(249,115,22,0.45);}
+  @keyframes pulseRing{
+    0%{box-shadow:0 0 0 0 rgba(22,163,74,0.45);}
+    70%{box-shadow:0 0 0 14px rgba(22,163,74,0);}
+    100%{box-shadow:0 0 0 0 rgba(22,163,74,0);}
+  }
+  @media (max-width:760px){
+    .sticky-actions{right:14px; bottom:14px; gap:10px;}
+    .sticky-actions .fab{width:48px; height:48px;}
+    .sticky-actions .fab .icon{width:22px; height:22px;}
+  }
+
+  /* ===== HEADER ===== */
+  header{
+    background:var(--surface-0);
+    border-bottom:1px solid var(--surface-border);
+    position:sticky; top:0; z-index:50;
+  }
+  .header-inner{
+    max-width:1280px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 32px;
+  }
+  .logo{display:flex; align-items:center;}
+  .logo-img{height:46px; width:auto; display:block;}
+  nav.main-nav{display:flex; align-items:center; gap:22px;}
+  nav.main-nav > ul{display:flex; align-items:center; gap:18px;}
+  nav.main-nav a{
+    font-size:14.5px; font-weight:700; letter-spacing:0.4px;
+    color:var(--text-strong); text-transform:uppercase; position:relative; padding:6px 0;
+    display:flex; align-items:center; gap:4px; white-space:nowrap;
+  }
+  nav.main-nav li.active > a{color:var(--red);}
+  nav.main-nav a.accent{color:var(--red);}
+  nav.main-nav a:hover{color:var(--red);}
+  .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
+
+  /* dropdown */
+  .has-dropdown{position:relative;}
+  .has-dropdown:hover > a .caret{transform:rotate(180deg);}
+  .dropdown-menu{
+    position:absolute; top:100%; left:-18px; margin-top:14px;
+    background:var(--surface-0); min-width:220px; border-radius:var(--radius-md);
+    box-shadow:0 18px 40px -12px rgba(0,0,0,0.25); border:1px solid var(--surface-border);
+    padding:8px; opacity:0; visibility:hidden; transform:translateY(6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:60;
+  }
+  .has-dropdown:hover .dropdown-menu{
+    opacity:1; visibility:visible; transform:translateY(0);
+  }
+  .dropdown-menu::before{
+    content:""; position:absolute; top:-6px; left:28px;
+    width:12px; height:12px; background:var(--surface-0); border-left:1px solid var(--surface-border); border-top:1px solid var(--surface-border);
+    transform:rotate(45deg);
+  }
+  .dropdown-menu li{width:100%;}
+  .dropdown-menu a{
+    display:block; padding:10px 12px; font-size:13.5px; font-weight:700;
+    text-transform:none; letter-spacing:0.2px; color:var(--text-strong);
+    border-radius:var(--radius-sm); white-space:nowrap;
+  }
+  .dropdown-menu a:hover{background:var(--surface-2); color:var(--red);}
+  .call-btn{
+    background:var(--red); color:#fff; font-size:14px; font-weight:700;
+    letter-spacing:0.4px; padding:11px 22px; border-radius:var(--radius-sm);
+    display:flex; align-items:center; gap:8px; text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .call-btn:hover{background:var(--red-dark);}
+  .hamburger{
+    display:none; flex-direction:column; justify-content:center; gap:5px;
+    background:none; width:32px; height:32px; flex-shrink:0;
+  }
+  .hamburger span{
+    width:24px; height:2px; background:var(--text-strong); display:block;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ===== MOBILE NAV DRAWER ===== */
+  .mobile-nav{
+    display:none; background:var(--surface-0); border-top:1px solid var(--surface-border);
+  }
+  .mobile-nav.open{display:block;}
+  .mobile-nav > ul{padding:6px 20px 18px;}
+  .mobile-nav > ul > li{border-bottom:1px solid #EEF1F5;}
+  .mobile-nav > ul > li:last-child{border-bottom:none;}
+  .mobile-nav > ul > li > a{
+    display:flex; align-items:center; padding:14px 2px;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--text-strong);
+  }
+  .mobile-nav li.active > a{color:var(--red);}
+  .mobile-sub-toggle{
+    display:flex; align-items:center; justify-content:space-between; width:100%;
+    background:none; text-align:left; padding:14px 2px;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--text-strong); font-family:inherit;
+  }
+  .mobile-has-sub .caret{transition:transform .2s ease;}
+  .mobile-has-sub.open .caret{transform:rotate(180deg);}
+  .mobile-submenu{
+    display:none; padding-left:10px; padding-bottom:6px;
+  }
+  .mobile-has-sub.open .mobile-submenu{display:block;}
+  .mobile-submenu a{
+    display:block; padding:11px 2px; font-size:14px; font-weight:600;
+    text-transform:none; color:#555;
+  }
+  .mobile-submenu a:hover{color:var(--red);}
+
+  /* ===== SHARED BUTTONS / EYEBROW LABEL ===== */
+  .eyebrow{
+    color:var(--red); font-size:13.5px; font-weight:800; letter-spacing:3px;
+    margin-bottom:16px;
+  }
+  .btn{
+    display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:var(--radius-sm);
+  }
+  .btn-red{background:var(--red); color:#fff;}
+  .btn-red:hover{background:var(--red-dark);}
+  .btn-green{background:var(--green); color:#fff;}
+  .btn-green:hover{background:#117F3A;}
+
+  /* ===== RESPONSIVE (shared header) ===== */
+  /* Collapses to the mobile drawer below this width instead of wrapping the full nav. */
+  @media (max-width:1024px){
+    nav.main-nav > ul{display:none;}
+    .hamburger{display:flex;}
+    .call-btn{display:none;}
+  }
+  @media (max-width:760px){
+    .header-inner{padding:12px 20px;}
+    .logo-img{height:38px;}
+    .call-btn span.txt{display:none;}
+    .call-btn{padding:11px 14px;}
+    .btn{padding:12px 18px; font-size:13px;}
+  }
+  @media (max-width:420px){
+    .header-inner{padding:10px 16px;}
+    .logo-img{height:32px;}
+    .eyebrow{font-size:13.5px; letter-spacing:2px;}
+    .mobile-nav ul{padding:6px 16px 16px;}
+  }
+
+  /* Reduced motion / focus */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--red); outline-offset:2px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    background:#172539;
+    border-top:1px solid var(--line);
+    padding:64px 32px 0;
+  }
+  .footer-inner{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:1.3fr 1fr 1fr 1.2fr 1fr; gap:40px;
+    padding-bottom:44px;
+  }
+  .footer-col .flogo{display:flex; align-items:center; margin-bottom:18px;}
+  .footer-logo-img{height:38px; width:auto; display:block;}
+  .footer-col p.about{color:var(--muted); font-size:14.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
+  .footer-social{display:flex; gap:10px;}
+  .footer-social a{
+    width:32px; height:32px; border-radius:var(--radius-full); background:var(--charcoal-2);
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line);
+  }
+  .footer-social a:hover{background:var(--red); border-color:var(--red);}
+
+  .fhead{
+    font-size:14.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+    color:#fff; margin-bottom:8px; position:relative; padding-bottom:12px;
+  }
+  .fhead::after{
+    content:""; position:absolute; left:0; bottom:0; width:100%; height:3px;
+    background:var(--red); border-radius:var(--radius-sm);
+  }
+  .flist{margin-top:20px;}
+  .flist li{margin-bottom:12px;}
+  .flist a{
+    font-size:14.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    transition:color .15s;
+  }
+  .flist a:hover{color:#fff;}
+  .flist a .arrow{color:var(--red); font-size:13px; font-weight:800;}
+
+  .fcontact{margin-top:20px;}
+  .fcontact li{
+    display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:var(--muted);
+    margin-bottom:16px; line-height:1.55;
+  }
+  .fcontact li svg{flex-shrink:0; margin-top:2px;}
+  .fcontact li a{color:var(--muted);}
+  .fcontact li a:hover{color:#fff;}
+
+  .fcallnow{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--red); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
+    margin-top:22px;
+  }
+  .fcallnow:hover{background:var(--red-dark);}
+  .fwhatsapp{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--green); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
+    margin-top:14px;
+  }
+  .fwhatsapp:hover{background:#117F3A;}
+
+  .footer-bottom{
+    border-top:1px solid var(--line);
+    padding:22px 0;
+    text-align:center;
+  }
+  .footer-bottom p{font-size:13.5px; color:var(--muted); letter-spacing:0.3px;}
+
+  @media (max-width:980px){
+    .footer-inner{grid-template-columns:1fr 1fr; gap:36px;}
+  }
+  @media (max-width:600px){
+    .footer-inner{grid-template-columns:1fr; gap:32px;}
+    footer{padding:48px 20px 0;}
+  }
+  @media (max-width:420px){
+    footer{padding:40px 16px 0;}
+    .footer-logo-img{height:32px;}
+    .fhead{font-size:13.5px;}
+  }
+
+  /* ===== PAGE BANNER ===== */
+  .page-banner{
+    position:relative;
+    background:linear-gradient(150deg, var(--charcoal-2) 0%, var(--ink) 100%);
+    overflow:hidden;
+    padding:var(--space-8) var(--space-6) 58px;
+    text-align:center;
+  }
+  .page-banner::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 40%, black, transparent);
+    pointer-events:none;
+  }
+  .page-banner-inner{position:relative; max-width:1280px; margin:0 auto;}
+  .page-banner .eyebrow{justify-content:center; display:flex;}
+  .page-banner h1{
+    font-size:var(--text-5xl); color:#fff; letter-spacing:0.4px; margin-bottom:16px;
+  }
+  .page-banner h1 .accent{color:var(--red);}
+  .page-banner-inner > p{color:var(--off); font-size:var(--text-base); line-height:1.75; max-width:620px; margin:0 auto 20px;}
+  .breadcrumb{
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;
+    font-weight:700;
+  }
+  .breadcrumb a{color:var(--off);}
+  .breadcrumb a:hover{color:var(--red);}
+  .breadcrumb .sep{color:var(--red); font-size:13.5px;}
+  .breadcrumb .current{color:var(--red);}
+
+  @media (max-width:760px){
+    .page-banner{padding:var(--space-7) var(--space-5) 40px;}
+    .page-banner h1{font-size:var(--text-3xl);}
+  }
+  @media (max-width:420px){
+    .page-banner{padding:36px 16px 32px;}
+    .breadcrumb{font-size:14px;}
+  }
+
+  /* ===== BLOG PAGE ===== */
+  .blog-section{background:var(--surface-1); padding:60px 32px;}
+  .blog-layout{
+    max-width:1280px; margin:0 auto;
+    display:grid; grid-template-columns:2fr 1fr; gap:48px; align-items:start;
+  }
+
+  .blog-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:28px;}
+  .extra-posts{display:none;}
+  .extra-posts.show{display:contents;}
+
+  .blog-card{
+    background:#fff; border-radius:var(--radius-lg); overflow:hidden;
+    box-shadow:var(--shadow-3);
+    display:flex; flex-direction:column;
+  }
+  .blog-card-image{position:relative; aspect-ratio:16/10.5; overflow:hidden; flex-shrink:0;}
+  .blog-card-image img{width:100%; height:100%; object-fit:cover; display:block;}
+  .blog-card-cat{
+    position:absolute; left:14px; top:14px; z-index:1;
+    background:var(--red); color:#fff; font-size:13px; font-weight:800;
+    text-transform:uppercase; letter-spacing:0.4px; padding:6px 12px; border-radius:var(--radius-sm);
+  }
+  .blog-card-body{padding:22px 22px 24px; display:flex; flex-direction:column; flex:1;}
+  .blog-card-date{
+    color:var(--muted); font-size:14px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;
+  }
+  .blog-card-body h3{font-size:16px; color:var(--text-strong); line-height:1.35; margin-bottom:10px;}
+  .blog-card-body p{color:var(--text-muted); font-size:13px; line-height:1.7; margin-bottom:16px; flex:1;}
+  .blog-read-more{
+    color:var(--red); font-size:13px; font-weight:800; letter-spacing:0.4px;
+    text-transform:uppercase; display:inline-flex; align-items:center; gap:6px;
+  }
+  .blog-read-more:hover{color:var(--red-dark);}
+  .blog-read-more svg{width:14px; height:14px; transition:transform .2s ease;}
+  .blog-read-more:hover svg{transform:translateX(4px);}
+
+  .blog-loadmore-wrap{text-align:center; margin-top:40px;}
+  .load-more-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:800;
+    letter-spacing:0.5px; text-transform:uppercase; padding:14px 30px; border-radius:var(--radius-sm);
+  }
+  .load-more-btn:hover{background:var(--red);}
+  .load-more-btn .chev{transition:transform .2s ease;}
+  .load-more-btn.expanded .chev{transform:rotate(180deg);}
+
+  /* ---- sidebar ---- */
+  .blog-sidebar{display:flex; flex-direction:column; gap:26px;}
+  .sidebar-widget{
+    background:#fff; border-radius:var(--radius-lg); padding:26px 24px;
+    box-shadow:var(--shadow-3);
+  }
+  .sidebar-widget h4{
+    font-size:14.5px; color:var(--text-strong); text-transform:uppercase; letter-spacing:0.4px;
+    margin-bottom:18px; padding-bottom:14px; position:relative;
+  }
+  .sidebar-widget h4::after{
+    content:""; position:absolute; left:0; bottom:0; width:36px; height:3px;
+    background:var(--red); border-radius:var(--radius-sm);
+  }
+
+  .search-box{display:flex; border:1.5px solid var(--surface-border); border-radius:var(--radius-md); overflow:hidden;}
+  .search-box input{
+    flex:1; border:none; padding:12px 14px; font-size:13px; font-family:inherit; color:var(--text-strong);
+  }
+  .search-box input:focus{outline:none;}
+  .search-box button{
+    background:var(--red); color:#fff; padding:0 16px; display:flex;
+    align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .search-box button:hover{background:var(--red-dark);}
+
+  .cat-list li{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:11px 0; border-bottom:1px solid var(--surface-border); font-size:13.5px;
+  }
+  .cat-list li:last-child{border-bottom:none; padding-bottom:0;}
+  .cat-list li a{color:#555;}
+  .cat-list li a:hover{color:var(--red);}
+  .cat-list li span{
+    color:var(--red); font-weight:800; font-size:14px;
+    background:var(--surface-2); padding:2px 9px; border-radius:20px;
+  }
+
+  .recent-post{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--surface-border);}
+  .recent-post:first-child{padding-top:0;}
+  .recent-post:last-child{border-bottom:none; padding-bottom:0;}
+  .recent-post img{
+    width:64px; height:64px; border-radius:var(--radius-md); object-fit:cover; flex-shrink:0;
+  }
+  .recent-post-info h5{font-size:13.5px; color:var(--text-strong); line-height:1.4; margin-bottom:6px; font-weight:700;}
+  .recent-post-info span{font-size:13.5px; color:var(--muted);}
+
+  .tag-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag-list a{
+    background:var(--surface-2); color:#555; font-size:14px; font-weight:700;
+    padding:8px 14px; border-radius:20px;
+  }
+  .tag-list a:hover{background:var(--red); color:#fff;}
+
+  .sidebar-cta{
+    background:linear-gradient(150deg, var(--red) 0%, var(--red-dark) 100%);
+    border-radius:var(--radius-lg); padding:28px 22px; text-align:center; color:#fff;
+  }
+  .sidebar-cta h4{color:#fff; font-size:15px; margin-bottom:8px; border:none; padding:0;}
+  .sidebar-cta h4::after{display:none;}
+  .sidebar-cta p{font-size:13.5px; color:rgba(255,255,255,0.85); margin-bottom:18px; line-height:1.65;}
+  .sidebar-cta a{
+    background:#fff; color:var(--red); font-size:13.5px; font-weight:800;
+    text-transform:uppercase; padding:12px; border-radius:var(--radius-sm); display:block; letter-spacing:0.4px;
+  }
+  .sidebar-cta a:hover{background:#F3EFE3;}
+
+  @media (max-width:980px){
+    .blog-layout{grid-template-columns:1fr;}
+    .blog-sidebar{
+      display:grid; grid-template-columns:repeat(2, 1fr); gap:22px;
+    }
+  }
+  @media (max-width:760px){
+    .blog-section{padding:44px 20px;}
+    .blog-grid{grid-template-columns:1fr; gap:22px;}
+  }
+  @media (max-width:600px){
+    .blog-sidebar{grid-template-columns:1fr;}
+  }
+</style>
+
+
+
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <div class="eyebrow reveal">TIPS &amp; UPDATES</div>
+    <h1 class="display reveal">OUR <span class="accent">BLOG</span></h1>
+    <p class="reveal">Practical advice on LPG &amp; CNG conversion, hybrid care, maintenance and more — written by the technicians who service your car.</p>
+    <div class="breadcrumb reveal">
+      <a href="index.html">Home</a>
+      <span class="sep">»</span>
+      <span class="current">Blog</span>
+    </div>
+  </div>
+</section>
+
+<section class="blog-section">
+  <div class="blog-layout">
+
+    <div class="blog-main">
+      <div class="blog-grid" id="blogGrid">
+
+        <div class="blog-card">
+          <div class="blog-card-image">
+            <span class="blog-card-cat">LPG &amp; CNG</span>
+            <img src="img/latest-1.jpg" alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-date">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+              August 15, 2026
+            </div>
+            <h3>LPG vs CNG: Which Conversion Is Right for Your Car?</h3>
+            <p>Both fuels can cut your running costs, but they suit different driving habits and vehicle types. Here's how to decide which conversion makes sense for you.</p>
+            <a href="#" class="blog-read-more">Read More
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="blog-card">
+          <div class="blog-card-image">
+            <span class="blog-card-cat">Maintenance</span>
+            <img src="img/latest-2.jpg" alt="5 Signs Your Car Needs an Oil Change Now">
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-date">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+              August 8, 2026
+            </div>
+            <h3>5 Signs Your Car Needs an Oil Change Now</h3>
+            <p>Skipping an oil change can quietly wear down your engine. Watch for these five warning signs before real damage sets in.</p>
+            <a href="#" class="blog-read-more">Read More
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="blog-card">
+          <div class="blog-card-image">
+            <span class="blog-card-cat">Hybrid Tips</span>
+            <img src="img/latest-3.jpg" alt="How to Extend the Life of Your Hybrid Battery">
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-date">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+              July 29, 2026
+            </div>
+            <h3>How to Extend the Life of Your Hybrid Battery</h3>
+            <p>Hybrid batteries are built to last, but a few driving and charging habits can add years to their lifespan.</p>
+            <a href="#" class="blog-read-more">Read More
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="blog-card">
+          <div class="blog-card-image">
+            <span class="blog-card-cat">Car Care</span>
+            <img src="img/evn-1.jpg" alt="Why Regular AC Service Matters Before Summer">
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-date">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+              July 20, 2026
+            </div>
+            <h3>Why Regular AC Service Matters Before Summer</h3>
+            <p>A weak or noisy AC usually signals a bigger issue underneath. Here's what a proper AC service checks and why timing matters.</p>
+            <a href="#" class="blog-read-more">Read More
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="blog-card">
+          <div class="blog-card-image">
+            <span class="blog-card-cat">Hybrid Tips</span>
+            <img src="img/hybrid-car.jpg" alt="Common Myths About Hybrid Cars Debunked">
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-date">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+              July 12, 2026
+            </div>
+            <h3>Common Myths About Hybrid Cars Debunked</h3>
+            <p>From "the battery always needs replacing early" to "hybrids can't handle heavy traffic" &mdash; we separate fact from fiction.</p>
+            <a href="#" class="blog-read-more">Read More
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="blog-card">
+          <div class="blog-card-image">
+            <span class="blog-card-cat">Car Care</span>
+            <img src="img/car-wash.jpg" alt="The Right Way to Wash Your Car Without Damaging the Paint">
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-date">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+              July 3, 2026
+            </div>
+            <h3>The Right Way to Wash Your Car Without Damaging the Paint</h3>
+            <p>Wrong soap, wrong cloth, wrong technique &mdash; small mistakes at the wash bay can dull your paint over time. Here's how to do it right.</p>
+            <a href="#" class="blog-read-more">Read More
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="extra-posts" id="extraPosts">
+
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">LPG &amp; CNG</span>
+              <img src="img/lpg.jpg" alt="Is LPG Conversion Safe for Older Vehicles?">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                June 24, 2026
+              </div>
+              <h3>Is LPG Conversion Safe for Older Vehicles?</h3>
+              <p>Age alone isn't the deciding factor &mdash; engine condition and kit quality matter more. Here's what we check before recommending conversion.</p>
+              <a href="#" class="blog-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">Maintenance</span>
+              <img src="img/evn-2.jpg" alt="Oil & Filter Change: How Often Is Too Often?">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                June 15, 2026
+              </div>
+              <h3>Oil &amp; Filter Change: How Often Is Too Often?</h3>
+              <p>More frequent isn't always better. We break down the right interval based on oil type, driving conditions and mileage.</p>
+              <a href="#" class="blog-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">News</span>
+              <img src="img/Expert-Technicians.jpg" alt="Meet the Team Behind Taqwa Automobile's Service Quality">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                June 5, 2026
+              </div>
+              <h3>Meet the Team Behind Taqwa Automobile's Service Quality</h3>
+              <p>A closer look at the technicians, advisors and specialists who keep every job at our workshop up to standard.</p>
+              <a href="#" class="blog-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">LPG &amp; CNG</span>
+              <img src="img/lpg-and-cng.jpg" alt="CNG vs Petrol: A Real Cost Comparison for Dhaka Drivers">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                May 27, 2026
+              </div>
+              <h3>CNG vs Petrol: A Real Cost Comparison for Dhaka Drivers</h3>
+              <p>We ran the numbers on a typical daily commute to see how long it actually takes for a CNG conversion to pay for itself.</p>
+              <a href="#" class="blog-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">Maintenance</span>
+              <img src="img/latest-4.jpg" alt="Brake Maintenance Checklist Every Driver Should Know">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                May 18, 2026
+              </div>
+              <h3>Brake Maintenance Checklist Every Driver Should Know</h3>
+              <p>Squealing, pulling, soft pedal feel &mdash; here's what each warning sign usually means and when to get it checked.</p>
+              <a href="#" class="blog-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">News</span>
+              <img src="img/Emergency-Roadside-Assistance.jpg" alt="How Our 24/7 Roadside Assistance Works">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                May 9, 2026
+              </div>
+              <h3>How Our 24/7 Roadside Assistance Works</h3>
+              <p>Breakdown, flat tire, dead battery &mdash; here's exactly what happens from the moment you call us to the moment we arrive.</p>
+              <a href="#" class="blog-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="blog-loadmore-wrap">
+        <button class="load-more-btn" id="loadMoreBtn">
+          <span id="loadMoreLabel">Load More Articles</span>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <aside class="blog-sidebar">
+
+      <div class="sidebar-widget">
+        <h4>Search</h4>
+        <div class="search-box">
+          <input type="text" placeholder="Search articles...">
+          <button aria-label="Search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <h4>Categories</h4>
+        <ul class="cat-list">
+          <li><a href="#">LPG &amp; CNG</a><span>3</span></li>
+          <li><a href="#">Maintenance</a><span>3</span></li>
+          <li><a href="#">Hybrid Tips</a><span>2</span></li>
+          <li><a href="#">Car Care</a><span>2</span></li>
+          <li><a href="#">News</a><span>2</span></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-widget">
+        <h4>Recent Posts</h4>
+
+        <div class="recent-post">
+          <img src="img/latest-1.jpg" alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
+          <div class="recent-post-info">
+            <h5>LPG vs CNG: Which Conversion Is Right for Your Car?</h5>
+            <span>August 15, 2026</span>
+          </div>
+        </div>
+
+        <div class="recent-post">
+          <img src="img/latest-2.jpg" alt="5 Signs Your Car Needs an Oil Change Now">
+          <div class="recent-post-info">
+            <h5>5 Signs Your Car Needs an Oil Change Now</h5>
+            <span>August 8, 2026</span>
+          </div>
+        </div>
+
+        <div class="recent-post">
+          <img src="img/latest-3.jpg" alt="How to Extend the Life of Your Hybrid Battery">
+          <div class="recent-post-info">
+            <h5>How to Extend the Life of Your Hybrid Battery</h5>
+            <span>July 29, 2026</span>
+          </div>
+        </div>
+
+        <div class="recent-post">
+          <img src="img/evn-1.jpg" alt="Why Regular AC Service Matters Before Summer">
+          <div class="recent-post-info">
+            <h5>Why Regular AC Service Matters Before Summer</h5>
+            <span>July 20, 2026</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sidebar-widget">
+        <h4>Popular Tags</h4>
+        <div class="tag-list">
+          <a href="#">LPG</a>
+          <a href="#">CNG</a>
+          <a href="#">Hybrid</a>
+          <a href="#">Engine</a>
+          <a href="#">Battery</a>
+          <a href="#">AC Service</a>
+          <a href="#">Brakes</a>
+          <a href="#">Car Wash</a>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <h4>Newsletter</h4>
+        <p style="color:#666; font-size:13.5px; line-height:1.65; margin-bottom:16px;">Get new car care tips and LPG/CNG conversion advice sent straight to your inbox.</p>
+        <div class="search-box">
+          <input type="email" placeholder="Your email address">
+          <button aria-label="Subscribe">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-cta">
+        <h4>Need Expert Advice?</h4>
+        <p>Have a question about your car? Our team is one call away.</p>
+        <a href="tel:+8801854226757">Call 01854226757</a>
+      </div>
+
+    </aside>
+
+  </div>
+</section>
+
+
+<script>
+  // ===== LOAD MORE ARTICLES =====
+  var loadMoreBtn = document.getElementById('loadMoreBtn');
+  var loadMoreLabel = document.getElementById('loadMoreLabel');
+  var extraPosts = document.getElementById('extraPosts');
+
+  if (loadMoreBtn && extraPosts) {
+    loadMoreBtn.addEventListener('click', function(){
+      var isShown = extraPosts.classList.toggle('show');
+      loadMoreBtn.classList.toggle('expanded', isShown);
+      if (loadMoreLabel) loadMoreLabel.textContent = isShown ? 'Show Less' : 'Load More Articles';
+      if(!isShown){
+        loadMoreBtn.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+  }
+</script>
+</Layout>

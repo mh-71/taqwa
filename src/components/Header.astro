@@ -1,0 +1,116 @@
+---
+// `current` selects which top-level nav item gets the .active treatment.
+// Matches the `id`s used below: 'home' | 'about' | 'services' | 'hybrid' |
+// 'gallery' | 'blog' | 'contact'. Services sub-pages (LPG, CNG, engine
+// repair, car AC, car wash) all pass current="services" so the parent
+// "Services" nav item highlights, matching the original site's behavior.
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+const isActive = (id: string) => (current === id ? 'active' : '');
+---
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="Taqwa Automobile - Home">
+      <img class="logo-img" src="img/logo.png" width="1555" height="593" alt="Taqwa Automobile">
+    </a>
+
+    <nav class="main-nav">
+      <ul>
+        <li class={isActive('home')}>
+          <a href="index.html">Home</a>
+        </li>
+
+        <li class={isActive('about')}>
+          <a href="about.html">About Us</a>
+        </li>
+
+        <li class:list={['has-dropdown', isActive('services')]}>
+          <a href="index.html#services">Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="dropdown-menu">
+            <li><a href="lpg-conversion.html">LPG Conversion</a></li>
+            <li><a href="cng-conversion.html">CNG Conversion</a></li>
+            <li><a href="engine-repair.html">Engine Repair</a></li>
+            <li><a href="car-ac-service.html">Car AC Service</a></li>
+            <li><a href="index.html#services">Battery &amp; Electrical</a></li>
+            <li><a href="index.html#services">Wheel Alignment &amp; Balancing</a></li>
+            <li><a href="car-wash-detailing.html">Car Wash &amp; Detailing</a></li>
+            <li><a href="index.html#services">Periodic Maintenance</a></li>
+          </ul>
+        </li>
+
+        <li class={isActive('hybrid')}>
+          <a href="hybrid-services.html">Hybrid Services</a>
+        </li>
+
+        <li class={isActive('gallery')}>
+          <a href="gallery.html">Gallery</a>
+        </li>
+
+        <li class={isActive('blog')}>
+          <a href="blog.html">Blog</a>
+        </li>
+
+        <li class={isActive('contact')}>
+          <a href="contact.html">Contact Us</a>
+        </li>
+      </ul>
+    </nav>
+
+    <a href="tel:+8801854226757" class="call-btn">
+      <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
+      <span class="txt">Call Now</span>
+    </a>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav">
+    <ul>
+      <li class={isActive('home')}>
+        <a href="index.html">Home</a>
+      </li>
+
+      <li class={isActive('about')}>
+        <a href="about.html">About Us</a>
+      </li>
+
+      <li class:list={['mobile-has-sub', isActive('services')]} id="mobileServicesItem">
+        <button class="mobile-sub-toggle" id="mobileServicesToggle" aria-expanded="false">
+          Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <ul class="mobile-submenu">
+          <li><a href="lpg-conversion.html">LPG Conversion</a></li>
+          <li><a href="cng-conversion.html">CNG Conversion</a></li>
+          <li><a href="engine-repair.html">Engine Repair</a></li>
+          <li><a href="car-ac-service.html">Car AC Service</a></li>
+          <li><a href="index.html#services">Battery &amp; Electrical</a></li>
+          <li><a href="index.html#services">Wheel Alignment &amp; Balancing</a></li>
+          <li><a href="car-wash-detailing.html">Car Wash &amp; Detailing</a></li>
+          <li><a href="index.html#services">Periodic Maintenance</a></li>
+        </ul>
+      </li>
+
+      <li class={isActive('hybrid')}>
+        <a href="hybrid-services.html">Hybrid Services</a>
+      </li>
+
+      <li class={isActive('gallery')}>
+        <a href="gallery.html">Gallery</a>
+      </li>
+
+      <li class={isActive('blog')}>
+        <a href="blog.html">Blog</a>
+      </li>
+
+      <li class={isActive('contact')}>
+        <a href="contact.html">Contact Us</a>
+      </li>
+    </ul>
+  </div>
+</header>
