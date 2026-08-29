@@ -34,8 +34,8 @@
   "image": "https://taqwaautomobile.com/img/logo.png",
   "@id": "https://taqwaautomobile.com",
   "url": "https://taqwaautomobile.com",
-  "telephone": "+8801601530571",
-  "email": "info@taqwaautomobile.com",
+  "telephone": "+8801854226757",
+  "email": "mosharrafhossen090@gmail.com",
   "priceRange": "$$",
   "address": {
     "@type": "PostalAddress",
@@ -101,10 +101,10 @@
     /* Fluid via clamp(): scales smoothly between a 375px and 1440px viewport
        instead of jumping at breakpoints. Layout still changes at @media steps;
        only type size and spacing flow continuously. */
-    --text-xs:12px;
-    --text-sm:13px;
-    --text-base:14px;
-    --text-md:15px;
+    --text-xs:13px;
+    --text-sm:14px;
+    --text-base:15px;
+    --text-md:16px;
     --text-lg:clamp(15px, 14.6px + 0.15vw, 16px);
     --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
     --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
@@ -260,14 +260,14 @@
   nav.main-nav{display:flex; align-items:center; gap:22px;}
   nav.main-nav > ul{display:flex; align-items:center; gap:18px;}
   nav.main-nav a{
-    font-size:13.5px; font-weight:700; letter-spacing:0.4px;
+    font-size:14.5px; font-weight:700; letter-spacing:0.4px;
     color:var(--text-strong); text-transform:uppercase; position:relative; padding:6px 0;
     display:flex; align-items:center; gap:4px; white-space:nowrap;
   }
   nav.main-nav li.active > a{color:var(--red);}
   nav.main-nav a.accent{color:var(--red);}
   nav.main-nav a:hover{color:var(--red);}
-  .caret{font-size:15px; margin-top:1px; transition:transform .15s; line-height:1;}
+  .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
 
   /* dropdown */
   .has-dropdown{position:relative;}
@@ -290,13 +290,13 @@
   }
   .dropdown-menu li{width:100%;}
   .dropdown-menu a{
-    display:block; padding:10px 12px; font-size:12.5px; font-weight:700;
+    display:block; padding:10px 12px; font-size:13.5px; font-weight:700;
     text-transform:none; letter-spacing:0.2px; color:var(--text-strong);
     border-radius:var(--radius-sm); white-space:nowrap;
   }
   .dropdown-menu a:hover{background:var(--surface-2); color:var(--red);}
   .call-btn{
-    background:var(--red); color:#fff; font-size:13px; font-weight:700;
+    background:var(--red); color:#fff; font-size:14px; font-weight:700;
     letter-spacing:0.4px; padding:11px 22px; border-radius:var(--radius-sm);
     display:flex; align-items:center; gap:8px; text-transform:uppercase;
     white-space:nowrap;
@@ -324,14 +324,14 @@
   .mobile-nav > ul > li:last-child{border-bottom:none;}
   .mobile-nav > ul > li > a{
     display:flex; align-items:center; padding:14px 2px;
-    font-size:14px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
     color:var(--text-strong);
   }
   .mobile-nav li.active > a{color:var(--red);}
   .mobile-sub-toggle{
     display:flex; align-items:center; justify-content:space-between; width:100%;
     background:none; text-align:left; padding:14px 2px;
-    font-size:14px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
     color:var(--text-strong); font-family:inherit;
   }
   .mobile-has-sub .caret{transition:transform .2s ease;}
@@ -341,7 +341,7 @@
   }
   .mobile-has-sub.open .mobile-submenu{display:block;}
   .mobile-submenu a{
-    display:block; padding:11px 2px; font-size:13px; font-weight:600;
+    display:block; padding:11px 2px; font-size:14px; font-weight:600;
     text-transform:none; color:#555;
   }
   .mobile-submenu a:hover{color:var(--red);}
@@ -377,7 +377,7 @@
   }
 
   .eyebrow{
-    color:var(--red); font-size:12.5px; font-weight:800; letter-spacing:3px;
+    color:var(--red); font-size:13.5px; font-weight:800; letter-spacing:3px;
     margin-bottom:16px;
   }
   .hero-copy h1{
@@ -387,14 +387,14 @@
   .hero-sub{
     font-family:var(--font-display); font-weight:700;
     letter-spacing:1.5px; text-transform:uppercase; color:var(--off);
-    font-size:15px; margin-bottom:18px;
+    font-size:16px; margin-bottom:18px;
   }
   .hero-copy p{
-    color:var(--paper); font-size:15px; line-height:1.7; max-width:480px; margin-bottom:28px;
+    color:var(--paper); font-size:16px; line-height:1.7; max-width:480px; margin-bottom:28px;
   }
   .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px;}
   .btn{
-    display:flex; align-items:center; gap:9px; font-size:14px; font-weight:800;
+    display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:var(--radius-sm);
   }
   .btn-red{background:var(--red); color:#fff;}
@@ -407,7 +407,7 @@
     padding-top:24px; border-top:1px solid rgba(255,255,255,0.08);
   }
   .feature-strip .item{
-    display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700;
+    display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;
     color:var(--off); text-transform:uppercase; letter-spacing:0.3px;
   }
   .feature-strip svg{flex-shrink:0;}
@@ -432,20 +432,20 @@
   }
   .specialist-list{margin-bottom:22px;}
   .specialist-list li{
-    display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--off);
+    display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--off);
     margin-bottom:13px; line-height:1.4;
   }
   .specialist-list li svg{flex-shrink:0; margin-top:1px;}
   .specialist-actions{display:flex; gap:12px; margin-bottom:22px;}
-  .specialist-actions .btn{flex:1; justify-content:center; padding:13px 10px; font-size:13px;}
+  .specialist-actions .btn{flex:1; justify-content:center; padding:13px 10px; font-size:14px;}
   .specialist-address{
-    display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--off);
+    display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--off);
     line-height:1.5; margin-bottom:20px; padding-bottom:20px;
     border-bottom:1px solid rgba(255,255,255,0.08);
   }
   .specialist-address svg{flex-shrink:0; margin-top:2px;}
   .get-direction{
-    width:100%; background:#F8FAFC; color:var(--ink); font-size:13.5px; font-weight:800;
+    width:100%; background:#F8FAFC; color:var(--ink); font-size:14.5px; font-weight:800;
     letter-spacing:0.6px; text-transform:uppercase; padding:15px; border-radius:var(--radius-sm);
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
@@ -483,7 +483,7 @@
     .hero{padding:32px 16px 28px;}
     .hero-copy h1{font-size:27px;}
     .hero-sub{font-size:13px;}
-    .eyebrow{font-size:11px; letter-spacing:2px;}
+    .eyebrow{font-size:13.5px; letter-spacing:2px;}
     .feature-strip{grid-template-columns:1fr; gap:16px;}
     .specialist-title{font-size:16px;}
     .specialist-sub{font-size:14.5px;}
@@ -508,7 +508,7 @@
   }
   .footer-col .flogo{display:flex; align-items:center; margin-bottom:18px;}
   .footer-logo-img{height:38px; width:auto; display:block;}
-  .footer-col p.about{color:var(--muted); font-size:13.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
+  .footer-col p.about{color:var(--muted); font-size:14.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
   .footer-social{display:flex; gap:10px;}
   .footer-social a{
     width:32px; height:32px; border-radius:var(--radius-full); background:var(--charcoal-2);
@@ -528,15 +528,15 @@
   .flist{margin-top:20px;}
   .flist li{margin-bottom:12px;}
   .flist a{
-    font-size:13.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    font-size:14.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
     transition:color .15s;
   }
   .flist a:hover{color:#fff;}
-  .flist a .arrow{color:var(--red); font-size:12px; font-weight:800;}
+  .flist a .arrow{color:var(--red); font-size:13px; font-weight:800;}
 
   .fcontact{margin-top:20px;}
   .fcontact li{
-    display:flex; align-items:flex-start; gap:11px; font-size:13.5px; color:var(--muted);
+    display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:var(--muted);
     margin-bottom:16px; line-height:1.55;
   }
   .fcontact li svg{flex-shrink:0; margin-top:2px;}
@@ -545,14 +545,14 @@
 
   .fcallnow{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--red); color:#fff; font-size:13px; font-weight:800;
+    background:var(--red); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
     margin-top:22px;
   }
   .fcallnow:hover{background:var(--red-dark);}
   .fwhatsapp{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--green); color:#fff; font-size:13px; font-weight:800;
+    background:var(--green); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
     margin-top:14px;
   }
@@ -563,7 +563,7 @@
     padding:22px 0;
     text-align:center;
   }
-  .footer-bottom p{font-size:12.5px; color:var(--muted); letter-spacing:0.3px;}
+  .footer-bottom p{font-size:13.5px; color:var(--muted); letter-spacing:0.3px;}
 
   @media (max-width:980px){
     .footer-inner{grid-template-columns:1fr 1fr; gap:36px;}
@@ -624,14 +624,14 @@
   }
   .carwash-content h2 .accent{color:var(--red);}
   .carwash-content > p{
-    font-size:14px; line-height:1.75; color:var(--text-muted); max-width:420px; margin-bottom:26px;
+    font-size:15px; line-height:1.75; color:var(--text-muted); max-width:420px; margin-bottom:26px;
   }
   .carwash-features{
     display:grid; grid-template-columns:1fr 1fr; gap:16px 28px;
   }
   .carwash-features .cf-item{
     display:flex; align-items:center; gap:10px;
-    font-size:13px; font-weight:700; color:var(--text-strong);
+    font-size:14px; font-weight:700; color:var(--text-strong);
   }
   .carwash-features svg{flex-shrink:0;}
 
@@ -657,7 +657,7 @@
   }
   .carwash-book-btn{
     display:inline-flex; align-items:center; gap:8px;
-    background:var(--red); color:#fff; font-size:12.5px; font-weight:800;
+    background:var(--red); color:#fff; font-size:13.5px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:12px 18px; border-radius:var(--radius-sm);
     white-space:nowrap;
   }
@@ -718,13 +718,14 @@
     flex:1 1 auto; display:flex; flex-direction:column; justify-content:center;
   }
   .service-card p{
-    color:var(--muted); font-size:12.5px; line-height:1.7; margin-bottom:18px;
+    color:var(--muted); font-size:13.5px; line-height:1.7; margin-bottom:18px;
   }
   .service-card .read-more{
-    color:#fff; font-size:12px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+    color:#fff; font-size:13px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
     display:inline-flex; align-items:center; gap:8px;
   }
-  .service-card .read-more svg{width:15px; height:15px;}
+  .service-card .read-more svg{width:15px; height:15px; transition:transform .2s ease;}
+  .service-card .read-more:hover svg{transform:translateX(4px);}
 
   .extra-services{display:none;}
   .extra-services.show{display:contents;}
@@ -732,7 +733,7 @@
   .services-toggle-wrap{text-align:center; margin-top:40px;}
   .services-toggle-btn{
     display:inline-flex; align-items:center; gap:10px;
-    background:var(--charcoal); color:#fff; font-size:13px; font-weight:800;
+    background:var(--charcoal); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.5px; text-transform:uppercase; padding:14px 30px; border-radius:var(--radius-sm);
   }
   .services-toggle-btn:hover{background:var(--red);}
@@ -792,13 +793,13 @@
     position:absolute; top:10px; left:10px; z-index:1;
     width:32px; height:32px; border:1.5px solid var(--red); border-radius:var(--radius-md);
     display:flex; align-items:center; justify-content:center;
-    color:var(--red); font-size:12px; font-weight:800;
+    color:var(--red); font-size:13px; font-weight:800;
     background:rgba(10,15,23,0.72); backdrop-filter:blur(2px);
   }
   .hybrid-num svg{width:16px; height:16px;}
   .hybrid-item-body{padding:16px 14px 18px;}
-  .hybrid-item h4{color:#fff; font-size:12.5px; letter-spacing:0.2px; margin-bottom:6px; line-height:1.3;}
-  .hybrid-item p{color:var(--muted); font-size:11px; line-height:1.6;}
+  .hybrid-item h4{color:#fff; font-size:13.5px; letter-spacing:0.2px; margin-bottom:6px; line-height:1.3;}
+  .hybrid-item p{color:var(--muted); font-size:13.5px; line-height:1.6;}
 
   .hybrid-features-strip{
     background:var(--surface-3); border-radius:var(--radius-lg); margin-top:18px;
@@ -807,7 +808,7 @@
   }
   .hf-item{display:flex; align-items:center; gap:11px;}
   .hf-item svg{flex-shrink:0;}
-  .hf-item span{font-size:11.5px; font-weight:700; color:var(--text-strong); line-height:1.35;}
+  .hf-item span{font-size:14px; font-weight:700; color:var(--text-strong); line-height:1.35;}
 
   @media (max-width:900px){
     .hybrid-grid{grid-template-columns:repeat(2, 1fr);}
@@ -850,7 +851,7 @@
   }
   .gasconv-header{text-align:center; max-width:760px; margin:0 auto 32px; position:relative;}
   .gasconv-eyebrow{
-    color:var(--green); font-size:12.5px; font-weight:800; letter-spacing:3px;
+    color:var(--green); font-size:13.5px; font-weight:800; letter-spacing:3px;
     margin-bottom:12px;
   }
   .gasconv-header h2{font-size:var(--text-4xl); color:#fff; letter-spacing:0.4px; margin-bottom:14px;}
@@ -869,18 +870,25 @@
     color:var(--red); font-size:13px; font-weight:800;
   }
   .gs-item h4{color:#fff; font-size:13px; letter-spacing:0.2px; margin-bottom:5px; line-height:1.3;}
-  .gs-item p{color:var(--muted); font-size:11.5px; line-height:1.65;}
+  .gs-item p{color:var(--muted); font-size:14px; line-height:1.65;}
 
   .gasconv-compare{display:flex; flex-direction:column; gap:16px;}
   .gc-card{border-radius:var(--radius-lg); padding:20px 22px 18px; position:relative; overflow:hidden;}
   .gc-card.lpg{background:linear-gradient(135deg, rgba(249,115,22,0.20), rgba(249,115,22,0.04)); border:1px solid rgba(249,115,22,0.45);}
   .gc-card.cng{background:linear-gradient(135deg, rgba(22,163,74,0.20), rgba(22,163,74,0.04)); border:1px solid rgba(22,163,74,0.45);}
-  .gc-icon{font-size:var(--text-3xl); margin-bottom:8px;}
+  .gc-icon{margin-bottom:8px;}
+  .gc-icon svg{width:26px; height:26px;}
+  .gc-card.lpg .gc-icon{color:var(--red);}
+  .gc-card.cng .gc-icon{color:var(--green);}
   .gc-card h3{color:#fff; font-size:15.5px; margin-bottom:10px; letter-spacing:0.3px;}
   .gc-card ul{display:flex; flex-direction:column; gap:7px;}
-  .gc-card li{color:var(--off); font-size:11.5px; line-height:1.5; padding-left:16px; position:relative;}
-  .gc-card.lpg li::before{content:"✓"; position:absolute; left:0; top:0; color:var(--red); font-weight:800; font-size:11px;}
-  .gc-card.cng li::before{content:"✓"; position:absolute; left:0; top:0; color:var(--green); font-weight:800; font-size:11px;}
+  .gc-card li{color:var(--off); font-size:14px; line-height:1.5; padding-left:16px; position:relative;}
+  .gc-card li::before{
+    content:""; position:absolute; left:0; top:2px; width:11px; height:11px;
+    background-repeat:no-repeat; background-position:center; background-size:contain;
+  }
+  .gc-card.lpg li::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");}
+  .gc-card.cng li::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316A34A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");}
 
   .gasconv-actions{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; position:relative;}
 
@@ -888,7 +896,7 @@
     background:var(--surface-3); border-radius:var(--radius-lg); margin-top:20px;
     padding:22px 28px; display:grid; grid-template-columns:repeat(3, 1fr); gap:16px 18px;
   }
-  .gt-item{display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700; color:var(--text-strong); line-height:1.35;}
+  .gt-item{display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; color:var(--text-strong); line-height:1.35;}
   .gt-item svg{flex-shrink:0;}
 
   @media (max-width:1100px){
@@ -933,7 +941,7 @@
   }
   .btn-learn{
     display:inline-flex; align-items:center; gap:8px;
-    background:var(--red); color:#fff; font-size:12.5px; font-weight:800;
+    background:var(--red); color:#fff; font-size:13.5px; font-weight:800;
     letter-spacing:0.5px; text-transform:uppercase; padding:12px 22px; border-radius:var(--radius-sm);
   }
   .btn-learn:hover{background:var(--red-dark);}
@@ -963,7 +971,7 @@
     padding:16px 8px 14px;
     background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
     text-align:center;
-    color:#fff; font-size:12px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
+    color:#fff; font-size:13px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
   }
 
   @media (max-width:980px){
@@ -1016,8 +1024,8 @@
     background:linear-gradient(165deg, var(--red) 0%, var(--red-dark) 100%);
     padding:22px 22px 24px; text-align:center; flex:1;
   }
-  .env-card h3{color:#fff; font-size:15.5px; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:10px;}
-  .env-card p{color:rgba(255,255,255,0.85); font-size:12px; line-height:1.65;}
+  .env-card h3{color:#fff; font-size:16.5px; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:10px;}
+  .env-card p{color:rgba(255,255,255,0.85); font-size:13px; line-height:1.65;}
 
   @media (max-width:1024px){
     .env-grid{grid-template-columns:repeat(2, 1fr);}
@@ -1050,13 +1058,16 @@
     padding:28px 26px; display:flex; flex-direction:column; gap:14px;
     cursor:pointer; position:relative;
     transition:box-shadow .2s ease, transform .15s ease;
+    -webkit-tap-highlight-color:transparent;
   }
-  .feat-card:hover{transform:translateY(-2px);}
+  @media (hover:hover) and (pointer:fine){
+    .feat-card:hover{transform:translateY(-2px);}
+  }
   .feat-card.active{box-shadow:inset 0 0 0 3px rgba(255,255,255,0.85);}
   .feat-card.c-red{background:var(--red);}
   .feat-card.c-black{background:var(--charcoal);}
   .feat-card h4{
-    color:#fff; font-size:14px; letter-spacing:0.3px; text-transform:uppercase;
+    color:#fff; font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
     display:flex; align-items:center; gap:14px;
   }
   .feat-icon-wrap{
@@ -1064,7 +1075,7 @@
     background:rgba(255,255,255,0.16);
     display:flex; align-items:center; justify-content:center;
   }
-  .feat-card p{color:rgba(255,255,255,0.85); font-size:12px; line-height:1.65;}
+  .feat-card p{color:rgba(255,255,255,0.85); font-size:13px; line-height:1.65;}
 
   .features-right{
     position:relative; overflow:hidden; min-width:0; min-height:460px;
@@ -1196,20 +1207,19 @@
     width:100%; display:flex; align-items:center; justify-content:space-between;
     background:#2A3F5C; color:#fff; border:none; text-align:left;
     padding:20px 22px; font-family:inherit;
-    font-size:14px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
     cursor:pointer;
   }
   .faq-question:hover{background:#354B6A;}
 
-  .faq-question .faq-arrow{
-  flex-shrink:0;
-  margin-left:16px;
-  transition:transform .25s ease;
-}
-
-.faq-item.open .faq-question .faq-arrow{
-  transform:rotate(135deg);
-}
+  .faq-question .faq-arrow{position:relative; flex-shrink:0; width:16px; height:16px; margin-left:16px;}
+  .faq-question .faq-arrow::before, .faq-question .faq-arrow::after{
+    content:""; position:absolute; top:50%; left:50%; background:#fff; border-radius:1px;
+    transform:translate(-50%,-50%); transition:transform .25s ease, opacity .25s ease;
+  }
+  .faq-question .faq-arrow::before{width:14px; height:2px;}
+  .faq-question .faq-arrow::after{width:2px; height:14px;}
+  .faq-item.open .faq-question .faq-arrow::after{transform:translate(-50%,-50%) rotate(90deg) scale(0); opacity:0;}
 
 .faq-answer{
   max-height:0;
@@ -1219,12 +1229,12 @@
 }
 
   .faq-item.open .faq-answer{max-height:220px;}
-  .faq-answer-inner{padding:22px 24px 26px; color:var(--text-muted); font-size:13.5px; line-height:1.75;}
+  .faq-answer-inner{padding:22px 24px 26px; color:var(--text-muted); font-size:14.5px; line-height:1.75;}
 
   @media (max-width:560px){
     .faq-section{padding:var(--space-7) var(--space-5);}
     .faq-header h2{font-size:var(--text-2xl);}
-    .faq-question{padding:16px 18px; font-size:12.5px;}
+    .faq-question{padding:16px 18px; font-size:13.5px;}
     .faq-answer-inner{padding:18px 18px 22px; font-size:13px;}
   }
 
@@ -1281,16 +1291,17 @@
     flex:1 1 auto; display:flex; flex-direction:column;
   }
   .news-card h3{
-    color:var(--text-strong); font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
+    color:var(--text-strong); font-size:16px; letter-spacing:0.3px; text-transform:uppercase;
     margin-bottom:12px; line-height:1.35;
   }
-  .news-card p{color:var(--text-muted); font-size:12.5px; line-height:1.7; margin-bottom:16px; flex:1;}
+  .news-card p{color:var(--text-muted); font-size:13.5px; line-height:1.7; margin-bottom:16px; flex:1;}
   .news-read-more{
-    color:var(--red); font-size:12px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;
+    color:var(--red); font-size:13px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;
     display:inline-flex; align-items:center; gap:8px;
   }
   .news-read-more:hover{color:var(--red-dark);}
-  .news-read-more svg{width:16px; height:16px;}
+  .news-read-more svg{width:16px; height:16px; transition:transform .2s ease;}
+  .news-read-more:hover svg{transform:translateX(4px);}
 
   .news-nav{
     display:flex; justify-content:center; align-items:center; gap:16px; margin-top:32px;
@@ -1366,14 +1377,21 @@
       <path d="M9.5 7C6.5 8 4.5 10.7 4.5 14a3.5 3.5 0 1 0 3.5 3.5c0-1.4-.8-2.5-2-3 .3-1.8 1.6-3.2 3.5-3.8V7z" fill="currentColor"/>
       <path d="M18.5 7c-3 1-5 3.7-5 7a3.5 3.5 0 1 0 3.5 3.5c0-1.4-.8-2.5-2-3 .3-1.8 1.6-3.2 3.5-3.8V7z" fill="currentColor"/>
     </symbol>
+    <symbol id="icon-flame" viewBox="0 0 24 24">
+      <path d="M12.96 2.29a.75.75 0 0 0-1.07-.14 9.74 9.74 0 0 0-3.54 6.18 7.55 7.55 0 0 1-1.7-1.72.75.75 0 0 0-1.15-.08A9 9 0 1 0 15.68 4.53a7.46 7.46 0 0 1-2.72-2.24ZM15.75 14.25a3.75 3.75 0 1 1-7.31-1.17c.63.46 1.35.81 2.13 1a5.99 5.99 0 0 1 1.93-3.55 3.75 3.75 0 0 1 3.25 3.72Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-leaf" viewBox="0 0 24 24">
+      <path d="M20.5 3.5c-8.5 0-15.5 5.3-15.5 14 0 1.1.13 2.2.4 3.2C13.2 13.6 17 9.1 20.9 5.4c.6-.6.5-1.4-.4-1.9Z" fill="currentColor"/>
+      <path d="M6.3 19.7C10 13.6 14.2 9.4 19.4 5.7" stroke="#fff" stroke-opacity="0.55" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+    </symbol>
   </defs>
 </svg>
 
 <header>
   <div class="header-inner">
-    <div class="logo">
+    <a href="index.html" class="logo" aria-label="Taqwa Automobile - Home">
       <img class="logo-img" src="img/logo.png" width="1555" height="593" alt="Taqwa Automobile">
-    </div>
+    </a>
 
     <nav class="main-nav">
       <ul>
@@ -1386,7 +1404,7 @@
     </li>
 
     <li class="has-dropdown">
-        <a href="index.html#services">Services <span class="caret">▼</span></a>
+        <a href="index.html#services">Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <ul class="dropdown-menu">
             <li><a href="lpg-conversion.html">LPG Conversion</a></li>
             <li><a href="cng-conversion.html">CNG Conversion</a></li>
@@ -1417,7 +1435,7 @@
   </ul>
     </nav>
 
-    <a href="tel:+8801601530571" class="call-btn">
+    <a href="tel:+8801854226757" class="call-btn">
       <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
       <span class="txt">Call Now</span>
     </a>
@@ -1439,7 +1457,7 @@
 
     <li class="mobile-has-sub" id="mobileServicesItem">
         <button class="mobile-sub-toggle" id="mobileServicesToggle">
-            Services <span class="caret">▼</span>
+            Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
 
         <ul class="mobile-submenu">
@@ -1499,8 +1517,8 @@
       <p>Taqwa Automobile provides professional LPG &amp; CNG conversion, maintenance and complete automobile servicing with experienced technicians and quality equipment.</p>
 
       <div class="hero-actions">
-        <a href="#gas-conversion" class="btn btn-red">🔥 LPG Conversion</a>
-        <a href="#gas-conversion" class="btn btn-green">🍃 CNG Conversion</a>
+        <a href="#gas-conversion" class="btn btn-red"><svg class="icon" width="15" height="15"><use href="#icon-flame"/></svg> LPG Conversion</a>
+        <a href="#gas-conversion" class="btn btn-green"><svg class="icon" width="15" height="15"><use href="#icon-leaf"/></svg> CNG Conversion</a>
       </div>
 
       <div class="feature-strip">
@@ -1540,7 +1558,7 @@
     </div>
 
     <div class="specialist-card">
-      <div class="specialist-title">🔥&nbsp; LPG &amp; CNG &nbsp;🍃</div>
+      <div class="specialist-title"><svg class="icon" width="17" height="17"><use href="#icon-flame"/></svg>&nbsp; LPG &amp; CNG &nbsp;<svg class="icon" width="17" height="17"><use href="#icon-leaf"/></svg></div>
       <div class="specialist-sub">Conversion Specialist</div>
 
       <ul class="specialist-list">
@@ -1567,11 +1585,11 @@
       </ul>
 
       <div class="specialist-actions">
-        <a href="tel:+8801601530571" class="btn btn-red">
+        <a href="tel:+8801854226757" class="btn btn-red">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Call Now
         </a>
-        <a href="https://wa.me/8801601530571" class="btn btn-green">
+        <a href="https://wa.me/8801854226757" class="btn btn-green">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.6 6.32A8.86 8.86 0 0012 4a8.94 8.94 0 00-7.75 13.4L3 21l3.7-1.23A8.94 8.94 0 0012 21a8.94 8.94 0 006.32-15.32z" stroke="#fff" stroke-width="1.6"/><path d="M9 8.5c.3-.6 1-1 1.6-.5.5.4.9 1.4.6 2-.3.6-1.1 1.1-.7 1.9.5.9 1.7 2.1 2.6 2.6.8.4 1.3-.4 1.9-.7.6-.3 1.6.1 2 .6.5.6.1 1.3-.5 1.6-1.2.6-2.7.4-4-.2-1.8-.8-3.4-2.4-4.2-4.2-.6-1.3-.8-2.8-.2-4z" fill="#fff"/></svg>
           WhatsApp Us
         </a>
@@ -1649,7 +1667,7 @@
 
         <div class="gasconv-compare">
           <div class="gc-card lpg">
-            <div class="gc-icon">🔥</div>
+            <div class="gc-icon"><svg class="icon" width="26" height="26"><use href="#icon-flame"/></svg></div>
             <h3>LPG Conversion</h3>
             <ul>
               <li>Lower running cost than petrol</li>
@@ -1659,7 +1677,7 @@
             </ul>
           </div>
           <div class="gc-card cng">
-            <div class="gc-icon">🍃</div>
+            <div class="gc-icon"><svg class="icon" width="26" height="26"><use href="#icon-leaf"/></svg></div>
             <h3>CNG Conversion</h3>
             <ul>
               <li>Among the lowest running costs on the road</li>
@@ -1673,8 +1691,8 @@
       </div>
 
       <div class="gasconv-actions">
-        <a href="tel:+8801601530571" class="btn btn-red">📞 Call For Free Consultation</a>
-        <a href="https://wa.me/8801601530571" class="btn btn-green">💬 WhatsApp Us</a>
+        <a href="tel:+8801854226757" class="btn btn-red"><svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg> Call For Free Consultation</a>
+        <a href="https://wa.me/8801854226757" class="btn btn-green"><svg class="icon" width="15" height="15"><use href="#icon-whatsapp"/></svg> WhatsApp Us</a>
       </div>
 
       <div class="gasconv-trust-strip">
@@ -1747,9 +1765,9 @@
     </div>
 
     <div class="carwash-cta">
-      <span class="sparkle" style="top:18px; left:24px;">✦</span>
-      <span class="sparkle" style="top:30px; right:30px;">✦</span>
-      <span class="sparkle" style="bottom:70px; left:34px; font-size:10px;">✦</span>
+      <svg class="sparkle" style="top:18px; left:24px;" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg>
+      <svg class="sparkle" style="top:30px; right:30px;" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg>
+      <svg class="sparkle" style="bottom:70px; left:34px;" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg>
       <svg class="car-icon" width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M4 16l1.5-5A3 3 0 0 1 8.4 9h7.2a3 3 0 0 1 2.9 2l1.5 5" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><rect x="2.5" y="16" width="19" height="4" rx="1.2" stroke="#fff" stroke-width="1.6"/><circle cx="7" cy="20" r="1.4" fill="#fff"/><circle cx="17" cy="20" r="1.4" fill="#fff"/></svg>
       <div class="cta-lead">Make Your Car</div>
       <h3>Shine Like New</h3>
@@ -1779,7 +1797,7 @@
           <h3>LPG &amp; CNG Conversion</h3>
           <p>Professional gas conversion with certified kits, safety checked and ready to save on fuel.</p>
           <a href="#gas-conversion" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
@@ -1792,7 +1810,7 @@
           <h3>Engine Repair &amp; Service</h3>
           <p>Expert diagnosis and repair to keep your engine running smooth and reliable.</p>
           <a href="engine-repair.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
@@ -1805,7 +1823,7 @@
           <h3>Oil &amp; Filter Change</h3>
           <p>Regular oil and filter change to protect your engine and extend its life.</p>
           <a href="contact.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
@@ -1818,7 +1836,7 @@
           <h3>Brake Service</h3>
           <p>Complete brake inspection and repair for confident, safe stopping every time.</p>
           <a href="contact.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
@@ -1833,7 +1851,7 @@
             <h3>Transmission Service</h3>
             <p>Smooth gear shifting with expert transmission checks and fluid service.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1846,7 +1864,7 @@
             <h3>Wheel Alignment &amp; Balancing</h3>
             <p>Precise alignment and balancing for a smoother ride and even tire wear.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1859,7 +1877,7 @@
             <h3>Tire Service</h3>
             <p>Tire replacement, rotation and repair to keep you safe on the road.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1872,7 +1890,7 @@
             <h3>Battery &amp; Electrical</h3>
             <p>Battery testing, replacement and full electrical system diagnostics.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1885,7 +1903,7 @@
             <h3>Car AC Service</h3>
             <p>AC gas refill, cooling checkup and repair to beat the summer heat.</p>
             <a href="car-ac-service.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1898,7 +1916,7 @@
             <h3>Suspension &amp; Steering</h3>
             <p>Suspension and steering repair for a stable, comfortable and safe drive.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1911,7 +1929,7 @@
             <h3>Car Diagnostics</h3>
             <p>Computerized diagnostics to quickly find and fix hidden problems.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1924,7 +1942,7 @@
             <h3>Cooling System Service</h3>
             <p>Radiator and coolant service to keep your engine from overheating.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1937,7 +1955,7 @@
             <h3>Car Wash &amp; Detailing</h3>
             <p>Premium wash and detailing to make your car shine like new.</p>
             <a href="car-wash-detailing.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1950,7 +1968,7 @@
             <h3>Body Repair &amp; Painting</h3>
             <p>Dent removal and quality paintwork to restore your car's finish.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1963,7 +1981,7 @@
             <h3>Periodic Maintenance</h3>
             <p>Scheduled maintenance to catch small issues before they become big ones.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -1976,7 +1994,7 @@
             <h3>Emergency Roadside Assistance</h3>
             <p>24/7 roadside help whenever your car needs it, wherever you are.</p>
             <a href="contact.html" class="read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#fff" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#fff"/><circle cx="17.5" cy="17.5" r="1.3" fill="#fff"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2377,7 +2395,7 @@
         <div class="faq-item open">
           <button class="faq-question">
             Why choose Taqwa Automobile?
-            <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">We combine experienced, trained technicians with quality conversion kits and genuine parts. Every job is safety checked, and we back our work with reliable after-sales support — so your car gets the care it deserves.</div>
@@ -2387,7 +2405,7 @@
         <div class="faq-item">
           <button class="faq-question">
             What payment methods do you accept?
-            <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">We accept cash payment at the service center, along with bKash and Nagad for your convenience. Card payment is also available for larger service packages.</div>
@@ -2397,7 +2415,7 @@
         <div class="faq-item">
           <button class="faq-question">
             Do you use genuine conversion kits?
-            <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Yes. We only install certified, quality LPG and CNG conversion kits, and every installation goes through a full safety check before your car leaves our workshop.</div>
@@ -2409,7 +2427,7 @@
         <div class="faq-item">
           <button class="faq-question">
             How long does a full service take?
-            <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Most complete servicing is finished within a few hours, though this can vary depending on your car's condition and the specific work needed. We'll always give you a clear time estimate before starting.</div>
@@ -2419,7 +2437,7 @@
         <div class="faq-item">
           <button class="faq-question">
             Do you offer a warranty on your work?
-            <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Yes, our LPG and CNG conversions come with a 2 year warranty on the service, and we stand behind our parts and workmanship on every job we complete.</div>
@@ -2429,7 +2447,7 @@
         <div class="faq-item">
           <button class="faq-question">
             Can I book an appointment in advance?
-            <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Absolutely. You can call or WhatsApp us directly to book a convenient time, and our team will have everything ready when you arrive.</div>
@@ -2460,7 +2478,7 @@
             <h3>LPG vs CNG: Which Is Better for Your Car?</h3>
             <p>Know the difference between LPG and CNG conversion so you can choose the best fuel option for your vehicle.</p>
             <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#F97316" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#F97316"/><circle cx="17.5" cy="17.5" r="1.3" fill="#F97316"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2474,7 +2492,7 @@
             <h3>How Often Should You Change Engine Oil?</h3>
             <p>Regular oil changes keep your engine healthy and extend its life. Here's how often you really need one.</p>
             <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#F97316" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#F97316"/><circle cx="17.5" cy="17.5" r="1.3" fill="#F97316"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2488,7 +2506,7 @@
             <h3>Signs Your Car Brakes Need Attention</h3>
             <p>Don't ignore these warning signs. Keep your brakes in top condition for safety on every drive.</p>
             <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#F97316" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#F97316"/><circle cx="17.5" cy="17.5" r="1.3" fill="#F97316"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2502,7 +2520,7 @@
             <h3>Benefits of Regular Car Servicing</h3>
             <p>Routine servicing catches small issues early, saving you money and keeping your car reliable for longer.</p>
             <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#F97316" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#F97316"/><circle cx="17.5" cy="17.5" r="1.3" fill="#F97316"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2516,7 +2534,7 @@
             <h3>How to Extend Your Car Battery Life</h3>
             <p>Simple habits that help your battery last longer and avoid getting stranded with a dead start.</p>
             <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#F97316" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#F97316"/><circle cx="17.5" cy="17.5" r="1.3" fill="#F97316"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2530,7 +2548,7 @@
             <h3>Common Signs of Engine Trouble</h3>
             <p>Strange noises, smoke, or warning lights? Learn what your engine might be trying to tell you.</p>
             <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="13" width="20" height="4" rx="1" stroke="#F97316" stroke-width="1.4"/><circle cx="6.5" cy="17.5" r="1.3" fill="#F97316"/><circle cx="17.5" cy="17.5" r="1.3" fill="#F97316"/></svg>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </div>
@@ -2593,26 +2611,26 @@
         </li>
         <li>
           <svg class="icon" width="16" height="16" style="color:#F97316"><use href="#icon-phone"/></svg>
-          <a href="tel:+8801601530571">01601-530571</a>
-        </li>
-        <li>
-          <svg class="icon" width="16" height="16" style="color:#F97316"><use href="#icon-phone"/></svg>
           <a href="tel:+8801854226757">01854226757</a>
         </li>
         <li>
+          <svg class="icon" width="16" height="16" style="color:#F97316"><use href="#icon-phone"/></svg>
+          <a href="tel:+8801601530571">01601-530571</a>
+        </li>
+        <li>
           <svg class="icon" width="16" height="16" style="color:#F97316"><use href="#icon-email"/></svg>
-          <a href="mailto:info@taqwaautomobile.com">info@taqwaautomobile.com</a>
+          <a href="mailto:mosharrafhossen090@gmail.com">mosharrafhossen090@gmail.com</a>
         </li>
       </ul>
     </div>
 
     <div class="footer-col">
       <div class="fhead">Follow Us</div>
-      <a href="tel:+8801601530571" class="fcallnow" style="margin-top:20px;">
+      <a href="tel:+8801854226757" class="fcallnow" style="margin-top:20px;">
         <svg class="icon" width="14" height="14"><use href="#icon-phone"/></svg>
         Call Now
       </a>
-      <a href="https://wa.me/8801601530571" class="fwhatsapp">
+      <a href="https://wa.me/8801854226757" class="fwhatsapp">
         <svg class="icon" width="15" height="15"><use href="#icon-whatsapp"/></svg>
         WhatsApp Us
       </a>
@@ -2625,16 +2643,16 @@
   </div>
 
   <div class="footer-bottom">
-    <p>© 2024 Taqwa Automobile Service Center. All Rights Reserved.</p>
+    <p>© 2026 Taqwa Automobile Service Center. All Rights Reserved.</p>
   </div>
 </footer>
 
 <!-- ===== STICKY FLOATING WHATSAPP / CALL BUTTONS ===== -->
 <div class="sticky-actions" aria-label="Quick contact">
-  <a href="https://wa.me/8801601530571" class="fab fab-whatsapp" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">
+  <a href="https://wa.me/8801854226757" class="fab fab-whatsapp" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">
     <svg class="icon"><use href="#icon-whatsapp"/></svg>
   </a>
-  <a href="tel:+8801601530571" class="fab fab-call" aria-label="Call Taqwa Automobile" title="Call Now">
+  <a href="tel:+8801854226757" class="fab fab-call" aria-label="Call Taqwa Automobile" title="Call Now">
     <svg class="icon"><use href="#icon-phone"/></svg>
   </a>
 </div>
@@ -2690,31 +2708,70 @@
     });
   });
 
-  // ===== FEATURES CARD IMAGE SWAP =====
+  // ===== FEATURES CARD IMAGE SWAP (+ auto-rotate every 3s) =====
   (function(){
-    var cards = document.querySelectorAll('#featCardGrid .feat-card');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('#featCardGrid .feat-card'));
     var img = document.getElementById('featImage');
     var caption = document.getElementById('featCaption');
+    if (!cards.length || !img || !caption) return;
 
-    cards.forEach(function(card){
+    var activeIndex = cards.findIndex(function(c){ return c.classList.contains('active'); });
+    if (activeIndex < 0) activeIndex = 0;
+    var rotateTimer = null;
+    var ROTATE_MS = 3000;
+
+    // Single source of truth for "which card is active" so the card highlight,
+    // the right-side image and the caption can never fall out of sync, and only
+    // ever one card carries the active/highlighted state at a time.
+    function activate(index){
+      activeIndex = index;
+      var card = cards[activeIndex];
+
+      cards.forEach(function(c){ c.classList.remove('active'); });
+      card.classList.add('active');
+
+      var newSrc = card.getAttribute('data-img');
+      var newLabel = card.getAttribute('data-label');
+
+      img.style.opacity = '0';
+      caption.classList.remove('show');
+      setTimeout(function(){
+        img.setAttribute('src', newSrc);
+        caption.textContent = newLabel;
+        img.style.opacity = '1';
+        caption.classList.add('show');
+      }, 300);
+    }
+
+    function startRotation(){
+      stopRotation();
+      rotateTimer = setInterval(function(){
+        activate((activeIndex + 1) % cards.length);
+      }, ROTATE_MS);
+    }
+    function stopRotation(){
+      if (rotateTimer){ clearInterval(rotateTimer); rotateTimer = null; }
+    }
+
+    cards.forEach(function(card, index){
       card.addEventListener('click', function(){
-        if (card.classList.contains('active')) return;
-        cards.forEach(function(c){ c.classList.remove('active'); });
-        card.classList.add('active');
-
-        var newSrc = card.getAttribute('data-img');
-        var newLabel = card.getAttribute('data-label');
-
-        img.style.opacity = '0';
-        caption.classList.remove('show');
-        setTimeout(function(){
-          img.setAttribute('src', newSrc);
-          caption.textContent = newLabel;
-          img.style.opacity = '1';
-          caption.classList.add('show');
-        }, 500);
+        if (index === activeIndex) return;
+        activate(index);
+        startRotation(); // restart the 3s cycle from the manually chosen card
       });
     });
+
+    // Pause on hover/focus so a reader isn't fighting the auto-advance, resume after.
+    var grid = document.getElementById('featCardGrid');
+    grid.addEventListener('mouseenter', stopRotation);
+    grid.addEventListener('mouseleave', startRotation);
+    grid.addEventListener('focusin', stopRotation);
+    grid.addEventListener('focusout', startRotation);
+
+    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion){
+      startRotation();
+    }
   })();
 
   // ===== NEWS CAROUSEL =====

@@ -29,8 +29,8 @@
   "image": "https://taqwaautomobile.com/img/logo.png",
   "@id": "https://taqwaautomobile.com",
   "url": "https://taqwaautomobile.com/blog.html",
-  "telephone": "+8801601530571",
-  "email": "info@taqwaautomobile.com",
+  "telephone": "+8801854226757",
+  "email": "mosharrafhossen090@gmail.com",
   "priceRange": "$$",
   "address": {
     "@type": "PostalAddress",
@@ -95,10 +95,10 @@
     /* Fluid via clamp(): scales smoothly between a 375px and 1440px viewport
        instead of jumping at breakpoints. Layout still changes at @media steps;
        only type size and spacing flow continuously. */
-    --text-xs:12px;
-    --text-sm:13px;
-    --text-base:14px;
-    --text-md:15px;
+    --text-xs:13px;
+    --text-sm:14px;
+    --text-base:15px;
+    --text-md:16px;
     --text-lg:clamp(15px, 14.6px + 0.15vw, 16px);
     --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
     --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
@@ -235,14 +235,14 @@
   nav.main-nav{display:flex; align-items:center; gap:22px;}
   nav.main-nav > ul{display:flex; align-items:center; gap:18px;}
   nav.main-nav a{
-    font-size:13.5px; font-weight:700; letter-spacing:0.4px;
+    font-size:14.5px; font-weight:700; letter-spacing:0.4px;
     color:var(--text-strong); text-transform:uppercase; position:relative; padding:6px 0;
     display:flex; align-items:center; gap:4px; white-space:nowrap;
   }
   nav.main-nav li.active > a{color:var(--red);}
   nav.main-nav a.accent{color:var(--red);}
   nav.main-nav a:hover{color:var(--red);}
-  .caret{font-size:15px; margin-top:1px; transition:transform .15s; line-height:1;}
+  .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
 
   /* dropdown */
   .has-dropdown{position:relative;}
@@ -265,13 +265,13 @@
   }
   .dropdown-menu li{width:100%;}
   .dropdown-menu a{
-    display:block; padding:10px 12px; font-size:12.5px; font-weight:700;
+    display:block; padding:10px 12px; font-size:13.5px; font-weight:700;
     text-transform:none; letter-spacing:0.2px; color:var(--text-strong);
     border-radius:var(--radius-sm); white-space:nowrap;
   }
   .dropdown-menu a:hover{background:var(--surface-2); color:var(--red);}
   .call-btn{
-    background:var(--red); color:#fff; font-size:13px; font-weight:700;
+    background:var(--red); color:#fff; font-size:14px; font-weight:700;
     letter-spacing:0.4px; padding:11px 22px; border-radius:var(--radius-sm);
     display:flex; align-items:center; gap:8px; text-transform:uppercase;
     white-space:nowrap;
@@ -299,14 +299,14 @@
   .mobile-nav > ul > li:last-child{border-bottom:none;}
   .mobile-nav > ul > li > a{
     display:flex; align-items:center; padding:14px 2px;
-    font-size:14px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
     color:var(--text-strong);
   }
   .mobile-nav li.active > a{color:var(--red);}
   .mobile-sub-toggle{
     display:flex; align-items:center; justify-content:space-between; width:100%;
     background:none; text-align:left; padding:14px 2px;
-    font-size:14px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
     color:var(--text-strong); font-family:inherit;
   }
   .mobile-has-sub .caret{transition:transform .2s ease;}
@@ -316,18 +316,18 @@
   }
   .mobile-has-sub.open .mobile-submenu{display:block;}
   .mobile-submenu a{
-    display:block; padding:11px 2px; font-size:13px; font-weight:600;
+    display:block; padding:11px 2px; font-size:14px; font-weight:600;
     text-transform:none; color:#555;
   }
   .mobile-submenu a:hover{color:var(--red);}
 
   /* ===== SHARED BUTTONS / EYEBROW LABEL ===== */
   .eyebrow{
-    color:var(--red); font-size:12.5px; font-weight:800; letter-spacing:3px;
+    color:var(--red); font-size:13.5px; font-weight:800; letter-spacing:3px;
     margin-bottom:16px;
   }
   .btn{
-    display:flex; align-items:center; gap:9px; font-size:14px; font-weight:800;
+    display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:var(--radius-sm);
   }
   .btn-red{background:var(--red); color:#fff;}
@@ -352,7 +352,7 @@
   @media (max-width:420px){
     .header-inner{padding:10px 16px;}
     .logo-img{height:32px;}
-    .eyebrow{font-size:11px; letter-spacing:2px;}
+    .eyebrow{font-size:13.5px; letter-spacing:2px;}
     .mobile-nav ul{padding:6px 16px 16px;}
   }
 
@@ -374,7 +374,7 @@
   }
   .footer-col .flogo{display:flex; align-items:center; margin-bottom:18px;}
   .footer-logo-img{height:38px; width:auto; display:block;}
-  .footer-col p.about{color:var(--muted); font-size:13.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
+  .footer-col p.about{color:var(--muted); font-size:14.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
   .footer-social{display:flex; gap:10px;}
   .footer-social a{
     width:32px; height:32px; border-radius:var(--radius-full); background:var(--charcoal-2);
@@ -394,15 +394,15 @@
   .flist{margin-top:20px;}
   .flist li{margin-bottom:12px;}
   .flist a{
-    font-size:13.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    font-size:14.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
     transition:color .15s;
   }
   .flist a:hover{color:#fff;}
-  .flist a .arrow{color:var(--red); font-size:12px; font-weight:800;}
+  .flist a .arrow{color:var(--red); font-size:13px; font-weight:800;}
 
   .fcontact{margin-top:20px;}
   .fcontact li{
-    display:flex; align-items:flex-start; gap:11px; font-size:13.5px; color:var(--muted);
+    display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:var(--muted);
     margin-bottom:16px; line-height:1.55;
   }
   .fcontact li svg{flex-shrink:0; margin-top:2px;}
@@ -411,14 +411,14 @@
 
   .fcallnow{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--red); color:#fff; font-size:13px; font-weight:800;
+    background:var(--red); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
     margin-top:22px;
   }
   .fcallnow:hover{background:var(--red-dark);}
   .fwhatsapp{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--green); color:#fff; font-size:13px; font-weight:800;
+    background:var(--green); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:var(--radius-sm);
     margin-top:14px;
   }
@@ -429,7 +429,7 @@
     padding:22px 0;
     text-align:center;
   }
-  .footer-bottom p{font-size:12.5px; color:var(--muted); letter-spacing:0.3px;}
+  .footer-bottom p{font-size:13.5px; color:var(--muted); letter-spacing:0.3px;}
 
   @media (max-width:980px){
     .footer-inner{grid-template-columns:1fr 1fr; gap:36px;}
@@ -475,7 +475,7 @@
   }
   .breadcrumb a{color:var(--off);}
   .breadcrumb a:hover{color:var(--red);}
-  .breadcrumb .sep{color:var(--red); font-size:11px;}
+  .breadcrumb .sep{color:var(--red); font-size:13.5px;}
   .breadcrumb .current{color:var(--red);}
 
   @media (max-width:760px){
@@ -484,7 +484,7 @@
   }
   @media (max-width:420px){
     .page-banner{padding:36px 16px 32px;}
-    .breadcrumb{font-size:11.5px;}
+    .breadcrumb{font-size:14px;}
   }
 
   /* ===== BLOG PAGE ===== */
@@ -507,22 +507,23 @@
   .blog-card-image img{width:100%; height:100%; object-fit:cover; display:block;}
   .blog-card-cat{
     position:absolute; left:14px; top:14px; z-index:1;
-    background:var(--red); color:#fff; font-size:10.5px; font-weight:800;
+    background:var(--red); color:#fff; font-size:13px; font-weight:800;
     text-transform:uppercase; letter-spacing:0.4px; padding:6px 12px; border-radius:var(--radius-sm);
   }
   .blog-card-body{padding:22px 22px 24px; display:flex; flex-direction:column; flex:1;}
   .blog-card-date{
-    color:var(--muted); font-size:11.5px; font-weight:700; text-transform:uppercase;
+    color:var(--muted); font-size:14px; font-weight:700; text-transform:uppercase;
     letter-spacing:0.3px; margin-bottom:10px; display:flex; align-items:center; gap:6px;
   }
   .blog-card-body h3{font-size:16px; color:var(--text-strong); line-height:1.35; margin-bottom:10px;}
   .blog-card-body p{color:var(--text-muted); font-size:13px; line-height:1.7; margin-bottom:16px; flex:1;}
   .blog-read-more{
-    color:var(--red); font-size:12px; font-weight:800; letter-spacing:0.4px;
+    color:var(--red); font-size:13px; font-weight:800; letter-spacing:0.4px;
     text-transform:uppercase; display:inline-flex; align-items:center; gap:6px;
   }
   .blog-read-more:hover{color:var(--red-dark);}
-  .blog-read-more svg{width:14px; height:14px;}
+  .blog-read-more svg{width:14px; height:14px; transition:transform .2s ease;}
+  .blog-read-more:hover svg{transform:translateX(4px);}
 
   .blog-loadmore-wrap{text-align:center; margin-top:40px;}
   .load-more-btn{
@@ -568,7 +569,7 @@
   .cat-list li a{color:#555;}
   .cat-list li a:hover{color:var(--red);}
   .cat-list li span{
-    color:var(--red); font-weight:800; font-size:11.5px;
+    color:var(--red); font-weight:800; font-size:14px;
     background:var(--surface-2); padding:2px 9px; border-radius:20px;
   }
 
@@ -578,12 +579,12 @@
   .recent-post img{
     width:64px; height:64px; border-radius:var(--radius-md); object-fit:cover; flex-shrink:0;
   }
-  .recent-post-info h5{font-size:12.5px; color:var(--text-strong); line-height:1.4; margin-bottom:6px; font-weight:700;}
-  .recent-post-info span{font-size:11px; color:var(--muted);}
+  .recent-post-info h5{font-size:13.5px; color:var(--text-strong); line-height:1.4; margin-bottom:6px; font-weight:700;}
+  .recent-post-info span{font-size:13.5px; color:var(--muted);}
 
   .tag-list{display:flex; flex-wrap:wrap; gap:8px;}
   .tag-list a{
-    background:var(--surface-2); color:#555; font-size:11.5px; font-weight:700;
+    background:var(--surface-2); color:#555; font-size:14px; font-weight:700;
     padding:8px 14px; border-radius:20px;
   }
   .tag-list a:hover{background:var(--red); color:#fff;}
@@ -594,9 +595,9 @@
   }
   .sidebar-cta h4{color:#fff; font-size:15px; margin-bottom:8px; border:none; padding:0;}
   .sidebar-cta h4::after{display:none;}
-  .sidebar-cta p{font-size:12.5px; color:rgba(255,255,255,0.85); margin-bottom:18px; line-height:1.65;}
+  .sidebar-cta p{font-size:13.5px; color:rgba(255,255,255,0.85); margin-bottom:18px; line-height:1.65;}
   .sidebar-cta a{
-    background:#fff; color:var(--red); font-size:12.5px; font-weight:800;
+    background:#fff; color:var(--red); font-size:13.5px; font-weight:800;
     text-transform:uppercase; padding:12px; border-radius:var(--radius-sm); display:block; letter-spacing:0.4px;
   }
   .sidebar-cta a:hover{background:#F3EFE3;}
@@ -655,9 +656,9 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo">
+    <a href="index.html" class="logo" aria-label="Taqwa Automobile - Home">
       <img class="logo-img" src="img/logo.png" width="1555" height="593" alt="Taqwa Automobile">
-    </div>
+    </a>
 
     <nav class="main-nav">
       <ul>
@@ -670,7 +671,7 @@
     </li>
 
     <li class="has-dropdown">
-        <a href="index.html#services">Services <span class="caret">▼</span></a>
+        <a href="index.html#services">Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <ul class="dropdown-menu">
             <li><a href="lpg-conversion.html">LPG Conversion</a></li>
             <li><a href="cng-conversion.html">CNG Conversion</a></li>
@@ -701,7 +702,7 @@
   </ul>
     </nav>
 
-    <a href="tel:+8801601530571" class="call-btn">
+    <a href="tel:+8801854226757" class="call-btn">
       <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
       <span class="txt">Call Now</span>
     </a>
@@ -723,7 +724,7 @@
 
     <li class="mobile-has-sub" id="mobileServicesItem">
         <button class="mobile-sub-toggle" id="mobileServicesToggle">
-            Services <span class="caret">▼</span>
+            Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
 
         <ul class="mobile-submenu">
@@ -1083,7 +1084,7 @@
 
       <div class="sidebar-widget">
         <h4>Newsletter</h4>
-        <p style="color:#666; font-size:12.5px; line-height:1.65; margin-bottom:16px;">Get new car care tips and LPG/CNG conversion advice sent straight to your inbox.</p>
+        <p style="color:#666; font-size:13.5px; line-height:1.65; margin-bottom:16px;">Get new car care tips and LPG/CNG conversion advice sent straight to your inbox.</p>
         <div class="search-box">
           <input type="email" placeholder="Your email address">
           <button aria-label="Subscribe">
@@ -1095,7 +1096,7 @@
       <div class="sidebar-cta">
         <h4>Need Expert Advice?</h4>
         <p>Have a question about your car? Our team is one call away.</p>
-        <a href="tel:+8801601530571">Call 01601-530571</a>
+        <a href="tel:+8801854226757">Call 01854226757</a>
       </div>
 
     </aside>
@@ -1146,22 +1147,22 @@
         </li>
         <li>
           <svg class="icon" width="16" height="16" style="color:#F97316"><use href="#icon-phone"/></svg>
-          <a href="tel:+8801601530571">01601-530571</a>
+          <a href="tel:+8801854226757">01854226757</a>
         </li>
         <li>
           <svg class="icon" width="16" height="16" style="color:#F97316"><use href="#icon-email"/></svg>
-          <a href="mailto:info@taqwaautomobile.com">info@taqwaautomobile.com</a>
+          <a href="mailto:mosharrafhossen090@gmail.com">mosharrafhossen090@gmail.com</a>
         </li>
       </ul>
     </div>
 
     <div class="footer-col">
       <div class="fhead">Follow Us</div>
-      <a href="tel:+8801601530571" class="fcallnow" style="margin-top:20px;">
+      <a href="tel:+8801854226757" class="fcallnow" style="margin-top:20px;">
         <svg class="icon" width="14" height="14"><use href="#icon-phone"/></svg>
         Call Now
       </a>
-      <a href="https://wa.me/8801601530571" class="fwhatsapp">
+      <a href="https://wa.me/8801854226757" class="fwhatsapp">
         <svg class="icon" width="15" height="15"><use href="#icon-whatsapp"/></svg>
         WhatsApp Us
       </a>
@@ -1174,16 +1175,16 @@
   </div>
 
   <div class="footer-bottom">
-    <p>© 2024 Taqwa Automobile Service Center. All Rights Reserved.</p>
+    <p>© 2026 Taqwa Automobile Service Center. All Rights Reserved.</p>
   </div>
 </footer>
 
 <!-- ===== STICKY FLOATING WHATSAPP / CALL BUTTONS ===== -->
 <div class="sticky-actions" aria-label="Quick contact">
-  <a href="https://wa.me/8801601530571" class="fab fab-whatsapp" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">
+  <a href="https://wa.me/8801854226757" class="fab fab-whatsapp" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">
     <svg class="icon"><use href="#icon-whatsapp"/></svg>
   </a>
-  <a href="tel:+8801601530571" class="fab fab-call" aria-label="Call Taqwa Automobile" title="Call Now">
+  <a href="tel:+8801854226757" class="fab fab-call" aria-label="Call Taqwa Automobile" title="Call Now">
     <svg class="icon"><use href="#icon-phone"/></svg>
   </a>
 </div>

@@ -18,28 +18,82 @@
 <meta name="twitter:description" content="Certified CNG conversion in Uttara, Dhaka. Safety-tested cylinder installation, genuine kits, ECU tuning and 2 year warranty at Taqwa Automobile Service Center.">
 <meta name="twitter:image" content="https://taqwaautomobile.com/img/hero-background.jpg">
 <title>CNG Conversion - Taqwa Automobile Service Center</title>
+<!-- ===== Google Fonts: Poppins (display) + Inter (body) ===== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --red:#B8770A;
-    --red-dark:#8A5A08;
-    --green:#22A24D;
-    --ink:#0F241B;
-    --charcoal:#16362A;
-    --charcoal-2:#1E4A38;
-    --line:#295844;
-    --paper:#FBF6EC;
+    --red:#F97316;
+    --red-dark:#CE5805;
+    --green:#16A34A;
+    --ink:#101318;
+    --charcoal:#162336;
+    --charcoal-2:#1E304A;
+    --line:#293C58;
+    --paper:#F8FAFC;
     --muted:#9A9AA0;
     --off:#E9E9EC;
+
+    /* ===== Surface tokens (matches homepage design system) ===== */
+    --surface-0:#F8FAFC;
+    --surface-1:#F1F3F7;
+    --surface-2:#EEF1F6;
+    --surface-3:#EBEEF3;
+    --text-strong:#101318;
+    --text-muted:#5a5a5e;
+    --card-bg:#EFF2F6;
+    --surface-border:#EAEDF2;
+
+    /* ===== Typography scale (matches homepage design system) ===== */
+    --font-display:'Poppins', "Arial Narrow", Arial, sans-serif;
+    --font-body:'Inter', "Segoe UI", Arial, sans-serif;
+    --text-xs:13px;
+    --text-sm:14px;
+    --text-base:15px;
+    --text-md:16px;
+    --text-lg:clamp(15px, 14.6px + 0.15vw, 16px);
+    --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
+    --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
+    --text-3xl:clamp(20px, 17.7px + 0.9vw, 24px);
+    --text-4xl:clamp(24px, 20.2px + 1.5vw, 30px);
+    --text-5xl:clamp(28px, 21.9px + 2.5vw, 40px);
+    --text-6xl:clamp(32px, 23.4px + 3.4vw, 52px);
+
+    /* ===== Spacing scale (matches homepage design system) ===== */
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:clamp(14px, 13.4px + 0.24vw, 16px);
+    --space-5:clamp(18px, 16.5px + 0.6vw, 24px);
+    --space-6:clamp(22px, 19.7px + 0.9vw, 32px);
+    --space-7:clamp(32px, 28.1px + 1.5vw, 48px);
+    --space-8:clamp(40px, 33.8px + 2.4vw, 64px);
+
+    /* ===== Radius scale (matches homepage design system) ===== */
+    --radius-sm:3px;
+    --radius-md:4px;
+    --radius-lg:6px;
+    --radius-xl:10px;
+    --radius-full:50%;
+
+    /* ===== Elevation / shadow scale (matches homepage design system) ===== */
+    --shadow-1:0 2px 6px rgba(0,0,0,0.08);
+    --shadow-2:0 8px 20px -8px rgba(0,0,0,0.18);
+    --shadow-3:0 14px 34px -18px rgba(0,0,0,0.3);
+    --shadow-4:0 20px 50px -20px rgba(0,0,0,0.25);
+    --shadow-5:0 30px 60px -20px rgba(0,0,0,0.6);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: 'Inter', "Segoe UI", Arial, sans-serif;
     background:var(--ink);
     color:var(--off);
     -webkit-font-smoothing:antialiased;
   }
   .display{
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: 'Poppins', "Arial Narrow", Arial, sans-serif;
     font-weight:800;
     letter-spacing:0.5px;
     text-transform:uppercase;
@@ -51,7 +105,7 @@
   /* ===== HEADER ===== */
   header{
     background:var(--paper);
-    border-bottom:1px solid #EAF2ED;
+    border-bottom:1px solid #EAEDF2;
     position:sticky; top:0; z-index:50;
   }
   .header-inner{
@@ -64,22 +118,22 @@
   nav.main-nav{display:flex; align-items:center; gap:30px;}
   nav.main-nav > ul{display:flex; align-items:center; gap:26px;}
   nav.main-nav a{
-    font-size:13.5px; font-weight:700; letter-spacing:0.4px;
+    font-size:14.5px; font-weight:700; letter-spacing:0.4px;
     color:var(--ink); text-transform:uppercase; position:relative; padding:6px 0;
     display:flex; align-items:center; gap:4px;
   }
   nav.main-nav li.active > a{color:var(--red);}
   nav.main-nav a.accent{color:var(--red);}
   nav.main-nav a:hover{color:var(--red);}
-  .caret{font-size:15px; margin-top:1px; transition:transform .15s; line-height:1;}
+  .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
 
   /* dropdown */
   .has-dropdown{position:relative;}
   .has-dropdown:hover > a .caret{transform:rotate(180deg);}
   .dropdown-menu{
     position:absolute; top:100%; left:-18px; margin-top:14px;
-    background:#FBF6EC; min-width:220px; border-radius:4px;
-    box-shadow:0 18px 40px -12px rgba(0,0,0,0.25); border:1px solid #EAF2ED;
+    background:#F8FAFC; min-width:220px; border-radius:4px;
+    box-shadow:0 18px 40px -12px rgba(0,0,0,0.25); border:1px solid #EAEDF2;
     padding:8px; opacity:0; visibility:hidden; transform:translateY(6px);
     transition:opacity .15s ease, transform .15s ease, visibility .15s;
     z-index:60;
@@ -89,18 +143,18 @@
   }
   .dropdown-menu::before{
     content:""; position:absolute; top:-6px; left:28px;
-    width:12px; height:12px; background:#FBF6EC; border-left:1px solid #EAF2ED; border-top:1px solid #EAF2ED;
+    width:12px; height:12px; background:#F8FAFC; border-left:1px solid #EAEDF2; border-top:1px solid #EAEDF2;
     transform:rotate(45deg);
   }
   .dropdown-menu li{width:100%;}
   .dropdown-menu a{
-    display:block; padding:10px 12px; font-size:12.5px; font-weight:700;
+    display:block; padding:10px 12px; font-size:13.5px; font-weight:700;
     text-transform:none; letter-spacing:0.2px; color:var(--ink);
     border-radius:3px; white-space:nowrap;
   }
-  .dropdown-menu a:hover{background:#EEF6F0; color:var(--red);}
+  .dropdown-menu a:hover{background:#EEF1F6; color:var(--red);}
   .call-btn{
-    background:var(--red); color:#fff; font-size:13px; font-weight:700;
+    background:var(--red); color:#fff; font-size:14px; font-weight:700;
     letter-spacing:0.4px; padding:11px 22px; border-radius:3px;
     display:flex; align-items:center; gap:8px; text-transform:uppercase;
     white-space:nowrap;
@@ -120,22 +174,22 @@
 
   /* ===== MOBILE NAV DRAWER ===== */
   .mobile-nav{
-    display:none; background:#FBF6EC; border-top:1px solid #EAF2ED;
+    display:none; background:#F8FAFC; border-top:1px solid #EAEDF2;
   }
   .mobile-nav.open{display:block;}
   .mobile-nav > ul{padding:6px 20px 18px;}
-  .mobile-nav > ul > li{border-bottom:1px solid #EEF5F0;}
+  .mobile-nav > ul > li{border-bottom:1px solid #EEF1F5;}
   .mobile-nav > ul > li:last-child{border-bottom:none;}
   .mobile-nav > ul > li > a{
     display:flex; align-items:center; padding:14px 2px;
-    font-size:14px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
     color:var(--ink);
   }
   .mobile-nav li.active > a{color:var(--red);}
   .mobile-sub-toggle{
     display:flex; align-items:center; justify-content:space-between; width:100%;
     background:none; text-align:left; padding:14px 2px;
-    font-size:14px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
+    font-size:15px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase;
     color:var(--ink); font-family:inherit;
   }
   .mobile-has-sub .caret{transition:transform .2s ease;}
@@ -145,7 +199,7 @@
   }
   .mobile-has-sub.open .mobile-submenu{display:block;}
   .mobile-submenu a{
-    display:block; padding:11px 2px; font-size:13px; font-weight:600;
+    display:block; padding:11px 2px; font-size:14px; font-weight:600;
     text-transform:none; color:#555;
   }
   .mobile-submenu a:hover{color:var(--red);}
@@ -154,7 +208,7 @@
   .hero{
   position:relative;
   background:
-    linear-gradient(rgba(15,36,27,0.65), rgba(15,36,27,0.75)),
+    linear-gradient(rgba(16,19,24,0.65), rgba(16,19,24,0.75)),
     url('img/hero-background.jpg') center/cover no-repeat;
   overflow:hidden;
   padding:64px 32px 48px;
@@ -181,7 +235,7 @@
   }
 
   .eyebrow{
-    color:var(--red); font-size:12.5px; font-weight:800; letter-spacing:3px;
+    color:var(--red); font-size:13.5px; font-weight:800; letter-spacing:3px;
     margin-bottom:16px;
   }
   .hero-copy h1{
@@ -189,7 +243,7 @@
   }
   .hero-copy h1 .accent{color:var(--red);}
   .hero-sub{
-    font-family:"Arial Narrow", Arial, sans-serif; font-weight:700;
+    font-family:'Poppins', "Arial Narrow", Arial, sans-serif; font-weight:700;
     letter-spacing:1.5px; text-transform:uppercase; color:var(--off);
     font-size:15px; margin-bottom:18px;
   }
@@ -198,20 +252,20 @@
   }
   .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px;}
   .btn{
-    display:flex; align-items:center; gap:9px; font-size:14px; font-weight:800;
+    display:flex; align-items:center; gap:9px; font-size:15px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:3px;
   }
   .btn-red{background:var(--red); color:#fff;}
   .btn-red:hover{background:var(--red-dark);}
   .btn-green{background:var(--green); color:#fff;}
-  .btn-green:hover{background:#1c8a41;}
+  .btn-green:hover{background:#1C8A45;}
 
   .feature-strip{
     display:grid; grid-template-columns:repeat(4, 1fr); gap:22px 20px;
     padding-top:24px; border-top:1px solid rgba(255,255,255,0.08);
   }
   .feature-strip .item{
-    display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700;
+    display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;
     color:var(--off); text-transform:uppercase; letter-spacing:0.3px;
   }
   .feature-strip svg{flex-shrink:0;}
@@ -222,7 +276,7 @@
     border:1.5px solid var(--red);
     border-radius:4px;
     position:relative;
-    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7), 0 0 40px -10px rgba(184,119,10,0.15);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7), 0 0 40px -10px rgba(249,115,22,0.15);
     padding:30px 28px 28px;
   }
   .specialist-title{
@@ -236,24 +290,24 @@
   }
   .specialist-list{margin-bottom:22px;}
   .specialist-list li{
-    display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--off);
+    display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--off);
     margin-bottom:13px; line-height:1.4;
   }
   .specialist-list li svg{flex-shrink:0; margin-top:1px;}
   .specialist-actions{display:flex; gap:12px; margin-bottom:22px;}
-  .specialist-actions .btn{flex:1; justify-content:center; padding:13px 10px; font-size:13px;}
+  .specialist-actions .btn{flex:1; justify-content:center; padding:13px 10px; font-size:14px;}
   .specialist-address{
-    display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--off);
+    display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--off);
     line-height:1.5; margin-bottom:20px; padding-bottom:20px;
     border-bottom:1px solid rgba(255,255,255,0.08);
   }
   .specialist-address svg{flex-shrink:0; margin-top:2px;}
   .get-direction{
-    width:100%; background:#FBF6EC; color:var(--ink); font-size:13.5px; font-weight:800;
+    width:100%; background:#F8FAFC; color:var(--ink); font-size:13.5px; font-weight:800;
     letter-spacing:0.6px; text-transform:uppercase; padding:15px; border-radius:3px;
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
-  .get-direction:hover{background:#E2EDE6;}
+  .get-direction:hover{background:#E2E6ED;}
 
   /* ===== RESPONSIVE ===== */
   @media (max-width:980px){
@@ -283,7 +337,7 @@
     .hero{padding:32px 16px 28px;}
     .hero-copy h1{font-size:27px;}
     .hero-sub{font-size:13px;}
-    .eyebrow{font-size:11px; letter-spacing:2px;}
+    .eyebrow{font-size:13.5px; letter-spacing:2px;}
     .feature-strip{grid-template-columns:1fr; gap:16px;}
     .specialist-title{font-size:16px;}
     .specialist-sub{font-size:14.5px;}
@@ -297,7 +351,7 @@
 
   /* ===== FOOTER ===== */
   footer{
-    background:#17392C;
+    background:#172539;
     border-top:1px solid var(--line);
     padding:64px 32px 0;
   }
@@ -308,7 +362,7 @@
   }
   .footer-col .flogo{display:flex; align-items:center; margin-bottom:18px;}
   .footer-logo-img{height:38px; width:auto; display:block;}
-  .footer-col p.about{color:var(--muted); font-size:13.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
+  .footer-col p.about{color:var(--muted); font-size:14.5px; line-height:1.75; margin-bottom:20px; max-width:250px;}
   .footer-social{display:flex; gap:10px;}
   .footer-social a{
     width:32px; height:32px; border-radius:50%; background:var(--charcoal-2);
@@ -328,15 +382,15 @@
   .flist{margin-top:20px;}
   .flist li{margin-bottom:12px;}
   .flist a{
-    font-size:13.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
+    font-size:14.5px; color:var(--muted); display:flex; align-items:center; gap:8px;
     transition:color .15s;
   }
   .flist a:hover{color:#fff;}
-  .flist a .arrow{color:var(--red); font-size:12px; font-weight:800;}
+  .flist a .arrow{color:var(--red); font-size:13px; font-weight:800;}
 
   .fcontact{margin-top:20px;}
   .fcontact li{
-    display:flex; align-items:flex-start; gap:11px; font-size:13.5px; color:var(--muted);
+    display:flex; align-items:flex-start; gap:11px; font-size:14.5px; color:var(--muted);
     margin-bottom:16px; line-height:1.55;
   }
   .fcontact li svg{flex-shrink:0; margin-top:2px;}
@@ -345,25 +399,25 @@
 
   .fcallnow{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--red); color:#fff; font-size:13px; font-weight:800;
+    background:var(--red); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:3px;
     margin-top:22px;
   }
   .fcallnow:hover{background:var(--red-dark);}
   .fwhatsapp{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--green); color:#fff; font-size:13px; font-weight:800;
+    background:var(--green); color:#fff; font-size:14px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px; border-radius:3px;
     margin-top:14px;
   }
-  .fwhatsapp:hover{background:#1c8a41;}
+  .fwhatsapp:hover{background:#1C8A45;}
 
   .footer-bottom{
     border-top:1px solid var(--line);
     padding:22px 0;
     text-align:center;
   }
-  .footer-bottom p{font-size:12.5px; color:var(--muted); letter-spacing:0.3px;}
+  .footer-bottom p{font-size:13.5px; color:var(--muted); letter-spacing:0.3px;}
 
   @media (max-width:980px){
     .footer-inner{grid-template-columns:1fr 1fr; gap:36px;}
@@ -380,7 +434,7 @@
 
   /* ===== CAR WASH & DETAILING ===== */
   .carwash-section{
-    background:#F3F8F5;
+    background:#F3F5F8;
     padding:56px 32px;
   }
   .carwash-inner{
@@ -395,7 +449,7 @@
     position:relative;
     background:
       radial-gradient(ellipse 500px 400px at 70% 30%, rgba(255,255,255,0.06), transparent 60%),
-      linear-gradient(135deg, #2A5A46 0%, #122A20 100%);
+      linear-gradient(135deg, #2A3E5A 0%, #121C2A 100%);
     aspect-ratio:420 / 260;
     min-height:220px;
     overflow:hidden;
@@ -415,7 +469,7 @@
 
   /* middle content panel */
   .carwash-content{
-    background:#FBF6EC;
+    background:#F8FAFC;
     padding:40px 40px;
     display:flex; flex-direction:column; justify-content:center;
   }
@@ -424,21 +478,21 @@
   }
   .carwash-content h2 .accent{color:var(--red);}
   .carwash-content > p{
-    font-size:14px; line-height:1.75; color:#5a5a5e; max-width:420px; margin-bottom:26px;
+    font-size:15px; line-height:1.75; color:#5a5a5e; max-width:420px; margin-bottom:26px;
   }
   .carwash-features{
     display:grid; grid-template-columns:1fr 1fr; gap:16px 28px;
   }
   .carwash-features .cf-item{
     display:flex; align-items:center; gap:10px;
-    font-size:13px; font-weight:700; color:var(--ink);
+    font-size:14px; font-weight:700; color:var(--ink);
   }
   .carwash-features svg{flex-shrink:0;}
 
   /* right CTA panel */
   .carwash-cta{
     position:relative;
-    background:linear-gradient(160deg, #1A3F30 0%, #0B1B14 100%);
+    background:linear-gradient(160deg, #1A293F 0%, #0B121B 100%);
     padding:32px 20px;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     text-align:center;
@@ -457,7 +511,7 @@
   }
   .carwash-book-btn{
     display:inline-flex; align-items:center; gap:8px;
-    background:var(--red); color:#fff; font-size:12.5px; font-weight:800;
+    background:var(--red); color:#fff; font-size:13.5px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:12px 18px; border-radius:3px;
     white-space:nowrap;
   }
@@ -480,7 +534,7 @@
 
   /* ===== OUR SERVICES ===== */
   .services-section{
-    background:#FBF6EC;
+    background:#F8FAFC;
     padding:64px 32px;
   }
   .services-inner{max-width:1280px; margin:0 auto;}
@@ -518,13 +572,14 @@
     flex:1 1 auto; display:flex; flex-direction:column; justify-content:center;
   }
   .service-card p{
-    color:var(--muted); font-size:12.5px; line-height:1.7; margin-bottom:18px;
+    color:var(--muted); font-size:13.5px; line-height:1.7; margin-bottom:18px;
   }
   .service-card .read-more{
-    color:#fff; font-size:12px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+    color:#fff; font-size:13px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
     display:inline-flex; align-items:center; gap:8px;
   }
-  .service-card .read-more svg{width:15px; height:15px;}
+  .service-card .read-more svg{width:15px; height:15px; transition:transform .2s ease;}
+  .service-card .read-more:hover svg{transform:translateX(4px);}
 
   .extra-services{display:none;}
   .extra-services.show{display:contents;}
@@ -550,13 +605,13 @@
 
   /* ===== HYBRID SPECIAL SERVICES ===== */
   .hybrid-section{
-    background:#F1F7F3;
+    background:#F1F3F7;
     padding:56px 32px;
   }
   .hybrid-inner{max-width:1280px; margin:0 auto;}
 
   .hybrid-panel{
-    background:linear-gradient(150deg, #183A2D 0%, #0A1712 100%);
+    background:linear-gradient(150deg, #18263A 0%, #0A0F17 100%);
     border-radius:6px;
     padding:34px 38px 32px;
     position:relative; overflow:hidden;
@@ -585,11 +640,11 @@
   .hybrid-num{
     flex-shrink:0; width:32px; height:32px; border:1.5px solid var(--red); border-radius:4px;
     display:flex; align-items:center; justify-content:center;
-    color:var(--red); font-size:12px; font-weight:800;
+    color:var(--red); font-size:13px; font-weight:800;
   }
   .hybrid-num svg{width:18px; height:18px;}
-  .hybrid-item h4{color:#fff; font-size:12.5px; letter-spacing:0.2px; margin-bottom:6px; line-height:1.3;}
-  .hybrid-item p{color:var(--muted); font-size:11px; line-height:1.6;}
+  .hybrid-item h4{color:#fff; font-size:13.5px; letter-spacing:0.2px; margin-bottom:6px; line-height:1.3;}
+  .hybrid-item p{color:var(--muted); font-size:13.5px; line-height:1.6;}
 
   .hybrid-illustration{
     position:relative; display:flex; align-items:center; justify-content:center;
@@ -598,13 +653,13 @@
   .hybrid-illustration svg{width:100%; height:auto;}
 
   .hybrid-features-strip{
-    background:#EBF3EE; border-radius:6px; margin-top:18px;
+    background:#EBEEF3; border-radius:6px; margin-top:18px;
     padding:22px 28px;
     display:grid; grid-template-columns:repeat(6, 1fr); gap:18px;
   }
   .hf-item{display:flex; align-items:center; gap:11px;}
   .hf-item svg{flex-shrink:0;}
-  .hf-item span{font-size:11.5px; font-weight:700; color:var(--ink); line-height:1.35;}
+  .hf-item span{font-size:14px; font-weight:700; color:var(--ink); line-height:1.35;}
 
   @media (max-width:1100px){
     .hybrid-content{grid-template-columns:1fr;}
@@ -627,7 +682,7 @@
 
   /* ===== WHY CHOOSE TAQWA ===== */
   .why-choose-section{
-    background:#FBF6EC;
+    background:#F8FAFC;
     padding:60px 32px;
   }
   .why-choose-inner{
@@ -649,7 +704,7 @@
   }
   .btn-learn{
     display:inline-flex; align-items:center; gap:8px;
-    background:var(--red); color:#fff; font-size:12.5px; font-weight:800;
+    background:var(--red); color:#fff; font-size:13.5px; font-weight:800;
     letter-spacing:0.5px; text-transform:uppercase; padding:12px 22px; border-radius:3px;
   }
   .btn-learn:hover{background:var(--red-dark);}
@@ -669,17 +724,17 @@
       linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size:22px 22px;
   }
-  .wc-card.tech{background:radial-gradient(ellipse at 35% 25%, #2A5E4A, #0A1712 70%);}
-  .wc-card.tools{background:radial-gradient(ellipse at 60% 30%, #254E3C, #0A1712 70%);}
-  .wc-card.parts{background:radial-gradient(ellipse at 40% 40%, #285440, #0A1712 70%);}
-  .wc-card.service{background:radial-gradient(ellipse at 50% 25%, #1F4C3A, #0A1712 70%);}
+  .wc-card.tech{background:radial-gradient(ellipse at 35% 25%, #2A3F5E, #0A0F17 70%);}
+  .wc-card.tools{background:radial-gradient(ellipse at 60% 30%, #25364E, #0A0F17 70%);}
+  .wc-card.parts{background:radial-gradient(ellipse at 40% 40%, #283A54, #0A0F17 70%);}
+  .wc-card.service{background:radial-gradient(ellipse at 50% 25%, #1F314C, #0A0F17 70%);}
   .wc-card .wc-icon{position:relative; z-index:1;}
   .wc-card .wc-label{
     position:absolute; left:0; right:0; bottom:0; z-index:2;
     padding:16px 8px 14px;
     background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
     text-align:center;
-    color:#fff; font-size:12px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
+    color:#fff; font-size:13px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
   }
 
   @media (max-width:980px){
@@ -696,7 +751,7 @@
 
   /* ===== OUR ENVIRONMENT ===== */
   .env-section{
-    background:#F1F7F3;
+    background:#F1F3F7;
     padding:60px 32px;
   }
   .env-inner{max-width:1280px; margin:0 auto;}
@@ -722,18 +777,18 @@
       linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size:22px 22px;
   }
-  .env-image.ac{background:radial-gradient(ellipse at 35% 25%, #1B4234, #0A1913 70%);}
-  .env-image.oil{background:radial-gradient(ellipse at 55% 30%, #295642, #0D1A11 70%);}
-  .env-image.advice{background:radial-gradient(ellipse at 40% 25%, #285440, #0A1712 70%);}
-  .env-image.full{background:radial-gradient(ellipse at 50% 30%, #224A38, #0A1712 70%);}
+  .env-image.ac{background:radial-gradient(ellipse at 35% 25%, #1B2B42, #0A1019 70%);}
+  .env-image.oil{background:radial-gradient(ellipse at 55% 30%, #293B56, #0D121A 70%);}
+  .env-image.advice{background:radial-gradient(ellipse at 40% 25%, #283A54, #0A0F17 70%);}
+  .env-image.full{background:radial-gradient(ellipse at 50% 30%, #22324A, #0A0F17 70%);}
   .env-image svg{position:relative; z-index:1;}
 
   .env-caption{
     background:linear-gradient(165deg, var(--red) 0%, var(--red-dark) 100%);
     padding:22px 22px 24px; text-align:center; flex:1;
   }
-  .env-card h3{color:#fff; font-size:15.5px; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:10px;}
-  .env-card p{color:rgba(255,255,255,0.85); font-size:12px; line-height:1.65;}
+  .env-card h3{color:#fff; font-size:16.5px; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:10px;}
+  .env-card p{color:rgba(255,255,255,0.85); font-size:13px; line-height:1.65;}
 
   @media (max-width:1024px){
     .env-grid{grid-template-columns:repeat(2, 1fr);}
@@ -747,7 +802,7 @@
   /* ===== OUR FEATURES ===== */
   .features-section{
     display:grid; grid-template-columns:1fr 1fr;
-    background:#F1F7F3;
+    background:#F1F3F7;
     align-items:stretch;
     max-width:1800px; margin:0 auto;
   }
@@ -772,7 +827,7 @@
   .feat-card.c-red{background:var(--red);}
   .feat-card.c-black{background:var(--ink);}
   .feat-card h4{
-    color:#fff; font-size:14px; letter-spacing:0.3px; text-transform:uppercase;
+    color:#fff; font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
     display:flex; align-items:center; gap:14px;
   }
   .feat-icon-wrap{
@@ -780,11 +835,11 @@
     background:rgba(255,255,255,0.16);
     display:flex; align-items:center; justify-content:center;
   }
-  .feat-card p{color:rgba(255,255,255,0.85); font-size:12px; line-height:1.65;}
+  .feat-card p{color:rgba(255,255,255,0.85); font-size:13px; line-height:1.65;}
 
   .features-right{
     position:relative; overflow:hidden; min-width:0; min-height:460px;
-    background:linear-gradient(150deg, #224A38 0%, #0A1712 100%);
+    background:linear-gradient(150deg, #22324A 0%, #0A0F17 100%);
   }
   .features-right::before{
     content:""; position:absolute; inset:0;
@@ -823,7 +878,7 @@
 
   /* ===== FAQ ===== */
   .faq-section{
-    background:#FBF6EC;
+    background:#F8FAFC;
     padding:64px 32px;
   }
   .faq-inner{max-width:1280px; margin:0 auto;}
@@ -839,16 +894,22 @@
   .faq-item{border-radius:2px; overflow:hidden;}
   .faq-question{
     width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:#2A5C48; color:#fff; border:none; text-align:left;
+    background:#2A3E5C; color:#fff; border:none; text-align:left;
     padding:20px 22px; font-family:inherit;
     font-size:14px; font-weight:800; letter-spacing:0.3px; text-transform:uppercase;
     cursor:pointer;
   }
-  .faq-question:hover{background:#356A52;}
-  .faq-question .faq-arrow{flex-shrink:0; margin-left:16px; transition:transform .25s ease;}
-  .faq-item.open .faq-question .faq-arrow{transform:rotate(135deg);}
+  .faq-question:hover{background:#354B6A;}
+  .faq-question .faq-arrow{position:relative; flex-shrink:0; width:16px; height:16px; margin-left:16px;}
+  .faq-question .faq-arrow::before, .faq-question .faq-arrow::after{
+    content:""; position:absolute; top:50%; left:50%; background:#fff; border-radius:1px;
+    transform:translate(-50%,-50%); transition:transform .25s ease, opacity .25s ease;
+  }
+  .faq-question .faq-arrow::before{width:14px; height:2px;}
+  .faq-question .faq-arrow::after{width:2px; height:14px;}
+  .faq-item.open .faq-question .faq-arrow::after{transform:translate(-50%,-50%) rotate(90deg) scale(0); opacity:0;}
   .faq-answer{
-    max-height:0; overflow:hidden; background:#EFF6F1;
+    max-height:0; overflow:hidden; background:#EFF2F6;
     transition:max-height .3s ease;
   }
   .faq-item.open .faq-answer{max-height:220px;}
@@ -857,13 +918,13 @@
   @media (max-width:560px){
     .faq-section{padding:44px 20px;}
     .faq-header h2{font-size:21px;}
-    .faq-question{padding:16px 18px; font-size:12.5px;}
+    .faq-question{padding:16px 18px; font-size:13.5px;}
     .faq-answer-inner{padding:18px 18px 22px; font-size:13px;}
   }
 
   /* ===== OUR LATEST NEWS ===== */
   .news-section{
-    background:#FBF6EC;
+    background:#F8FAFC;
     padding:64px 32px;
   }
   .news-inner{max-width:1280px; margin:0 auto;}
@@ -895,12 +956,12 @@
       linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size:22px 22px;
   }
-  .news-image.lpg{background:radial-gradient(ellipse at 35% 25%, #234A36, #0A1712 70%);}
-  .news-image.oil{background:radial-gradient(ellipse at 55% 30%, #295642, #0D1A11 70%);}
-  .news-image.brake{background:radial-gradient(ellipse at 40% 30%, #234838, #0A1712 70%);}
-  .news-image.maint{background:radial-gradient(ellipse at 45% 25%, #1B4030, #0A1712 70%);}
-  .news-image.battery{background:radial-gradient(ellipse at 55% 30%, #234E3C, #0A1712 70%);}
-  .news-image.engine{background:radial-gradient(ellipse at 40% 30%, #295642, #0A1712 70%);}
+  .news-image.lpg{background:radial-gradient(ellipse at 35% 25%, #23334A, #0A0F17 70%);}
+  .news-image.oil{background:radial-gradient(ellipse at 55% 30%, #293B56, #0D121A 70%);}
+  .news-image.brake{background:radial-gradient(ellipse at 40% 30%, #233248, #0A0F17 70%);}
+  .news-image.maint{background:radial-gradient(ellipse at 45% 25%, #1B2A40, #0A0F17 70%);}
+  .news-image.battery{background:radial-gradient(ellipse at 55% 30%, #23344E, #0A0F17 70%);}
+  .news-image.engine{background:radial-gradient(ellipse at 40% 30%, #293B56, #0A0F17 70%);}
   .news-image svg{position:relative; z-index:1;}
   .news-date{
     position:absolute; right:0; bottom:0; z-index:2;
@@ -910,20 +971,21 @@
   }
 
   .news-body{
-    background:#EFF6F1; padding:24px 22px 26px;
+    background:#EFF2F6; padding:24px 22px 26px;
     flex:1 1 auto; display:flex; flex-direction:column;
   }
   .news-card h3{
     color:var(--ink); font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
     margin-bottom:12px; line-height:1.35;
   }
-  .news-card p{color:#666; font-size:12.5px; line-height:1.7; margin-bottom:16px; flex:1;}
+  .news-card p{color:#666; font-size:13.5px; line-height:1.7; margin-bottom:16px; flex:1;}
   .news-read-more{
-    color:var(--red); font-size:12px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;
+    color:var(--red); font-size:13px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;
     display:inline-flex; align-items:center; gap:8px;
   }
   .news-read-more:hover{color:var(--red-dark);}
-  .news-read-more svg{width:16px; height:16px;}
+  .news-read-more svg{width:16px; height:16px; transition:transform .2s ease;}
+  .news-read-more:hover svg{transform:translateX(4px);}
 
   .news-nav{
     display:flex; justify-content:center; align-items:center; gap:16px; margin-top:32px;
@@ -946,7 +1008,7 @@
   /* ===== ABOUT PAGE: PAGE BANNER ===== */
   .page-banner{
     position:relative;
-    background:linear-gradient(150deg, #183A2D 0%, #0A1712 100%);
+    background:linear-gradient(150deg, #18263A 0%, #0A0F17 100%);
     overflow:hidden;
     padding:68px 32px 58px;
     text-align:center;
@@ -974,7 +1036,7 @@
   }
   .breadcrumb a{color:var(--off);}
   .breadcrumb a:hover{color:var(--red);}
-  .breadcrumb .sep{color:var(--red); font-size:11px;}
+  .breadcrumb .sep{color:var(--red); font-size:13.5px;}
   .breadcrumb .current{color:var(--red);}
 
   @media (max-width:760px){
@@ -984,11 +1046,11 @@
   @media (max-width:420px){
     .page-banner{padding:36px 16px 32px;}
     .page-banner h1{font-size:25px;}
-    .breadcrumb{font-size:11.5px;}
+    .breadcrumb{font-size:14px;}
   }
 
   /* ===== ABOUT PAGE: OUR STORY ===== */
-  .story-section{background:#FBF6EC; padding:64px 32px 0;}
+  .story-section{background:#F8FAFC; padding:64px 32px 0;}
   .story-inner{
     max-width:1280px; margin:0 auto;
     display:grid; grid-template-columns:1fr 0.95fr; gap:56px; align-items:center;
@@ -1032,11 +1094,11 @@
   }
   .stat-card:last-child{border-right:none;}
   .stat-number{
-    font-family:"Arial Narrow", Arial, sans-serif; font-weight:800;
+    font-family:'Poppins', "Arial Narrow", Arial, sans-serif; font-weight:800;
     font-size:40px; color:var(--red); letter-spacing:0.4px; margin-bottom:8px;
   }
   .stat-label{
-    color:var(--off); font-size:12.5px; text-transform:uppercase;
+    color:var(--off); font-size:13.5px; text-transform:uppercase;
     letter-spacing:0.4px; font-weight:700;
   }
   @media (max-width:760px){
@@ -1050,7 +1112,7 @@
   }
 
   /* ===== HYBRID SERVICE PROCESS ===== */
-  .hybrid-process-section{background:#FBF6EC; padding:60px 32px;}
+  .hybrid-process-section{background:#F8FAFC; padding:60px 32px;}
   .hybrid-process-inner{max-width:1280px; margin:0 auto;}
   .hybrid-process-header{text-align:center; margin-bottom:42px;}
   .hybrid-process-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
@@ -1070,7 +1132,7 @@
     color:#fff; font-weight:800; font-size:14px;
   }
   .hp-item h3{font-size:14.5px; color:var(--ink); margin-bottom:8px; letter-spacing:0.2px; line-height:1.3;}
-  .hp-item p{color:#666; font-size:12.5px; line-height:1.7;}
+  .hp-item p{color:#666; font-size:13.5px; line-height:1.7;}
 
   @media (max-width:900px){
     .hybrid-process-steps{grid-template-columns:repeat(2, 1fr);}
@@ -1084,7 +1146,7 @@
   }
 
   /* ===== ABOUT PAGE: SERVICES RECAP ===== */
-  .services-recap-section{background:#F1F7F3; padding:60px 32px;}
+  .services-recap-section{background:#F1F3F7; padding:60px 32px;}
   .services-recap-inner{max-width:1280px; margin:0 auto;}
   .services-recap-header{text-align:center; margin-bottom:42px;}
   .services-recap-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
@@ -1097,7 +1159,7 @@
   }
 
   /* ===== ABOUT PAGE: TEAM ===== */
-  .team-section{background:#FBF6EC; padding:60px 32px;}
+  .team-section{background:#F8FAFC; padding:60px 32px;}
   .team-inner{max-width:1280px; margin:0 auto;}
   .team-header{text-align:center; margin-bottom:42px;}
   .team-header h2{font-size:30px; color:var(--ink); letter-spacing:0.4px;}
@@ -1113,7 +1175,7 @@
     display:flex; align-items:center; justify-content:center;
   }
   .team-card h3{font-size:14.5px; color:var(--ink); margin-bottom:6px; letter-spacing:0.2px;}
-  .team-card p{color:var(--red); font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.4px;}
+  .team-card p{color:var(--red); font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.4px;}
 
   @media (max-width:900px){
     .team-grid{grid-template-columns:repeat(2, 1fr);}
@@ -1129,7 +1191,7 @@
   /* ===== ABOUT PAGE: CTA ===== */
   .about-cta-section{
     position:relative; overflow:hidden;
-    background:linear-gradient(135deg, #2A5A46 0%, #122A20 100%);
+    background:linear-gradient(135deg, #2A3E5A 0%, #121C2A 100%);
     padding:60px 32px; text-align:center;
   }
   .about-cta-section::before{
@@ -1159,9 +1221,9 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo">
+    <a href="index.html" class="logo" aria-label="Taqwa Automobile - Home">
       <img class="logo-img" src="img/logo.png" width="1555" height="593" alt="Taqwa Automobile">
-    </div>
+    </a>
 
     <nav class="main-nav">
       <ul>
@@ -1174,7 +1236,7 @@
     </li>
 
     <li class="has-dropdown active">
-        <a href="index.html#services">Services <span class="caret">▼</span></a>
+        <a href="index.html#services">Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <ul class="dropdown-menu">
             <li><a href="lpg-conversion.html">LPG Conversion</a></li>
             <li class="active"><a href="cng-conversion.html">CNG Conversion</a></li>
@@ -1205,7 +1267,7 @@
   </ul>
     </nav>
 
-    <a href="tel:+8801601530571" class="call-btn">
+    <a href="tel:+8801854226757" class="call-btn">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span class="txt">Call Now</span>
     </a>
@@ -1227,7 +1289,7 @@
 
     <li class="mobile-has-sub active" id="mobileServicesItem">
         <button class="mobile-sub-toggle" id="mobileServicesToggle">
-            Services <span class="caret">▼</span>
+            Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
 
         <ul class="mobile-submenu">
@@ -1296,7 +1358,7 @@
       <div class="hybrid-grid" style="margin-top:30px; padding-top:28px; border-top:1px solid rgba(255,255,255,0.08); position:relative;">
 
         <div class="hybrid-item">
-          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11l-1.3 8L18.5 9.5H12z" stroke="#B8770A" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11l-1.3 8L18.5 9.5H12z" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
           <div>
             <h4>Lower Running Cost</h4>
             <p>CNG is among the cheapest fuels on the road, meaning noticeably lower cost per kilometer compared to petrol.</p>
@@ -1304,7 +1366,7 @@
         </div>
 
         <div class="hybrid-item">
-          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#B8770A" stroke-width="1.5"/><circle cx="12" cy="9.5" r="2.3" stroke="#B8770A" stroke-width="1.5"/></svg></div>
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#F97316" stroke-width="1.5"/><circle cx="12" cy="9.5" r="2.3" stroke="#F97316" stroke-width="1.5"/></svg></div>
           <div>
             <h4>Widely Available Refills</h4>
             <p>CNG filling stations are common across Dhaka, making it a practical everyday fuel choice for daily driving.</p>
@@ -1312,7 +1374,7 @@
         </div>
 
         <div class="hybrid-item">
-          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0113-6" stroke="#B8770A" stroke-width="1.4" stroke-linecap="round"/><path d="M17 6l-1-3.5L20 4" stroke="#B8770A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 01-13 6" stroke="#B8770A" stroke-width="1.4" stroke-linecap="round"/><path d="M7 18l1 3.5L4 20" stroke="#B8770A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0113-6" stroke="#F97316" stroke-width="1.4" stroke-linecap="round"/><path d="M17 6l-1-3.5L20 4" stroke="#F97316" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 01-13 6" stroke="#F97316" stroke-width="1.4" stroke-linecap="round"/><path d="M7 18l1 3.5L4 20" stroke="#F97316" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div>
             <h4>Cleaner Emissions</h4>
             <p>CNG burns cleaner than petrol, producing fewer harmful emissions — better for the environment and engine health.</p>
@@ -1320,7 +1382,7 @@
         </div>
 
         <div class="hybrid-item">
-          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="1.5" stroke="#B8770A" stroke-width="1.4"/><rect x="9.5" y="9.5" width="5" height="5" stroke="#B8770A" stroke-width="1.2"/><line x1="8" y1="2" x2="8" y2="6" stroke="#B8770A" stroke-width="1.2"/><line x1="16" y1="2" x2="16" y2="6" stroke="#B8770A" stroke-width="1.2"/><line x1="8" y1="18" x2="8" y2="22" stroke="#B8770A" stroke-width="1.2"/><line x1="16" y1="18" x2="16" y2="22" stroke="#B8770A" stroke-width="1.2"/></svg></div>
+          <div class="hybrid-num"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="1.5" stroke="#F97316" stroke-width="1.4"/><rect x="9.5" y="9.5" width="5" height="5" stroke="#F97316" stroke-width="1.2"/><line x1="8" y1="2" x2="8" y2="6" stroke="#F97316" stroke-width="1.2"/><line x1="16" y1="2" x2="16" y2="6" stroke="#F97316" stroke-width="1.2"/><line x1="8" y1="18" x2="8" y2="22" stroke="#F97316" stroke-width="1.2"/><line x1="16" y1="18" x2="16" y2="22" stroke="#F97316" stroke-width="1.2"/></svg></div>
           <div>
             <h4>Durable, Long-Lasting Cylinder</h4>
             <p>Quality cylinders built for daily, high-mileage driving, backed by our own installation and safety checks.</p>
@@ -1333,27 +1395,27 @@
 
     <div class="hybrid-features-strip">
       <div class="hf-item">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#B8770A"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Certified Conversion Kits</span>
       </div>
       <div class="hf-item">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#B8770A"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Safety-Checked Installation</span>
       </div>
       <div class="hf-item">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#B8770A"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>2 Year Service Warranty</span>
       </div>
       <div class="hf-item">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#B8770A"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Experienced Gas Conversion Specialists</span>
       </div>
       <div class="hf-item">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#B8770A"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Government Safety Standard Compliant</span>
       </div>
       <div class="hf-item">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#B8770A"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F97316"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Honest Fuel-Type Advice</span>
       </div>
     </div>
@@ -1553,7 +1615,7 @@
         <div class="faq-item">
           <button class="faq-question">
             Is CNG conversion safe for my car?
-            <svg class="faq-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Yes, when installed and tested correctly. Every conversion at Taqwa Automobile goes through pressure and leak testing before the car leaves our workshop.</div>
@@ -1563,7 +1625,7 @@
         <div class="faq-item">
           <button class="faq-question">
             How long does CNG conversion take?
-            <svg class="faq-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Most conversions are completed within a day, depending on your vehicle and the kit chosen. We'll give you a clear time estimate at consultation.</div>
@@ -1573,7 +1635,7 @@
         <div class="faq-item">
           <button class="faq-question">
             Will CNG conversion affect my engine warranty?
-            <svg class="faq-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">This can vary by manufacturer, so we recommend checking with your vehicle's warranty provider. We always use genuine kits and proper installation to minimize any risk to your engine.</div>
@@ -1583,7 +1645,7 @@
         <div class="faq-item">
           <button class="faq-question">
             How much can I save by switching to CNG?
-            <svg class="faq-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Savings depend on your vehicle, engine size and how much you drive. Our team can walk you through the numbers for your specific car during a free consultation.</div>
@@ -1593,7 +1655,7 @@
         <div class="faq-item">
           <button class="faq-question">
             Do I need to renew my CNG cylinder certification?
-            <svg class="faq-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="faq-arrow" aria-hidden="true"></span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">Yes, CNG cylinders require periodic re-testing and renewal. We handle this for you and can remind you when your next check is due.</div>
@@ -1610,15 +1672,15 @@
     <h2>Ready to Save on Fuel with CNG?</h2>
     <p>Book your free consultation or ask our specialists a question &mdash; call, message us on WhatsApp, or visit our workshop in Uttara.</p>
     <div class="about-cta-address">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#B8770A" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.3" stroke="#B8770A" stroke-width="1.6"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#F97316" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.3" stroke="#F97316" stroke-width="1.6"/></svg>
       <span>Sector # 15, Block # C, Road # 3/A, Plot # 40, Diabari, Uttara, Dhaka.</span>
     </div>
     <div class="about-cta-actions">
-      <a href="tel:+8801601530571" class="btn btn-red">
+      <a href="tel:+8801854226757" class="btn btn-red">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Call Now
       </a>
-      <a href="https://wa.me/8801601530571" class="btn btn-green">
+      <a href="https://wa.me/8801854226757" class="btn btn-green">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.6 6.32A8.86 8.86 0 0012 4a8.94 8.94 0 00-7.75 13.4L3 21l3.7-1.23A8.94 8.94 0 0012 21a8.94 8.94 0 006.32-15.32z" stroke="#fff" stroke-width="1.6"/><path d="M9 8.5c.3-.6 1-1 1.6-.5.5.4.9 1.4.6 2-.3.6-1.1 1.1-.7 1.9.5.9 1.7 2.1 2.6 2.6.8.4 1.3-.4 1.9-.7.6-.3 1.6.1 2 .6.5.6.1 1.3-.5 1.6-1.2.6-2.7.4-4-.2-1.8-.8-3.4-2.4-4.2-4.2-.6-1.3-.8-2.8-.2-4z" fill="#fff"/></svg>
         WhatsApp Us
       </a>
@@ -1664,40 +1726,40 @@
       <div class="fhead">Contact Info</div>
       <ul class="fcontact">
         <li>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#B8770A" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.3" stroke="#B8770A" stroke-width="1.6"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5a7 7 0 10-14 0C5 14.5 12 21 12 21z" stroke="#F97316" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.3" stroke="#F97316" stroke-width="1.6"/></svg>
           <span>Sector # 15, Block # C, Road # 3/A, Plot # 40 Diabari, Uttara, Dhaka.</span>
         </li>
         <li>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#B8770A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <a href="tel:+8801601530571">01601-530571</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <a href="tel:+8801854226757">01854226757</a>
         </li>
         <li>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#B8770A" stroke-width="1.6"/><path d="M2 6l10 7 10-7" stroke="#B8770A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <a href="mailto:info@taqwaautomobile.com">info@taqwaautomobile.com</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#F97316" stroke-width="1.6"/><path d="M2 6l10 7 10-7" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <a href="mailto:mosharrafhossen090@gmail.com">mosharrafhossen090@gmail.com</a>
         </li>
       </ul>
     </div>
 
     <div class="footer-col">
       <div class="fhead">Follow Us</div>
-      <a href="tel:+8801601530571" class="fcallnow" style="margin-top:20px;">
+      <a href="tel:+8801854226757" class="fcallnow" style="margin-top:20px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Call Now
       </a>
-      <a href="https://wa.me/8801601530571" class="fwhatsapp">
+      <a href="https://wa.me/8801854226757" class="fwhatsapp">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17.6 6.32A8.86 8.86 0 0012 4a8.94 8.94 0 00-7.75 13.4L3 21l3.7-1.23A8.94 8.94 0 0012 21a8.94 8.94 0 006.32-15.32z" stroke="#fff" stroke-width="1.6"/><path d="M9 8.5c.3-.6 1-1 1.6-.5.5.4.9 1.4.6 2-.3.6-1.1 1.1-.7 1.9.5.9 1.7 2.1 2.6 2.6.8.4 1.3-.4 1.9-.7.6-.3 1.6.1 2 .6.5.6.1 1.3-.5 1.6-1.2.6-2.7.4-4-.2-1.8-.8-3.4-2.4-4.2-4.2-.6-1.3-.8-2.8-.2-4z" fill="#fff"/></svg>
         WhatsApp Us
       </a>
       <div class="footer-social" style="margin-top:20px;">
         <a href="#" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17 3h-3a5 5 0 00-5 5v3H6v4h3v9h4v-9h3l1-4h-4V8a1 1 0 011-1h3z" fill="#fff"/></svg></a>
-        <a href="#" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="4" fill="#fff"/><path d="M10 9l6 3-6 3z" fill="#17392C"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="4" fill="#fff"/><path d="M10 9l6 3-6 3z" fill="#172539"/></svg></a>
         <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.1" fill="#fff"/></svg></a>
       </div>
     </div>
   </div>
 
   <div class="footer-bottom">
-    <p>© 2024 Taqwa Automobile Service Center. All Rights Reserved.</p>
+    <p>© 2026 Taqwa Automobile Service Center. All Rights Reserved.</p>
   </div>
 </footer>
 
