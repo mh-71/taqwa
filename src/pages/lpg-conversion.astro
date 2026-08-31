@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
@@ -9,7 +10,7 @@ import Layout from '../layouts/Layout.astro';
   current="services"
 >
 
-<style>
+<style define:vars={{ heroBg: `url(${base}img/hero-background.jpg)` }}>
   :root{
     --red:#F97316;
     --red-dark:#CE5805;
@@ -219,7 +220,7 @@ import Layout from '../layouts/Layout.astro';
     position:relative;
     background:
       linear-gradient(rgba(16,19,24,0.72), rgba(16,19,24,0.82)),
-      url('img/hero-background.jpg') center/cover no-repeat;
+      var(--heroBg) center/cover no-repeat;
     overflow:hidden;
     padding:56px 32px 48px;
   }
@@ -630,7 +631,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
     <div class="overview-visual">
-      <img src="img/lpg.jpg" alt="LPG conversion installation at Taqwa Automobile">
+      <img src={base + "img/lpg.jpg"} alt="LPG conversion installation at Taqwa Automobile">
       <div class="overview-badge">
         <div class="num">10+</div>
         <div class="txt">Years of<br>Experience</div>

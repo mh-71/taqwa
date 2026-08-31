@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
@@ -585,7 +586,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="blog-card">
           <div class="blog-card-image">
             <span class="blog-card-cat">LPG &amp; CNG</span>
-            <img src="img/latest-1.jpg" alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
+            <img src={base + "img/latest-1.jpg"} alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
           </div>
           <div class="blog-card-body">
             <div class="blog-card-date">
@@ -603,7 +604,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="blog-card">
           <div class="blog-card-image">
             <span class="blog-card-cat">Maintenance</span>
-            <img src="img/latest-2.jpg" alt="5 Signs Your Car Needs an Oil Change Now">
+            <img src={base + "img/latest-2.jpg"} alt="5 Signs Your Car Needs an Oil Change Now">
           </div>
           <div class="blog-card-body">
             <div class="blog-card-date">
@@ -621,7 +622,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="blog-card">
           <div class="blog-card-image">
             <span class="blog-card-cat">Hybrid Tips</span>
-            <img src="img/latest-3.jpg" alt="How to Extend the Life of Your Hybrid Battery">
+            <img src={base + "img/latest-3.jpg"} alt="How to Extend the Life of Your Hybrid Battery">
           </div>
           <div class="blog-card-body">
             <div class="blog-card-date">
@@ -639,7 +640,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="blog-card">
           <div class="blog-card-image">
             <span class="blog-card-cat">Car Care</span>
-            <img src="img/evn-1.jpg" alt="Why Regular AC Service Matters Before Summer">
+            <img src={base + "img/evn-1.jpg"} alt="Why Regular AC Service Matters Before Summer">
           </div>
           <div class="blog-card-body">
             <div class="blog-card-date">
@@ -657,7 +658,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="blog-card">
           <div class="blog-card-image">
             <span class="blog-card-cat">Hybrid Tips</span>
-            <img src="img/hybrid-car.jpg" alt="Common Myths About Hybrid Cars Debunked">
+            <img src={base + "img/hybrid-car.jpg"} alt="Common Myths About Hybrid Cars Debunked">
           </div>
           <div class="blog-card-body">
             <div class="blog-card-date">
@@ -675,7 +676,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="blog-card">
           <div class="blog-card-image">
             <span class="blog-card-cat">Car Care</span>
-            <img src="img/car-wash.jpg" alt="The Right Way to Wash Your Car Without Damaging the Paint">
+            <img src={base + "img/car-wash.jpg"} alt="The Right Way to Wash Your Car Without Damaging the Paint">
           </div>
           <div class="blog-card-body">
             <div class="blog-card-date">
@@ -695,7 +696,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">LPG &amp; CNG</span>
-              <img src="img/lpg.jpg" alt="Is LPG Conversion Safe for Older Vehicles?">
+              <img src={base + "img/lpg.jpg"} alt="Is LPG Conversion Safe for Older Vehicles?">
             </div>
             <div class="blog-card-body">
               <div class="blog-card-date">
@@ -713,7 +714,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">Maintenance</span>
-              <img src="img/evn-2.jpg" alt="Oil & Filter Change: How Often Is Too Often?">
+              <img src={base + "img/evn-2.jpg"} alt="Oil & Filter Change: How Often Is Too Often?">
             </div>
             <div class="blog-card-body">
               <div class="blog-card-date">
@@ -731,7 +732,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">News</span>
-              <img src="img/Expert-Technicians.jpg" alt="Meet the Team Behind Taqwa Automobile's Service Quality">
+              <img src={base + "img/Expert-Technicians.jpg"} alt="Meet the Team Behind Taqwa Automobile's Service Quality">
             </div>
             <div class="blog-card-body">
               <div class="blog-card-date">
@@ -749,7 +750,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">LPG &amp; CNG</span>
-              <img src="img/lpg-and-cng.jpg" alt="CNG vs Petrol: A Real Cost Comparison for Dhaka Drivers">
+              <img src={base + "img/lpg-and-cng.jpg"} alt="CNG vs Petrol: A Real Cost Comparison for Dhaka Drivers">
             </div>
             <div class="blog-card-body">
               <div class="blog-card-date">
@@ -767,7 +768,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">Maintenance</span>
-              <img src="img/latest-4.jpg" alt="Brake Maintenance Checklist Every Driver Should Know">
+              <img src={base + "img/latest-4.jpg"} alt="Brake Maintenance Checklist Every Driver Should Know">
             </div>
             <div class="blog-card-body">
               <div class="blog-card-date">
@@ -785,7 +786,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">News</span>
-              <img src="img/Emergency-Roadside-Assistance.jpg" alt="How Our 24/7 Roadside Assistance Works">
+              <img src={base + "img/Emergency-Roadside-Assistance.jpg"} alt="How Our 24/7 Roadside Assistance Works">
             </div>
             <div class="blog-card-body">
               <div class="blog-card-date">
@@ -839,7 +840,7 @@ import Layout from '../layouts/Layout.astro';
         <h4>Recent Posts</h4>
 
         <div class="recent-post">
-          <img src="img/latest-1.jpg" alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
+          <img src={base + "img/latest-1.jpg"} alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
           <div class="recent-post-info">
             <h5>LPG vs CNG: Which Conversion Is Right for Your Car?</h5>
             <span>August 15, 2026</span>
@@ -847,7 +848,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <div class="recent-post">
-          <img src="img/latest-2.jpg" alt="5 Signs Your Car Needs an Oil Change Now">
+          <img src={base + "img/latest-2.jpg"} alt="5 Signs Your Car Needs an Oil Change Now">
           <div class="recent-post-info">
             <h5>5 Signs Your Car Needs an Oil Change Now</h5>
             <span>August 8, 2026</span>
@@ -855,7 +856,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <div class="recent-post">
-          <img src="img/latest-3.jpg" alt="How to Extend the Life of Your Hybrid Battery">
+          <img src={base + "img/latest-3.jpg"} alt="How to Extend the Life of Your Hybrid Battery">
           <div class="recent-post-info">
             <h5>How to Extend the Life of Your Hybrid Battery</h5>
             <span>July 29, 2026</span>
@@ -863,7 +864,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <div class="recent-post">
-          <img src="img/evn-1.jpg" alt="Why Regular AC Service Matters Before Summer">
+          <img src={base + "img/evn-1.jpg"} alt="Why Regular AC Service Matters Before Summer">
           <div class="recent-post-info">
             <h5>Why Regular AC Service Matters Before Summer</h5>
             <span>July 20, 2026</span>

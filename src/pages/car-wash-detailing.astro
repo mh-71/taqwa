@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
@@ -9,7 +10,7 @@ import Layout from '../layouts/Layout.astro';
   current="services"
 >
 
-<style>
+<style define:vars={{ heroBg: `url(${base}img/hero-background.jpg)` }}>
   :root{
     --red:#F97316;
     --red-dark:#CE5805;
@@ -195,7 +196,7 @@ import Layout from '../layouts/Layout.astro';
   position:relative;
   background:
     linear-gradient(rgba(16,19,24,0.65), rgba(16,19,24,0.75)),
-    url('img/hero-background.jpg') center/cover no-repeat;
+    var(--heroBg) center/cover no-repeat;
   overflow:hidden;
   padding:64px 32px 48px;
 }
@@ -1232,7 +1233,7 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <div class="hybrid-illustration">
-          <img src="img/car-wash.jpg" alt="Car wash and detailing service at Taqwa Automobile" style="width:100%; height:auto; border-radius:6px;">
+          <img src={base + "img/car-wash.jpg"} alt="Car wash and detailing service at Taqwa Automobile" style="width:100%; height:auto; border-radius:6px;">
         </div>
       </div>
 
@@ -1461,22 +1462,22 @@ import Layout from '../layouts/Layout.astro';
     <div class="why-choose-grid">
 
       <div class="wc-card tech">
-        <img src="img/car-servicing.jpg" alt="Careful Trained Car Detailers" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img src={base + "img/car-servicing.jpg"} alt="Careful Trained Car Detailers" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Careful, Trained Detailers</div>
       </div>
 
       <div class="wc-card tools">
-        <img src="img/car-wash.jpg" alt="Premium Car Cleaning Products" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img src={base + "img/car-wash.jpg"} alt="Premium Car Cleaning Products" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Premium Cleaning Products</div>
       </div>
 
       <div class="wc-card parts">
-        <img src="img/Car-Wash-detailing.jpg" alt="Attention to Every Car Detail" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img src={base + "img/Car-Wash-detailing.jpg"} alt="Attention to Every Car Detail" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Attention to Every Detail</div>
       </div>
 
       <div class="wc-card service">
-        <img src="img/Trusted-Service.jpg" alt="Affordable Car Wash Packages" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img src={base + "img/Trusted-Service.jpg"} alt="Affordable Car Wash Packages" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Affordable Packages</div>
       </div>
 

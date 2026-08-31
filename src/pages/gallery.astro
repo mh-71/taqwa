@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
@@ -594,8 +595,8 @@ import Layout from '../layouts/Layout.astro';
 
     <div class="gallery-grid" id="galleryGrid">
 
-      <div class="gallery-item" data-category="workshop" data-img="img/hero-background.jpg" data-title="Our Service Workshop" data-cat-label="Workshop">
-        <img src="img/hero-background.jpg" alt="Our Service Workshop">
+      <div class="gallery-item" data-category="workshop" data-img={base + "img/hero-background.jpg"} data-title="Our Service Workshop" data-cat-label="Workshop">
+        <img src={base + "img/hero-background.jpg"} alt="Our Service Workshop">
         <div class="gallery-overlay">
           <div class="gallery-cat">Workshop</div>
           <div class="gallery-title">Our Service Workshop</div>
@@ -603,8 +604,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="lpgcng" data-img="img/lpg-and-cng.jpg" data-title="LPG Conversion Kit Installation" data-cat-label="LPG & CNG Conversion">
-        <img src="img/lpg-and-cng.jpg" alt="LPG Conversion Kit Installation">
+      <div class="gallery-item" data-category="lpgcng" data-img={base + "img/lpg-and-cng.jpg"} data-title="LPG Conversion Kit Installation" data-cat-label="LPG & CNG Conversion">
+        <img src={base + "img/lpg-and-cng.jpg"} alt="LPG Conversion Kit Installation">
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">LPG Conversion Kit Installation</div>
@@ -612,8 +613,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="carwash" data-img="img/car-wash.jpg" data-title="Premium Car Wash" data-cat-label="Car Wash & Detailing">
-        <img src="img/car-wash.jpg" alt="Premium Car Wash">
+      <div class="gallery-item" data-category="carwash" data-img={base + "img/car-wash.jpg"} data-title="Premium Car Wash" data-cat-label="Car Wash & Detailing">
+        <img src={base + "img/car-wash.jpg"} alt="Premium Car Wash">
         <div class="gallery-overlay">
           <div class="gallery-cat">Car Wash &amp; Detailing</div>
           <div class="gallery-title">Premium Car Wash</div>
@@ -621,8 +622,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="hybrid" data-img="img/hybrid-car.jpg" data-title="Hybrid Vehicle Bay" data-cat-label="Hybrid Service">
-        <img src="img/hybrid-car.jpg" alt="Hybrid Vehicle Bay">
+      <div class="gallery-item" data-category="hybrid" data-img={base + "img/hybrid-car.jpg"} data-title="Hybrid Vehicle Bay" data-cat-label="Hybrid Service">
+        <img src={base + "img/hybrid-car.jpg"} alt="Hybrid Vehicle Bay">
         <div class="gallery-overlay">
           <div class="gallery-cat">Hybrid Service</div>
           <div class="gallery-title">Hybrid Vehicle Bay</div>
@@ -630,8 +631,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/evn-1.jpg" data-title="Car AC Service" data-cat-label="Engine & Diagnostics">
-        <img src="img/evn-1.jpg" alt="Car AC Service">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/evn-1.jpg"} data-title="Car AC Service" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/evn-1.jpg"} alt="Car AC Service">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Car AC Service</div>
@@ -639,8 +640,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="workshop" data-img="img/features-car.jpg" data-title="Quality Service in Progress" data-cat-label="Workshop">
-        <img src="img/features-car.jpg" alt="Quality Service in Progress">
+      <div class="gallery-item" data-category="workshop" data-img={base + "img/features-car.jpg"} data-title="Quality Service in Progress" data-cat-label="Workshop">
+        <img src={base + "img/features-car.jpg"} alt="Quality Service in Progress">
         <div class="gallery-overlay">
           <div class="gallery-cat">Workshop</div>
           <div class="gallery-title">Quality Service in Progress</div>
@@ -648,8 +649,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="lpgcng" data-img="img/lpg.jpg" data-title="CNG Cylinder Fitting" data-cat-label="LPG & CNG Conversion">
-        <img src="img/lpg.jpg" alt="CNG Cylinder Fitting">
+      <div class="gallery-item" data-category="lpgcng" data-img={base + "img/lpg.jpg"} data-title="CNG Cylinder Fitting" data-cat-label="LPG & CNG Conversion">
+        <img src={base + "img/lpg.jpg"} alt="CNG Cylinder Fitting">
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">CNG Cylinder Fitting</div>
@@ -657,8 +658,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/evn-2.jpg" data-title="Oil &amp; Filter Change" data-cat-label="Engine & Diagnostics">
-        <img src="img/evn-2.jpg" alt="Oil & Filter Change">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/evn-2.jpg"} data-title="Oil &amp; Filter Change" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/evn-2.jpg"} alt="Oil & Filter Change">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Oil &amp; Filter Change</div>
@@ -666,8 +667,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="carwash" data-img="img/Car-Wash-detailing.jpg" data-title="Interior Detailing" data-cat-label="Car Wash & Detailing">
-        <img src="img/Car-Wash-detailing.jpg" alt="Interior Detailing">
+      <div class="gallery-item" data-category="carwash" data-img={base + "img/Car-Wash-detailing.jpg"} data-title="Interior Detailing" data-cat-label="Car Wash & Detailing">
+        <img src={base + "img/Car-Wash-detailing.jpg"} alt="Interior Detailing">
         <div class="gallery-overlay">
           <div class="gallery-cat">Car Wash &amp; Detailing</div>
           <div class="gallery-title">Interior Detailing</div>
@@ -675,8 +676,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="workshop" data-img="img/Expert-Technicians.jpg" data-title="Our Expert Technicians" data-cat-label="Workshop">
-        <img src="img/Expert-Technicians.jpg" alt="Our Expert Technicians">
+      <div class="gallery-item" data-category="workshop" data-img={base + "img/Expert-Technicians.jpg"} data-title="Our Expert Technicians" data-cat-label="Workshop">
+        <img src={base + "img/Expert-Technicians.jpg"} alt="Our Expert Technicians">
         <div class="gallery-overlay">
           <div class="gallery-cat">Workshop</div>
           <div class="gallery-title">Our Expert Technicians</div>
@@ -684,8 +685,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/evn-3.jpg" data-title="Expert Advice Session" data-cat-label="Engine & Diagnostics">
-        <img src="img/evn-3.jpg" alt="Expert Advice Session">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/evn-3.jpg"} data-title="Expert Advice Session" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/evn-3.jpg"} alt="Expert Advice Session">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Expert Advice Session</div>
@@ -693,8 +694,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="hybrid" data-img="img/latest-3.jpg" data-title="Hybrid Battery Diagnostics" data-cat-label="Hybrid Service">
-        <img src="img/latest-3.jpg" alt="Hybrid Battery Diagnostics">
+      <div class="gallery-item" data-category="hybrid" data-img={base + "img/latest-3.jpg"} data-title="Hybrid Battery Diagnostics" data-cat-label="Hybrid Service">
+        <img src={base + "img/latest-3.jpg"} alt="Hybrid Battery Diagnostics">
         <div class="gallery-overlay">
           <div class="gallery-cat">Hybrid Service</div>
           <div class="gallery-title">Hybrid Battery Diagnostics</div>
@@ -702,8 +703,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/evn-4.jpg" data-title="Full Vehicle Inspection" data-cat-label="Engine & Diagnostics">
-        <img src="img/evn-4.jpg" alt="Full Vehicle Inspection">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/evn-4.jpg"} data-title="Full Vehicle Inspection" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/evn-4.jpg"} alt="Full Vehicle Inspection">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Full Vehicle Inspection</div>
@@ -711,8 +712,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="lpgcng" data-img="img/latest-1.jpg" data-title="LPG vs CNG Consultation" data-cat-label="LPG & CNG Conversion">
-        <img src="img/latest-1.jpg" alt="LPG vs CNG Consultation">
+      <div class="gallery-item" data-category="lpgcng" data-img={base + "img/latest-1.jpg"} data-title="LPG vs CNG Consultation" data-cat-label="LPG & CNG Conversion">
+        <img src={base + "img/latest-1.jpg"} alt="LPG vs CNG Consultation">
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">LPG vs CNG Consultation</div>
@@ -720,8 +721,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/car-servicing.jpg" data-title="Transparent Price Quote" data-cat-label="Engine & Diagnostics">
-        <img src="img/car-servicing.jpg" alt="Transparent Price Quote">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/car-servicing.jpg"} data-title="Transparent Price Quote" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/car-servicing.jpg"} alt="Transparent Price Quote">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Transparent Price Quote</div>
@@ -729,8 +730,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/Emergency-Roadside-Assistance.jpg" data-title="24x7 Roadside Assistance" data-cat-label="Engine & Diagnostics">
-        <img src="img/Emergency-Roadside-Assistance.jpg" alt="24x7 Roadside Assistance">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/Emergency-Roadside-Assistance.jpg"} data-title="24x7 Roadside Assistance" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/Emergency-Roadside-Assistance.jpg"} alt="24x7 Roadside Assistance">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">24x7 Roadside Assistance</div>
@@ -738,8 +739,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="lpgcng" data-img="img/latest-2.jpg" data-title="Conversion Kit Testing" data-cat-label="LPG & CNG Conversion">
-        <img src="img/latest-2.jpg" alt="Conversion Kit Testing">
+      <div class="gallery-item" data-category="lpgcng" data-img={base + "img/latest-2.jpg"} data-title="Conversion Kit Testing" data-cat-label="LPG & CNG Conversion">
+        <img src={base + "img/latest-2.jpg"} alt="Conversion Kit Testing">
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">Conversion Kit Testing</div>
@@ -747,8 +748,8 @@ import Layout from '../layouts/Layout.astro';
         <div class="gallery-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
       </div>
 
-      <div class="gallery-item" data-category="engine" data-img="img/latest-4.jpg" data-title="Brake System Check" data-cat-label="Engine & Diagnostics">
-        <img src="img/latest-4.jpg" alt="Brake System Check">
+      <div class="gallery-item" data-category="engine" data-img={base + "img/latest-4.jpg"} data-title="Brake System Check" data-cat-label="Engine & Diagnostics">
+        <img src={base + "img/latest-4.jpg"} alt="Brake System Check">
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Brake System Check</div>

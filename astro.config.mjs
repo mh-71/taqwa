@@ -11,7 +11,11 @@ export default defineConfig({
   // NOTE: if a custom domain (e.g. taqwaautomobile.com) is ever pointed at
   // this site as its own root, change `site` to that domain and remove
   // `base` (set it back to '/').
-  base: '/taqwa',
+  // Trailing slash matters: import.meta.env.BASE_URL reflects this value
+  // verbatim, and page code does `base + "img/..."` (no extra slash), so
+  // `base` must already end in "/" or asset URLs collapse into
+  // "/taqwaimg/..." instead of "/taqwa/img/...".
+  base: '/taqwa/',
   // Output literal "about.html" style files (not /about/index.html) so every
   // existing internal link, external backlink and bookmarked URL keeps working
   // unchanged after the move to Astro.

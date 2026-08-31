@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
@@ -950,7 +951,7 @@ import Layout from '../layouts/Layout.astro';
       <p>Whether you need a routine service, an emergency roadside rescue, or a complete gas conversion, our team treats your vehicle like it's our own.</p>
     </div>
     <div class="story-image reveal">
-      <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/about-1.jpg" alt="Inside Taqwa Automobile's workshop">
+      <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/about-1.jpg"} alt="Inside Taqwa Automobile's workshop">
     </div>
   </div>
 
@@ -1060,7 +1061,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/lpg-and-cng.jpg" alt="LPG &amp; CNG Conversion" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/lpg-and-cng.jpg"} alt="LPG &amp; CNG Conversion" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         </div>
         <div class="body">
           <h3>LPG &amp; CNG Conversion</h3>
@@ -1073,7 +1074,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/engine-repeir.jpg" alt="Engine Repair & Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/engine-repeir.jpg"} alt="Engine Repair & Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         </div>
         <div class="body">
           <h3>Engine Repair &amp; Service</h3>
@@ -1086,7 +1087,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/Car-ac-Service.jpg" alt="Car AC Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-ac-Service.jpg"} alt="Car AC Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         </div>
         <div class="body">
           <h3>Car AC Service</h3>
@@ -1099,7 +1100,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/wheel-alignment.jpg" alt="Wheel Alignment & Balancing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/wheel-alignment.jpg"} alt="Wheel Alignment & Balancing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         </div>
         <div class="body">
           <h3>Wheel Alignment &amp; Balancing</h3>
@@ -1112,7 +1113,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/Battery-Electrical.jpg" alt="Battery & Electrical" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Battery-Electrical.jpg"} alt="Battery & Electrical" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         </div>
         <div class="body">
           <h3>Battery &amp; Electrical</h3>
@@ -1125,7 +1126,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/Car-Wash-detailing.jpg" alt="Car Wash & Detailing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-Wash-detailing.jpg"} alt="Car Wash & Detailing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         </div>
         <div class="body">
           <h3>Car Wash &amp; Detailing</h3>
@@ -1163,22 +1164,22 @@ import Layout from '../layouts/Layout.astro';
     <div class="why-choose-grid">
 
       <div class="wc-card tech">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/Expert-Technicians.jpg" alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Expert-Technicians.jpg"} alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Expert Technicians</div>
       </div>
 
       <div class="wc-card tools">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/advanced-tools.jpg" alt="Advanced Tools" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/advanced-tools.jpg"} alt="Advanced Tools" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Advanced Tools</div>
       </div>
 
       <div class="wc-card parts">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/car-parts.jpg" alt="Genuine Parts" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/car-parts.jpg"} alt="Genuine Parts" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Genuine Parts</div>
       </div>
 
       <div class="wc-card service">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src="img/Trusted-Service.jpg" alt="Trusted Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Trusted-Service.jpg"} alt="Trusted Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Trusted Service</div>
       </div>
 
