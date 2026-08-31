@@ -1239,7 +1239,7 @@
     transition:background-color .2s ease;
   }
   .news-nav-btn:hover{background:var(--red);}
-  .news-nav-btn:disabled{opacity:0.35; cursor:default; background:var(--ink);}
+  .news-nav-btn:disabled{opacity:0.35; cursor:default; background:var(--charcoal);}
 
   @media (max-width:640px){
     .news-section{padding:var(--space-7) var(--space-5);}

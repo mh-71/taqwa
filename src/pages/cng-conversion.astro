@@ -74,7 +74,7 @@ import Layout from '../layouts/Layout.astro';
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     font-family: 'Inter', "Segoe UI", Arial, sans-serif;
-    background:var(--ink);
+    background:var(--charcoal);
     color:var(--off);
     -webkit-font-smoothing:antialiased;
   }
@@ -151,7 +151,7 @@ import Layout from '../layouts/Layout.astro';
     background:none; width:32px; height:32px; flex-shrink:0;
   }
   .hamburger span{
-    width:24px; height:2px; background:var(--ink); display:block;
+    width:24px; height:2px; background:var(--charcoal); display:block;
     transition:transform .2s ease, opacity .2s ease;
   }
   .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
@@ -542,7 +542,7 @@ import Layout from '../layouts/Layout.astro';
     display:grid; grid-template-columns:repeat(4, 1fr); gap:26px;
   }
   .service-card{
-    background:var(--ink); border-radius:4px; overflow:hidden;
+    background:var(--charcoal); border-radius:4px; overflow:hidden;
     display:flex; flex-direction:column;
     box-shadow:0 14px 34px -18px rgba(0,0,0,0.35);
   }
@@ -554,7 +554,7 @@ import Layout from '../layouts/Layout.astro';
   .service-card .icon-panel svg{position:relative; z-index:1; width:58px; height:58px;}
   .service-card .body{
     position:relative; overflow:hidden;
-    background:var(--ink); padding:24px 22px 26px; text-align:center;
+    background:var(--charcoal); padding:24px 22px 26px; text-align:center;
     flex:1 1 auto; display:flex; flex-direction:column; justify-content:center;
   }
   .service-card p{
@@ -573,7 +573,7 @@ import Layout from '../layouts/Layout.astro';
   .services-toggle-wrap{text-align:center; margin-top:40px;}
   .services-toggle-btn{
     display:inline-flex; align-items:center; gap:10px;
-    background:var(--ink); color:#fff; font-size:13px; font-weight:800;
+    background:var(--charcoal); color:#fff; font-size:13px; font-weight:800;
     letter-spacing:0.5px; text-transform:uppercase; padding:14px 30px; border-radius:3px;
   }
   .services-toggle-btn:hover{background:var(--red);}
@@ -811,7 +811,7 @@ import Layout from '../layouts/Layout.astro';
   .feat-card:hover{transform:translateY(-2px);}
   .feat-card.active{box-shadow:inset 0 0 0 3px rgba(255,255,255,0.85);}
   .feat-card.c-red{background:var(--red);}
-  .feat-card.c-black{background:var(--ink);}
+  .feat-card.c-black{background:var(--charcoal);}
   .feat-card h4{
     color:#fff; font-size:15px; letter-spacing:0.3px; text-transform:uppercase;
     display:flex; align-items:center; gap:14px;
@@ -978,12 +978,12 @@ import Layout from '../layouts/Layout.astro';
   }
   .news-nav-btn{
     width:44px; height:44px; border-radius:50%;
-    background:var(--ink); color:#fff;
+    background:var(--charcoal); color:#fff;
     display:flex; align-items:center; justify-content:center;
     transition:background-color .2s ease;
   }
   .news-nav-btn:hover{background:var(--red);}
-  .news-nav-btn:disabled{opacity:0.35; cursor:default; background:var(--ink);}
+  .news-nav-btn:disabled{opacity:0.35; cursor:default; background:var(--charcoal);}
 
   @media (max-width:640px){
     .news-section{padding:44px 20px;}
@@ -1069,7 +1069,7 @@ import Layout from '../layouts/Layout.astro';
   }
 
   /* ===== ABOUT PAGE: STATS ===== */
-  .stats-section{background:var(--ink);}
+  .stats-section{background:var(--charcoal);}
   .stats-inner{
     max-width:1280px; margin:0 auto;
     display:grid; grid-template-columns:repeat(4, 1fr);
