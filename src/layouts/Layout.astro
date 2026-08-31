@@ -172,7 +172,7 @@ const finalJsonLd = jsonLd ?? defaultJsonLd;
     // Auto-tag common repeating components so every card/section fades in on scroll.
     // This list is the union of every page's reveal targets (originally each page
     // duplicated its own copy of this script with a page-specific selector list).
-    var autoSelectors = '.service-card, .feat-card, .env-card, .news-card, .wc-card, .testimonial-card, .faq-item, .gc-card, .hybrid-item, .gs-item, .team-card, .journey-item, .stat-card, .hf-item, .blog-card, .sidebar-widget, .sidebar-cta, .contact-info-card, .hp-item';
+    var autoSelectors = '.service-card, .feat-card, .env-card, .news-card, .wc-card, .testimonial-card, .faq-item, .gc-card, .hybrid-item, .gs-item, .team-card, .journey-item, .stat-card, .hf-item, .blog-card, .sidebar-widget, .sidebar-cta, .contact-info-card, .hp-item, .svc-reason-item';
     document.querySelectorAll(autoSelectors).forEach(function(el){
       el.classList.add('reveal');
     });
