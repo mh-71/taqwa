@@ -1,0 +1,10 @@
+{
+  // Pure static-assets Worker: no worker script needed, Cloudflare just
+  // serves the files Astro builds into dist/ (same idea as GitHub Pages
+  // and Vercel - this project has no server-side code).
+  "name": "taqwa",
+  "compatibility_date": "2024-09-23",
+  "assets": {
+    "directory": "./dist"
+  }
+}
