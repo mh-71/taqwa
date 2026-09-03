@@ -589,6 +589,39 @@ const base = import.meta.env.BASE_URL;
   .hf-item svg{flex-shrink:0;}
   .hf-item span{font-size:14px; font-weight:700; color:var(--text-strong); line-height:1.35;}
 
+
+
+.hybrid-features-strip {
+  background: var(--surface-3);
+  border-radius: var(--radius-lg);
+  margin-top: 18px;
+  padding: 22px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.hf-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.hf-item svg {
+  flex-shrink: 0;
+}
+
+.hf-item span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1.35;
+}
+
+
+
+
   @media (max-width:900px){
     .hybrid-features-strip{grid-template-columns:repeat(3, 1fr);}
   }
@@ -854,6 +887,198 @@ const base = import.meta.env.BASE_URL;
   .services-recap-header h2 .accent{color:var(--red);}
   .services-recap-cta{text-align:center; margin-top:40px;}
 
+
+
+
+
+
+.services-recap-section{
+  background:var(--surface-1);
+  padding:var(--space-8) var(--space-6);
+}
+
+.services-recap-inner{
+  max-width:1280px;
+  margin:0 auto;
+}
+
+.services-recap-header{
+  text-align:center;
+  margin-bottom:42px;
+}
+
+.services-recap-header h2{
+  font-size:var(--text-4xl);
+  color:var(--text-strong);
+  letter-spacing:0.4px;
+}
+
+.services-recap-header h2 .accent{
+  color:var(--red);
+}
+
+
+/* ================================
+   SERVICES GRID
+================================ */
+
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:20px;
+}
+
+
+/* ================================
+   SERVICE CARD
+================================ */
+
+.service-card{
+  overflow:hidden;
+}
+
+
+/* ================================
+   HIDDEN SERVICE CARDS
+   5th + 6th cards
+================================ */
+
+.services-grid .service-card:nth-child(n + 5){
+  opacity:0;
+  visibility:hidden;
+
+  max-height:0;
+
+  overflow:hidden;
+
+  transform:translateY(-20px);
+
+  margin-top:0;
+  margin-bottom:0;
+
+  pointer-events:none;
+
+  transition:
+    opacity .65s ease,
+    transform .65s ease,
+    max-height .75s ease,
+    visibility 0s linear .75s;
+}
+
+
+/* ================================
+   SHOW ALL SERVICES
+================================ */
+
+.services-grid.show-all .service-card:nth-child(n + 5){
+  opacity:1;
+  visibility:visible;
+
+  max-height:700px;
+
+  transform:translateY(0);
+
+  pointer-events:auto;
+
+  transition:
+    opacity .65s ease,
+    transform .65s ease,
+    max-height .75s ease,
+    visibility 0s linear 0s;
+}
+
+
+/* ================================
+   BUTTON AREA
+================================ */
+
+.services-recap-cta{
+  text-align:center;
+  margin-top:40px;
+}
+
+.services-recap-cta .btn-learn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  cursor:pointer;
+
+  border:none;
+  font:inherit;
+}
+
+
+/* ================================
+   BUTTON ARROW
+================================ */
+
+.services-recap-cta .btn-learn .btn-arrow{
+  flex-shrink:0;
+
+  transition:
+    transform .45s ease;
+}
+
+
+/* ================================
+   ARROW HOVER
+================================ */
+
+.services-recap-cta .btn-learn:hover .btn-arrow{
+  transform:translateX(4px);
+}
+
+
+/* ================================
+   SHOW ALL ARROW
+================================ */
+
+.services-grid.show-all
+~ .services-recap-cta
+.btn-arrow{
+  transform:rotate(180deg);
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width:1000px){
+
+  .services-grid{
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+  }
+
+}
+
+
+@media (max-width:600px){
+
+  .services-recap-section{
+    padding:var(--space-8) var(--space-4);
+  }
+
+  .services-grid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+
+  .services-recap-header{
+    margin-bottom:30px;
+  }
+
+  .services-recap-cta{
+    margin-top:30px;
+  }
+
+}
+
+
+
   @media (max-width:600px){
     .services-recap-section{padding:var(--space-7) var(--space-5);}
     .services-recap-header h2{font-size:var(--text-3xl);}
@@ -958,7 +1183,7 @@ const base = import.meta.env.BASE_URL;
   <div class="commit-strip">
     <div class="hybrid-features-strip">
       <div class="hf-item reveal">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V5l7-3z" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F97316" stroke-width="1.5"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Certified &amp; Trained Technicians</span>
       </div>
       <div class="hf-item reveal">
@@ -966,15 +1191,16 @@ const base = import.meta.env.BASE_URL;
         <span>100% Genuine Parts Guarantee</span>
       </div>
       <div class="hf-item reveal">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F97316" stroke-width="1.5"/><text x="12" y="16.3" font-size="11" font-weight="800" fill="#F97316" text-anchor="middle" font-family="Arial">৳</text></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F97316" stroke-width="1.5"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Transparent, Upfront Pricing</span>
       </div>
       <div class="hf-item reveal">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="1" y="9" width="13" height="7" rx="1" stroke="#F97316" stroke-width="1.4"/><path d="M14 11h3.5l3.5 3v2h-7z" stroke="#F97316" stroke-width="1.4" stroke-linejoin="round"/><circle cx="6" cy="18" r="1.6" stroke="#F97316" stroke-width="1.3"/><circle cx="17" cy="18" r="1.6" stroke="#F97316" stroke-width="1.3"/></svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F97316" stroke-width="1.5"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>24/7 Emergency Roadside Support</span>
       </div>
     </div>
   </div>
+  
 </section>
 
 <section class="journey-section">
@@ -1051,102 +1277,250 @@ const base = import.meta.env.BASE_URL;
   </div>
 </section>
 
+
+
+
+
+
 <section class="services-recap-section">
   <div class="services-recap-inner">
+
     <div class="services-recap-header reveal">
-      <h2 class="display" style="letter-spacing:0.4px;">WHAT <span class="accent">WE DO</span></h2>
+      <h2 class="display" style="letter-spacing:0.4px;">
+        WHAT <span class="accent">WE DO</span>
+      </h2>
     </div>
 
     <div class="services-grid">
 
+      <!-- Service 1 -->
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/lpg-and-cng.jpg"} alt="LPG &amp; CNG Conversion" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img
+            loading="lazy"
+            decoding="async"
+            class="lazy-fade"
+            onload="this.classList.add('is-loaded')"
+            src={base + "img/lpg-and-cng.jpg"}
+            alt="LPG &amp; CNG Conversion"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
+          >
         </div>
+
         <div class="body">
           <h3>LPG &amp; CNG Conversion</h3>
           <p>Professional gas conversion with certified kits, safety checked and ready to save on fuel.</p>
-          <a href="index.html#gas-conversion" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <a href="index.html#gas-conversion" class="read-more">
+            Read More
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
       </div>
 
+
+      <!-- Service 2 -->
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/engine-repeir.jpg"} alt="Engine Repair & Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img
+            loading="lazy"
+            decoding="async"
+            class="lazy-fade"
+            onload="this.classList.add('is-loaded')"
+            src={base + "img/engine-repeir.jpg"}
+            alt="Engine Repair &amp; Service"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
+          >
         </div>
+
         <div class="body">
           <h3>Engine Repair &amp; Service</h3>
           <p>Expert diagnosis and repair to keep your engine running smooth and reliable.</p>
-          <a href="engine-repair.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <a href="engine-repair.html" class="read-more">
+            Read More
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
       </div>
 
+
+      <!-- Service 3 -->
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-ac-Service.jpg"} alt="Car AC Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img
+            loading="lazy"
+            decoding="async"
+            class="lazy-fade"
+            onload="this.classList.add('is-loaded')"
+            src={base + "img/Car-ac-Service.jpg"}
+            alt="Car AC Service"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
+          >
         </div>
+
         <div class="body">
           <h3>Car AC Service</h3>
           <p>AC gas refill, cooling checkup and repair to beat the summer heat.</p>
-          <a href="car-ac-service.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <a href="car-ac-service.html" class="read-more">
+            Read More
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
       </div>
 
+
+      <!-- Service 4 -->
       <div class="service-card reveal">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/wheel-alignment.jpg"} alt="Wheel Alignment & Balancing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img
+            loading="lazy"
+            decoding="async"
+            class="lazy-fade"
+            onload="this.classList.add('is-loaded')"
+            src={base + "img/wheel-alignment.jpg"}
+            alt="Wheel Alignment &amp; Balancing"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
+          >
         </div>
+
         <div class="body">
           <h3>Wheel Alignment &amp; Balancing</h3>
           <p>Precise alignment and balancing for a smoother ride and even tire wear.</p>
-          <a href="contact.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <a href="contact.html" class="read-more">
+            Read More
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
       </div>
 
-      <div class="service-card reveal">
+
+      <!-- Service 5 - Hidden initially -->
+      <div class="service-card service-card-hidden">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Battery-Electrical.jpg"} alt="Battery & Electrical" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img
+            loading="lazy"
+            decoding="async"
+            class="lazy-fade"
+            onload="this.classList.add('is-loaded')"
+            src={base + "img/Battery-Electrical.jpg"}
+            alt="Battery &amp; Electrical"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
+          >
         </div>
+
         <div class="body">
           <h3>Battery &amp; Electrical</h3>
           <p>Battery testing, replacement and full electrical system diagnostics.</p>
-          <a href="contact.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <a href="contact.html" class="read-more">
+            Read More
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
       </div>
 
-      <div class="service-card reveal">
+
+      <!-- Service 6 - Hidden initially -->
+      <div class="service-card service-card-hidden">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-Wash-detailing.jpg"} alt="Car Wash & Detailing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <img
+            loading="lazy"
+            decoding="async"
+            class="lazy-fade"
+            onload="this.classList.add('is-loaded')"
+            src={base + "img/Car-Wash-detailing.jpg"}
+            alt="Car Wash &amp; Detailing"
+            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
+          >
         </div>
+
         <div class="body">
           <h3>Car Wash &amp; Detailing</h3>
           <p>Premium wash and detailing to make your car shine like new.</p>
-          <a href="car-wash-detailing.html" class="read-more">Read More
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <a href="car-wash-detailing.html" class="read-more">
+            Read More
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
       </div>
 
     </div>
 
+
+    <!-- View All / Hide Button -->
     <div class="services-recap-cta reveal">
-      <a href="index.html#services" class="btn-learn">
-        View All Services
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+      <button type="button" class="btn-learn" id="view-all-services">
+        <span class="btn-text">View All Services</span>
+
+        <svg
+          class="btn-arrow"
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 12h14M13 6l6 6-6 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
     </div>
+
   </div>
 </section>
+
+<script>
+  const servicesGrid = document.querySelector('.services-grid');
+  const servicesToggle = document.getElementById('view-all-services');
+
+  if (servicesGrid && servicesToggle) {
+    const buttonText = servicesToggle.querySelector('.btn-text');
+    const buttonIcon = servicesToggle.querySelector('.btn-arrow');
+
+    servicesToggle.addEventListener('click', () => {
+      const isOpen = servicesGrid.classList.toggle('show-all');
+
+      if (buttonText) {
+        buttonText.textContent = isOpen
+          ? 'View Less Services'
+          : 'View All Services';
+      }
+
+      if (buttonIcon) {
+        buttonIcon.style.transform = isOpen
+          ? 'rotate(180deg)'
+          : 'rotate(0deg)';
+      }
+    });
+  }
+</script>
+
+
+
+
+
+
 
 <section class="why-choose-section">
   <div class="why-choose-inner">
