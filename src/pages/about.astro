@@ -51,13 +51,14 @@ const base = import.meta.env.BASE_URL;
   }
 
 /* ===== HYBRID FEATURES STRIP (nested inside the commit-strip section) =====
-   Was declared twice here (once as a 6-col grid, once as a flex row) — the
-   flex version was the one actually winning by cascade order, so that's
-   what's kept; the grid version was dead. */
+   Was declared twice here (once as a 6-col grid, once as a flex row); the
+   flex/space-evenly version wasn't wrapping cleanly on narrow screens, so
+   this is now the same fluid grid pattern used for this class everywhere
+   else on the site (global.css, hybrid-services.astro, ServiceDetail.astro). */
   .hybrid-features-strip{
     background:var(--surface-3); border-radius:var(--radius-lg); margin-top:18px;
     padding:22px 28px;
-    display:flex; align-items:center; justify-content:space-evenly; flex-wrap:wrap; gap:18px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:18px;
   }
   .hf-item{display:flex; align-items:center; gap:11px;}
   .hf-item svg{flex-shrink:0;}
