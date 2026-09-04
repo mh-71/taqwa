@@ -294,7 +294,7 @@ nav.main-nav{display:flex; align-items:center; gap:30px;}
     position:relative;
   }
   .hybrid-grid{
-    display:grid; grid-template-columns:repeat(4, 1fr); gap:26px 22px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:26px 22px;
   }
   .svc-reason-item{display:flex; gap:11px;}
   .svc-reason-num{
@@ -315,7 +315,7 @@ nav.main-nav{display:flex; align-items:center; gap:30px;}
   .hybrid-features-strip{
     background:#EBEEF3; border-radius:6px; margin-top:18px;
     padding:22px 28px;
-    display:grid; grid-template-columns:repeat(6, 1fr); gap:18px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:18px;
   }
   .hf-item{display:flex; align-items:center; gap:11px;}
   .hf-item svg{flex-shrink:0;}
@@ -463,7 +463,7 @@ nav.main-nav{display:flex; align-items:center; gap:30px;}
   .hybrid-process-header p{
     color:#666; font-size:16px; max-width:640px; margin:12px auto 0; line-height:1.7;
   }
-  .hybrid-process-steps{display:grid; grid-template-columns:repeat(3, 1fr); gap:26px;}
+  .hybrid-process-steps{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:26px;}
   .hp-item{
     background:#fff; border-radius:6px; padding:28px 24px 24px; position:relative;
     box-shadow:0 14px 34px -20px rgba(0,0,0,0.18);
@@ -477,15 +477,9 @@ nav.main-nav{display:flex; align-items:center; gap:30px;}
   .hp-item h3{font-size:16px; color:var(--ink); margin-bottom:8px; letter-spacing:0.2px; line-height:1.3;}
   .hp-item p{color:#666; font-size:16px; line-height:1.7;}
 
-  @media (max-width:900px){
-    .hybrid-process-steps{grid-template-columns:repeat(2, 1fr);}
-  }
   @media (max-width:600px){
     .hybrid-process-section{padding:44px 20px;}
     .hybrid-process-header h2{font-size:24px;}
-  }
-  @media (max-width:480px){
-    .hybrid-process-steps{grid-template-columns:1fr;}
   }
 
   /* ===== ABOUT PAGE: SERVICES RECAP ===== */
