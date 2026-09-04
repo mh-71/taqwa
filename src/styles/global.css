@@ -209,6 +209,14 @@
   .has-dropdown:hover .dropdown-menu{
     opacity:1; visibility:visible; transform:translateY(0);
   }
+  /* Keyboard-accessible equivalent of the :hover state above, toggled by the
+     script in Layout.astro via Enter/Space/Escape on the "Services" trigger
+     (see CRITICAL FIX #1 in the design audit) — visual result is identical
+     to hovering, just reachable without a mouse. */
+  .has-dropdown.open > a .caret{transform:rotate(180deg);}
+  .has-dropdown.open .dropdown-menu{
+    opacity:1; visibility:visible; transform:translateY(0);
+  }
   .dropdown-menu::before{
     content:""; position:absolute; top:-6px; left:28px;
     width:12px; height:12px; background:var(--surface-0); border-left:1px solid var(--surface-border); border-top:1px solid var(--surface-border);

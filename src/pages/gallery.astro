@@ -302,7 +302,7 @@ const base = import.meta.env.BASE_URL;
   }
 
   /* Reduced motion / focus */
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
     outline:2px solid var(--red); outline-offset:2px;
   }
 
@@ -585,12 +585,12 @@ const base = import.meta.env.BASE_URL;
   <div class="gallery-inner">
 
     <div class="gallery-filter" id="galleryFilter">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="workshop">Workshop</button>
-      <button class="filter-btn" data-filter="lpgcng">LPG &amp; CNG Conversion</button>
-      <button class="filter-btn" data-filter="carwash">Car Wash &amp; Detailing</button>
-      <button class="filter-btn" data-filter="hybrid">Hybrid Service</button>
-      <button class="filter-btn" data-filter="engine">Engine &amp; Diagnostics</button>
+      <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-btn" data-filter="workshop" aria-pressed="false">Workshop</button>
+      <button class="filter-btn" data-filter="lpgcng" aria-pressed="false">LPG &amp; CNG Conversion</button>
+      <button class="filter-btn" data-filter="carwash" aria-pressed="false">Car Wash &amp; Detailing</button>
+      <button class="filter-btn" data-filter="hybrid" aria-pressed="false">Hybrid Service</button>
+      <button class="filter-btn" data-filter="engine" aria-pressed="false">Engine &amp; Diagnostics</button>
     </div>
 
     <div class="gallery-grid" id="galleryGrid">
@@ -761,17 +761,17 @@ const base = import.meta.env.BASE_URL;
   </div>
 </section>
 
-<div class="gallery-lightbox" id="galleryLightbox">
+<div class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="Photo preview" aria-hidden="true">
   <div class="gallery-lightbox-inner">
-    <div class="gallery-lightbox-close" id="lightboxClose">
+    <button type="button" class="gallery-lightbox-close" id="lightboxClose" aria-label="Close photo preview">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="5" y1="5" x2="19" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="5" x2="5" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-    </div>
-    <div class="gallery-lightbox-nav gallery-lightbox-prev" id="lightboxPrev">
+    </button>
+    <button type="button" class="gallery-lightbox-nav gallery-lightbox-prev" id="lightboxPrev" aria-label="Previous photo">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="gallery-lightbox-nav gallery-lightbox-next" id="lightboxNext">
+    </button>
+    <button type="button" class="gallery-lightbox-nav gallery-lightbox-next" id="lightboxNext" aria-label="Next photo">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
+    </button>
     <img src="" alt="" id="lightboxImage">
     <div class="gallery-lightbox-caption">
       <div class="gallery-cat" id="lightboxCat"></div>
@@ -810,8 +810,12 @@ const base = import.meta.env.BASE_URL;
 
     filterBtns.forEach(function(btn){
       btn.addEventListener('click', function(){
-        filterBtns.forEach(function(b){ b.classList.remove('active'); });
+        filterBtns.forEach(function(b){
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         var filter = btn.getAttribute('data-filter');
 
         items.forEach(function(item){
@@ -825,7 +829,7 @@ const base = import.meta.env.BASE_URL;
     });
   })();
 
-  // ===== GALLERY LIGHTBOX =====
+  // ===== GALLERY LIGHTBOX (keyboard + screen-reader accessible) =====
   (function(){
     var items = Array.prototype.slice.call(document.querySelectorAll('.gallery-item'));
     var lightbox = document.getElementById('galleryLightbox');
@@ -836,6 +840,8 @@ const base = import.meta.env.BASE_URL;
     var prevBtn = document.getElementById('lightboxPrev');
     var nextBtn = document.getElementById('lightboxNext');
     var currentIndex = 0;
+    var lastTrigger = null; // element to return focus to when the lightbox closes
+    var focusableInLightbox = [closeBtn, prevBtn, nextBtn];
 
     function visibleItems(){
       return items.filter(function(item){ return !item.classList.contains('hidden'); });
@@ -851,23 +857,53 @@ const base = import.meta.env.BASE_URL;
       lightboxTitle.textContent = item.getAttribute('data-title');
       lightboxCat.textContent = item.getAttribute('data-cat-label');
       lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
     }
 
-    items.forEach(function(item, i){
+    function openLightboxFrom(item, index){
+      lastTrigger = item;
+      openLightbox(index);
+      closeBtn.focus();
+    }
+
+    function closeLightbox(){
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      if (lastTrigger) {
+        lastTrigger.focus();
+        lastTrigger = null;
+      }
+    }
+
+    items.forEach(function(item){
+      // Keep the div-based tile (no visual/markup change) but make it a real
+      // keyboard control: focusable, announced as a button, and openable
+      // with Enter/Space in addition to a mouse click.
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+      var title = item.getAttribute('data-title');
+      if (title) item.setAttribute('aria-label', 'View photo: ' + title);
+
       item.addEventListener('click', function(){
         var visible = visibleItems();
         var idx = visible.indexOf(item);
-        openLightbox(idx);
+        openLightboxFrom(item, idx);
+      });
+      item.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          var visible = visibleItems();
+          var idx = visible.indexOf(item);
+          openLightboxFrom(item, idx);
+        }
       });
     });
 
-    closeBtn.addEventListener('click', function(){
-      lightbox.classList.remove('open');
-    });
+    closeBtn.addEventListener('click', closeLightbox);
 
     lightbox.addEventListener('click', function(e){
       if(e.target === lightbox){
-        lightbox.classList.remove('open');
+        closeLightbox();
       }
     });
 
@@ -878,11 +914,30 @@ const base = import.meta.env.BASE_URL;
       openLightbox(currentIndex + 1);
     });
 
-    document.addEventListener('keydown', function(e){
+    lightbox.addEventListener('keydown', function(e){
       if(!lightbox.classList.contains('open')) return;
-      if(e.key === 'Escape') lightbox.classList.remove('open');
-      if(e.key === 'ArrowLeft') openLightbox(currentIndex - 1);
-      if(e.key === 'ArrowRight') openLightbox(currentIndex + 1);
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeLightbox();
+        return;
+      }
+      if (e.key === 'ArrowLeft') { openLightbox(currentIndex - 1); return; }
+      if (e.key === 'ArrowRight') { openLightbox(currentIndex + 1); return; }
+
+      // Simple focus trap: keep Tab cycling within the lightbox's controls
+      // while it's open, instead of leaking focus back into the page.
+      if (e.key === 'Tab') {
+        var first = focusableInLightbox[0];
+        var last = focusableInLightbox[focusableInLightbox.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     });
   })();
 </script>

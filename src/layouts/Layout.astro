@@ -129,6 +129,62 @@ const finalJsonLd = jsonLd ?? defaultJsonLd;
     });
   }
 
+  // ===== DESKTOP "SERVICES" DROPDOWN: KEYBOARD ACCESSIBILITY =====
+  // The dropdown already opens on :hover for mouse users (unchanged). This
+  // adds an equivalent, purely-additive keyboard path: Enter/Space toggles
+  // it open (aria-haspopup/aria-expanded kept in sync), Escape closes it and
+  // returns focus to the trigger, and it auto-closes if focus moves outside
+  // it entirely (e.g. tabbing past the last link).
+  (function(){
+    var trigger = document.getElementById('servicesNavTrigger');
+    var dropdownLi = document.getElementById('servicesDropdown');
+    var dropdownMenu = dropdownLi ? dropdownLi.querySelector('.dropdown-menu') : null;
+    if (!trigger || !dropdownLi || !dropdownMenu) return;
+
+    function openDropdown(focusFirstLink){
+      dropdownLi.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+      if (focusFirstLink) {
+        var firstLink = dropdownMenu.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
+    }
+    function closeDropdown(returnFocus){
+      dropdownLi.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (returnFocus) trigger.focus();
+    }
+
+    trigger.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar'){
+        e.preventDefault();
+        if (dropdownLi.classList.contains('open')) {
+          closeDropdown(false);
+        } else {
+          openDropdown(true);
+        }
+      } else if (e.key === 'Escape' && dropdownLi.classList.contains('open')){
+        e.preventDefault();
+        closeDropdown(true);
+      }
+    });
+
+    dropdownMenu.addEventListener('keydown', function(e){
+      if (e.key === 'Escape'){
+        e.preventDefault();
+        closeDropdown(true);
+      }
+    });
+
+    // Close as soon as focus leaves the trigger + menu entirely (Tab past
+    // the last link, or focus moving anywhere else on the page).
+    document.addEventListener('focusin', function(e){
+      if (!dropdownLi.contains(e.target)) {
+        closeDropdown(false);
+      }
+    });
+  })();
+
   var allFaqItems = document.querySelectorAll('.faq-item');
   document.querySelectorAll('.faq-question').forEach(function(btn){
     btn.addEventListener('click', function(){

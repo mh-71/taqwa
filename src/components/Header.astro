@@ -28,9 +28,9 @@ const isActive = (id: string) => (current === id ? 'active' : '');
           <a href="about.html">About Us</a>
         </li>
 
-        <li class:list={['has-dropdown', isActive('services')]}>
-          <a href="index.html#services">Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <ul class="dropdown-menu">
+        <li class:list={['has-dropdown', isActive('services')]} id="servicesDropdown">
+          <a href="index.html#services" id="servicesNavTrigger" aria-haspopup="true" aria-expanded="false">Services <svg class="caret" width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="dropdown-menu" aria-label="Services">
             <li><a href="lpg-conversion.html">LPG Conversion</a></li>
             <li><a href="cng-conversion.html">CNG Conversion</a></li>
             <li><a href="engine-repair.html">Engine Repair</a></li>
