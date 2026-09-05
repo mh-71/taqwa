@@ -51,22 +51,26 @@ const base = import.meta.env.BASE_URL;
   }
 
 /* ===== HYBRID FEATURES STRIP (nested inside the commit-strip section) =====
-   Was declared twice here (once as a 6-col grid, once as a flex row); the
-   flex/space-evenly version wasn't wrapping cleanly on narrow screens.
-   minmax(170px,1fr) was also too narrow for this section's longer labels
-   ("Certified & Trained Technicians", "24/7 Emergency Roadside Support") —
-   at tablet widths it fit 3 cramped columns instead of dropping to 2 or 1,
-   wrapping each label onto 3 lines. Widened to 220px so it drops column
-   count sooner, and min-width:0 stops a grid item's own content from ever
-   forcing a column (and the row) wider than its track. */
+   Explicit breakpoints instead of auto-fit(minmax(...)) this time — the
+   auto-fit sizing depends on exact container width vs. the minmax floor,
+   which wasn't behaving predictably for this section's longer labels.
+   This guarantees 4 -> 2 -> 1 columns at fixed widths, same as every other
+   card grid on the site before the auto-fit pass. */
   .hybrid-features-strip{
     background:var(--surface-3); border-radius:var(--radius-lg); margin-top:18px;
     padding:22px 28px;
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:18px;
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;
   }
   .hf-item{display:flex; align-items:center; gap:11px; min-width:0;}
   .hf-item svg{flex-shrink:0;}
   .hf-item span{font-size:16px; font-weight:700; color:var(--text-strong); line-height:1.35;}
+
+  @media (max-width:760px){
+    .hybrid-features-strip{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:480px){
+    .hybrid-features-strip{grid-template-columns:1fr;}
+  }
 
 /* ===== ABOUT PAGE: PAGE BANNER ===== */
   .page-banner{
