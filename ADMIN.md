@@ -214,3 +214,40 @@ that calls them, and that no hard-coded post/category data was left behind in
 click-through of §24 of the original spec (create/edit/draft/publish/
 unpublish/delete/search/filter/detail page/Home Latest News/mobile+desktop)
 before treating this as production-ready.
+
+---
+
+## 8. Bilingual (English / বাংলা) Blog support
+
+The admin's **New Post** screen now asks for a language first
+(🇬🇧 English / 🇧🇩 বাংলা) before showing the editor. Both languages share the
+exact same editor, the exact same categories, and the exact same D1 database —
+only the label text changes for বাংলা (see `src/components/admin/PostForm.astro`).
+
+**Migration required** — run this once, after `0001_init.sql` (see §2):
+
+```
+npm run db:migrate:remote -- --file=./migrations/0002_add_language.sql
+```
+
+(or `npx wrangler d1 execute taqwa-blog --remote --file=./migrations/0002_add_language.sql`)
+
+It only adds one column (`language`, default `'en'`) — every existing post
+is automatically treated as English, so nothing about the current site or
+its 12 existing posts changes until you actually create/edit a বাংলা post.
+
+**Public routes:**
+- English blog (unchanged): `/blog`, `/blog/:slug`
+- বাংলা blog (new): `/bn/blog`, `/bn/blog/:slug` — same design/CSS as the
+  English blog, translated labels, শুধু বাংলা published posts দেখাবে।
+
+**Not built** (deliberately, to stay in scope — see the report for why):
+a separate বাংলা homepage. The single existing Home page is unchanged and
+its "OUR LATEST NEWS" still only ever shows English posts. বাংলা content is
+reachable at `/bn/blog` (linked whichever way you choose to add a nav
+entry for it — none was added automatically, to avoid touching the shared
+Header component).
+
+Category names themselves are not translated (both languages share the same
+`categories` table/names, e.g. "Maintenance") — only post content and the
+admin form labels are bilingual.

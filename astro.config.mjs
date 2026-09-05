@@ -62,9 +62,17 @@ export default defineConfig({
         // These two redirects keep those exact same links working here too
         // (a redirect response doesn't affect a "#fragment", so anchor links
         // still land on the right section after following it).
+        // Bilingual blog: /bn/blog.astro and /bn/blog/[slug].astro are
+        // prerender:false on this build too (same reason as index.astro and
+        // blog.astro above), so they become live routes at "/bn/blog" and
+        // "/bn/blog/:slug" here - but every link this project writes to them
+        // still uses the static-build ".html" naming convention (this page's
+        // own <style>-free markup included), so they need the same kind of
+        // redirect.
         redirects: {
           '/index.html': '/',
           '/blog.html': '/blog',
+          '/bn/blog.html': '/bn/blog',
         },
       }
     : {}),

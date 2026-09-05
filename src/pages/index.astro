@@ -15,7 +15,7 @@ const base = import.meta.env.BASE_URL;
 // "OUR LATEST NEWS" now reads from the Blog Admin Panel's data instead of
 // hard-coded cards — see src/lib/blog-data.ts. Nothing else on this page
 // (or its markup/CSS below) changed for the Blog Admin Panel work.
-const latestNews = await getLatestNews(Astro.locals.runtime?.env.DB ?? null, 3);
+const latestNews = await getLatestNews(Astro.locals.runtime?.env.DB ?? null, 'en', 3);
 
 const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG & CNG conversion, engine repair, hybrid vehicle service, car AC service, and car wash & detailing — trusted technicians, genuine parts, quality service.";
 ---

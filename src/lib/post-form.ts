@@ -3,7 +3,7 @@
 // so the two never validate/normalize a post differently.
 import { slugify } from './slug';
 import { sanitizeHtml } from './sanitize-html';
-import type { PostInput, PostStatus } from './blog-db';
+import type { PostInput, PostStatus, PostLanguage } from './blog-db';
 
 export interface PostFormResult {
   input: PostInput;
@@ -22,6 +22,7 @@ export function parsePostForm(form: FormData): PostFormResult {
   const author = String(form.get('author') ?? '').trim() || 'Taqwa Automobile Team';
   const tags = String(form.get('tags') ?? '').trim();
   const status: PostStatus = String(form.get('status') ?? 'draft') === 'published' ? 'published' : 'draft';
+  const language: PostLanguage = String(form.get('language') ?? 'en') === 'bn' ? 'bn' : 'en';
   const publishDate = String(form.get('publishDate') ?? '').trim();
   const seoTitle = String(form.get('seoTitle') ?? '').trim();
   const seoDescription = String(form.get('seoDescription') ?? '').trim();
@@ -49,6 +50,7 @@ export function parsePostForm(form: FormData): PostFormResult {
       author,
       tags,
       status,
+      language,
       publishDate,
       seoTitle,
       seoDescription,

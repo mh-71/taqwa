@@ -28,9 +28,10 @@ const errorMessage = Astro.url.searchParams.get('error');
         categories={categories}
         availableImages={AVAILABLE_IMAGES}
         formAction={`/api/admin/posts/${id}?_action=update`}
-        submitLabel="Save Changes"
+        submitLabel={post?.language === 'bn' ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes'}
         errorMessage={errorMessage}
         post={post}
+        lang={post?.language ?? 'en'}
       />
     </div>
   )}

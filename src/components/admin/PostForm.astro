@@ -1,7 +1,12 @@
 ---
 // Shared Create/Edit post form — used by both src/pages/admin/posts/new.astro
 // and src/pages/admin/posts/[id]/edit.astro so the two never drift apart.
-import type { Category, Post } from '../../lib/blog-db';
+//
+// Bilingual support: the `lang` prop only swaps the visible label text (see
+// LABELS below) and adds a hidden `language` field carrying it to the API —
+// layout, spacing, fields, and the rich-text editor are all completely
+// untouched, so the existing English editor stays exactly as it was.
+import type { Category, Post, PostLanguage } from '../../lib/blog-db';
 
 interface Props {
   categories: Category[];
@@ -10,38 +15,93 @@ interface Props {
   submitLabel: string;
   errorMessage?: string | null;
   post?: Post | null;
+  lang?: PostLanguage;
 }
-const { categories, availableImages, formAction, submitLabel, errorMessage, post } = Astro.props;
+const { categories, availableImages, formAction, submitLabel, errorMessage, post, lang = 'en' } = Astro.props;
 const today = new Date().toISOString().slice(0, 10);
+
+const LABELS = lang === 'bn'
+  ? {
+      title: 'পোস্টের শিরোনাম',
+      slug: 'স্লাগ',
+      slugHint: '(শিরোনাম থেকে অটো-তৈরি, প্রয়োজনে পরিবর্তনযোগ্য)',
+      slugPlaceholder: 'শিরোনাম-থেকে-অটো-তৈরি',
+      category: 'ক্যাটাগরি',
+      selectCategory: 'একটি ক্যাটাগরি বেছে নিন',
+      featuredImage: 'ফিচার্ড ছবি',
+      selectImage: 'একটি ছবি বেছে নিন',
+      excerpt: 'সংক্ষিপ্ত বিবরণ',
+      excerptHint: '(ব্লগ কার্ডে ও হোমের "Latest News"-এ দেখানো হবে)',
+      content: 'সম্পূর্ণ ব্লগ লেখা',
+      author: 'লেখক',
+      publishDate: 'প্রকাশের তারিখ',
+      status: 'স্ট্যাটাস',
+      statusDraft: 'ড্রাফট',
+      statusPublished: 'প্রকাশিত',
+      tags: 'ট্যাগ',
+      tagsHint: '(কমা দিয়ে আলাদা করুন, ঐচ্ছিক)',
+      seoTitle: 'SEO শিরোনাম',
+      seoTitleHint: '(ঐচ্ছিক — না দিলে পোস্টের শিরোনাম ব্যবহার হবে)',
+      seoDescription: 'SEO বিবরণ',
+      seoDescriptionHint: '(ঐচ্ছিক — না দিলে সংক্ষিপ্ত বিবরণ ব্যবহার হবে)',
+      cancel: 'বাতিল',
+    }
+  : {
+      title: 'Post Title',
+      slug: 'Slug',
+      slugHint: '(auto-filled from title, editable)',
+      slugPlaceholder: 'auto-generated-from-title',
+      category: 'Category',
+      selectCategory: 'Select a category',
+      featuredImage: 'Featured Image',
+      selectImage: 'Select an image',
+      excerpt: 'Short Excerpt',
+      excerptHint: `(shown on blog cards and in Home's "Latest News")`,
+      content: 'Full Blog Content',
+      author: 'Author',
+      publishDate: 'Publish Date',
+      status: 'Status',
+      statusDraft: 'Draft',
+      statusPublished: 'Published',
+      tags: 'Tags',
+      tagsHint: '(comma separated, optional)',
+      seoTitle: 'SEO Title',
+      seoTitleHint: '(optional — falls back to Post Title)',
+      seoDescription: 'SEO Description',
+      seoDescriptionHint: '(optional — falls back to Short Excerpt)',
+      cancel: 'Cancel',
+    };
 ---
 <form method="post" action={formAction} id="postForm">
   {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
 
+  <input type="hidden" name="language" value={lang}>
+
   <div class="form-grid">
     <div class="field">
-      <label for="title">Post Title</label>
+      <label for="title">{LABELS.title}</label>
       <input type="text" id="title" name="title" required value={post?.title ?? ''}>
     </div>
     <div class="field">
-      <label for="slug">Slug <span class="hint">(auto-filled from title, editable)</span></label>
-      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder="auto-generated-from-title">
+      <label for="slug">{LABELS.slug} <span class="hint">{LABELS.slugHint}</span></label>
+      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder={LABELS.slugPlaceholder}>
     </div>
   </div>
 
   <div class="form-grid">
     <div class="field">
-      <label for="categoryId">Category</label>
+      <label for="categoryId">{LABELS.category}</label>
       <select id="categoryId" name="categoryId" required>
-        <option value="">Select a category</option>
+        <option value="">{LABELS.selectCategory}</option>
         {categories.map((c) => (
           <option value={c.id} selected={post?.category_id === c.id}>{c.name}</option>
         ))}
       </select>
     </div>
     <div class="field">
-      <label for="featuredImage">Featured Image</label>
+      <label for="featuredImage">{LABELS.featuredImage}</label>
       <select id="featuredImage" name="featuredImage" required>
-        <option value="">Select an image</option>
+        <option value="">{LABELS.selectImage}</option>
         {availableImages.map((img) => (
           <option value={img} selected={post?.featured_image === img}>{img.replace('img/', '')}</option>
         ))}
@@ -50,12 +110,12 @@ const today = new Date().toISOString().slice(0, 10);
   </div>
 
   <div class="field">
-    <label for="excerpt">Short Excerpt <span class="hint">(shown on blog cards and in Home's "Latest News")</span></label>
+    <label for="excerpt">{LABELS.excerpt} <span class="hint">{LABELS.excerptHint}</span></label>
     <textarea id="excerpt" name="excerpt" required rows="2">{post?.excerpt ?? ''}</textarea>
   </div>
 
   <div class="field">
-    <label>Full Blog Content</label>
+    <label>{LABELS.content}</label>
     <div class="editor-toolbar">
       <button type="button" data-cmd="bold"><b>B</b></button>
       <button type="button" data-cmd="italic"><i>I</i></button>
@@ -72,41 +132,41 @@ const today = new Date().toISOString().slice(0, 10);
 
   <div class="form-grid">
     <div class="field">
-      <label for="author">Author</label>
+      <label for="author">{LABELS.author}</label>
       <input type="text" id="author" name="author" value={post?.author ?? 'Taqwa Automobile Team'}>
     </div>
     <div class="field">
-      <label for="publishDate">Publish Date</label>
+      <label for="publishDate">{LABELS.publishDate}</label>
       <input type="date" id="publishDate" name="publishDate" required value={post?.publish_date ?? today}>
     </div>
   </div>
 
   <div class="form-grid">
     <div class="field">
-      <label for="status">Status</label>
+      <label for="status">{LABELS.status}</label>
       <select id="status" name="status">
-        <option value="draft" selected={!post || post.status === 'draft'}>Draft</option>
-        <option value="published" selected={post?.status === 'published'}>Published</option>
+        <option value="draft" selected={!post || post.status === 'draft'}>{LABELS.statusDraft}</option>
+        <option value="published" selected={post?.status === 'published'}>{LABELS.statusPublished}</option>
       </select>
     </div>
     <div class="field">
-      <label for="tags">Tags <span class="hint">(comma separated, optional)</span></label>
+      <label for="tags">{LABELS.tags} <span class="hint">{LABELS.tagsHint}</span></label>
       <input type="text" id="tags" name="tags" value={post?.tags ?? ''}>
     </div>
   </div>
 
   <div class="field">
-    <label for="seoTitle">SEO Title <span class="hint">(optional — falls back to Post Title)</span></label>
+    <label for="seoTitle">{LABELS.seoTitle} <span class="hint">{LABELS.seoTitleHint}</span></label>
     <input type="text" id="seoTitle" name="seoTitle" value={post?.seo_title ?? ''}>
   </div>
   <div class="field">
-    <label for="seoDescription">SEO Description <span class="hint">(optional — falls back to Short Excerpt)</span></label>
+    <label for="seoDescription">{LABELS.seoDescription} <span class="hint">{LABELS.seoDescriptionHint}</span></label>
     <textarea id="seoDescription" name="seoDescription" rows="2">{post?.seo_description ?? ''}</textarea>
   </div>
 
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">{submitLabel}</button>
-    <a href="/admin" class="btn btn-ghost">Cancel</a>
+    <a href="/admin" class="btn btn-ghost">{LABELS.cancel}</a>
   </div>
 </form>
 

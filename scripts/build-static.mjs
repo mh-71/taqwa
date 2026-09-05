@@ -24,6 +24,8 @@ const FILES = [
   'src/pages/index.astro',
   'src/pages/blog.astro',
   'src/pages/blog/[slug].astro',
+  'src/pages/bn/blog.astro',
+  'src/pages/bn/blog/[slug].astro',
   'src/pages/admin/login.astro',
   'src/pages/admin/index.astro',
   'src/pages/admin/posts/new.astro',

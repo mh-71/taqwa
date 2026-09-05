@@ -1,15 +1,13 @@
 ---
-// Blog post detail page — new (the public site previously had no individual
-// post pages at all; every "Read More" link was inert). Reuses the site's
-// existing design tokens (colors/spacing/radius from global.css's :root) and
-// the same page-banner/breadcrumb pattern every other inner page already
-// repeats in its own <style> block, so it looks consistent with the rest of
-// the site rather than introducing a new design language.
-import Layout from '../../layouts/Layout.astro';
-import { getPostBySlug, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
-import { postUrl } from '../../lib/post-url';
-import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
-import blogSnapshot from '../../lib/blog-snapshot.json';
+// Bangla Blog post detail page — mirrors src/pages/blog/[slug].astro's
+// design/markup exactly (same page-banner/article/related-posts pattern),
+// just Bangla-labeled and restricted to Bangla-language posts, so the
+// existing English detail page needs no changes at all.
+import Layout from '../../../layouts/Layout.astro';
+import { getPostBySlug, getRecentPosts, formatDisplayDate } from '../../../lib/blog-data';
+import { postUrl } from '../../../lib/post-url';
+import { IS_CLOUDFLARE_BUILD } from '../../../lib/runtime-flag';
+import blogSnapshot from '../../../lib/blog-snapshot.json';
 
 export const prerender = false;
 
@@ -17,37 +15,37 @@ const base = import.meta.env.BASE_URL;
 const runtimeDb = Astro.locals.runtime?.env.DB ?? null;
 const { slug } = Astro.params;
 
-// On the static GitHub Pages / Vercel builds there is no per-request routing
-// (every page is prerendered once at build time from the snapshot data), so
-// getStaticPaths supplies the known slugs then; on Cloudflare this page is
-// server-rendered per request straight from D1 and getStaticPaths is skipped.
+// Static builds (GitHub Pages / Vercel) prerender from the snapshot, same as
+// the English detail page. The checked-in snapshot currently has no Bangla
+// posts, so this simply prerenders nothing there until one is added and the
+// snapshot is refreshed (see ADMIN.md) — it does not error either way.
 export function getStaticPaths() {
   if (IS_CLOUDFLARE_BUILD) return [];
   return blogSnapshot.posts
-    .filter((p) => p.status === 'published' && ((p as { language?: string }).language ?? 'en') === 'en')
+    .filter((p) => p.status === 'published' && (p as { language?: string }).language === 'bn')
     .map((p) => ({ params: { slug: p.slug } }));
 }
 
 const post = slug ? await getPostBySlug(runtimeDb, slug) : null;
 
 if (!post) {
-  return Astro.redirect(`${base}blog.html`, 302);
+  return Astro.redirect(`${base}bn/blog.html`, 302);
 }
 
-// This route is the English blog's detail page - a Bangla post's slug (see
-// src/pages/bn/blog/[slug].astro) must never render here, only redirect to
-// its own Bangla URL, so the two languages' posts never mix.
-if (post.language !== 'en') {
+// This route is the Bangla blog's detail page - an English post's slug must
+// never render here, only redirect to its own English URL, so the two
+// languages' posts never mix.
+if (post.language !== 'bn') {
   return Astro.redirect(`${base}${postUrl(post.slug, post.language)}`, 302);
 }
 
-const related = (await getRecentPosts(runtimeDb, 'en', 5)).filter((p) => p.slug !== post.slug).slice(0, 4);
+const related = (await getRecentPosts(runtimeDb, 'bn', 5)).filter((p) => p.slug !== post.slug).slice(0, 4);
 const description = post.seoDescription || post.excerpt;
 ---
 <Layout
   title={`${post.seoTitle || post.title} - Taqwa Automobile Service Center`}
   description={description}
-  path={postUrl(post.slug)}
+  path={postUrl(post.slug, 'bn')}
   ogImage={base + post.featuredImage}
   current="blog"
 >
@@ -125,12 +123,12 @@ const description = post.seoDescription || post.excerpt;
     <div class="post-meta">
       <span>{formatDisplayDate(post.publishDate)}</span>
       <span>&middot;</span>
-      <span>By {post.author}</span>
+      <span>লিখেছেন {post.author}</span>
     </div>
     <div class="breadcrumb">
-      <a href={base + "index.html"}>Home</a>
+      <a href={base + "index.html"}>হোম</a>
       <span class="sep">&raquo;</span>
-      <a href={base + "blog.html"}>Blog</a>
+      <a href={base + "bn/blog.html"}>ব্লগ</a>
       <span class="sep">&raquo;</span>
       <span class="current">{post.title}</span>
     </div>
@@ -149,10 +147,10 @@ const description = post.seoDescription || post.excerpt;
 {related.length > 0 && (
   <section class="related-section">
     <div class="related-inner">
-      <h2 class="display">More From The <span style="color:var(--red);">Blog</span></h2>
+      <h2 class="display">ব্লগ থেকে <span style="color:var(--red);">আরও</span></h2>
       <div class="related-grid">
         {related.map((r) => (
-          <a class="related-card" href={base + postUrl(r.slug)}>
+          <a class="related-card" href={base + postUrl(r.slug, 'bn')}>
             <img src={base + r.featuredImage} alt={r.title} loading="lazy">
             <div class="rc-body">
               <h4>{r.title}</h4>

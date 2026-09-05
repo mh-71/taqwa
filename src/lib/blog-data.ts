@@ -10,7 +10,7 @@
 //   build time): falls back to the checked-in snapshot in blog-snapshot.json,
 //   which is a point-in-time mirror of D1. See ADMIN.md for how to refresh it.
 import * as db from './blog-db';
-import type { D1Database, PostStatus } from './blog-db';
+import type { D1Database, PostStatus, PostLanguage } from './blog-db';
 import snapshotData from './blog-snapshot.json';
 
 export interface PublicPost {
@@ -24,6 +24,7 @@ export interface PublicPost {
   content: string;
   author: string;
   tags: string[];
+  language: PostLanguage;
   publishDate: string;
   seoTitle: string;
   seoDescription: string;
@@ -47,6 +48,7 @@ function fromD1(p: db.Post): PublicPost {
     content: p.content,
     author: p.author,
     tags: p.tags ? p.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+    language: p.language,
     publishDate: p.publish_date,
     seoTitle: p.seo_title,
     seoDescription: p.seo_description,
@@ -63,6 +65,10 @@ interface SnapshotPost {
   author: string;
   tags: string[];
   status: PostStatus;
+  // Absent on every entry in the checked-in snapshot (it predates bilingual
+  // support) - treated as 'en', matching the column DEFAULT the D1 migration
+  // uses for the exact same reason.
+  language?: PostLanguage;
   publish_date: string;
   seo_title: string;
   seo_description: string;
@@ -83,6 +89,7 @@ function snapshotPublishedPosts(): PublicPost[] {
       content: p.content,
       author: p.author,
       tags: p.tags ?? [],
+      language: p.language ?? 'en',
       publishDate: p.publish_date,
       seoTitle: p.seo_title,
       seoDescription: p.seo_description,
@@ -92,14 +99,16 @@ function snapshotPublishedPosts(): PublicPost[] {
 
 export async function getPublishedPosts(
   runtimeDb: D1Database | null,
-  opts: { categorySlug?: string; search?: string; limit?: number } = {}
+  opts: { categorySlug?: string; search?: string; limit?: number; language?: PostLanguage } = {}
 ): Promise<PublicPost[]> {
+  const language: PostLanguage = opts.language ?? 'en';
+
   if (runtimeDb) {
-    const posts = await db.getPublishedPosts(runtimeDb, opts);
+    const posts = await db.getPublishedPosts(runtimeDb, { ...opts, language });
     return posts.map(fromD1);
   }
 
-  let posts = snapshotPublishedPosts();
+  let posts = snapshotPublishedPosts().filter((p) => p.language === language);
   if (opts.categorySlug) posts = posts.filter((p) => p.categorySlug === opts.categorySlug);
   if (opts.search) {
     const q = opts.search.toLowerCase();
@@ -115,14 +124,25 @@ export async function getPublishedPosts(
   return posts;
 }
 
-export async function getLatestNews(runtimeDb: D1Database | null, limit = 3): Promise<PublicPost[]> {
-  return getPublishedPosts(runtimeDb, { limit });
+export async function getLatestNews(
+  runtimeDb: D1Database | null,
+  language: PostLanguage = 'en',
+  limit = 3
+): Promise<PublicPost[]> {
+  return getPublishedPosts(runtimeDb, { language, limit });
 }
 
-export async function getRecentPosts(runtimeDb: D1Database | null, limit = 4): Promise<PublicPost[]> {
-  return getPublishedPosts(runtimeDb, { limit });
+export async function getRecentPosts(
+  runtimeDb: D1Database | null,
+  language: PostLanguage = 'en',
+  limit = 4
+): Promise<PublicPost[]> {
+  return getPublishedPosts(runtimeDb, { language, limit });
 }
 
+/** Looked up by slug alone (slugs are globally unique across both languages) -
+ *  callers that must not mix languages check the returned post's `language`
+ *  themselves (see src/pages/blog/[slug].astro and src/pages/bn/blog/[slug].astro). */
 export async function getPostBySlug(runtimeDb: D1Database | null, slug: string): Promise<PublicPost | null> {
   if (runtimeDb) {
     const p = await db.getPostBySlug(runtimeDb, slug);
@@ -139,12 +159,15 @@ export function formatDisplayDate(isoDate: string): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
-export async function getCategories(runtimeDb: D1Database | null): Promise<PublicCategory[]> {
+export async function getCategories(
+  runtimeDb: D1Database | null,
+  language: PostLanguage = 'en'
+): Promise<PublicCategory[]> {
   if (runtimeDb) {
-    const cats = await db.getCategoriesWithCounts(runtimeDb);
+    const cats = await db.getCategoriesWithCounts(runtimeDb, language);
     return cats.map((c) => ({ name: c.name, slug: c.slug, count: c.count }));
   }
-  const posts = snapshotPublishedPosts();
+  const posts = snapshotPublishedPosts().filter((p) => p.language === language);
   return snapshotData.categories.map((c) => ({
     name: c.name,
     slug: c.slug,

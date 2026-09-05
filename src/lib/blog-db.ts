@@ -31,6 +31,10 @@ export interface Category {
 }
 
 export type PostStatus = 'draft' | 'published';
+// Bilingual Blog Admin Panel: every post belongs to exactly one language.
+// Existing rows (migrations/0002_add_language.sql) all default to 'en', so
+// the pre-existing English-only site keeps behaving exactly as before.
+export type PostLanguage = 'en' | 'bn';
 
 export interface Post {
   id: number;
@@ -45,6 +49,7 @@ export interface Post {
   author: string;
   tags: string; // comma-separated in storage
   status: PostStatus;
+  language: PostLanguage;
   publish_date: string; // YYYY-MM-DD
   seo_title: string;
   seo_description: string;
@@ -56,7 +61,7 @@ const POST_COLUMNS = `
   posts.id, posts.title, posts.slug, posts.category_id,
   categories.name AS category_name, categories.slug AS category_slug,
   posts.featured_image, posts.excerpt, posts.content, posts.author, posts.tags,
-  posts.status, posts.publish_date, posts.seo_title, posts.seo_description,
+  posts.status, posts.language, posts.publish_date, posts.seo_title, posts.seo_description,
   posts.created_at, posts.updated_at
 `;
 const POST_JOIN = `FROM posts JOIN categories ON categories.id = posts.category_id`;
@@ -65,11 +70,15 @@ const POST_JOIN = `FROM posts JOIN categories ON categories.id = posts.category_
 
 export async function getPublishedPosts(
   db: D1Database,
-  opts: { categorySlug?: string; search?: string; limit?: number } = {}
+  opts: { categorySlug?: string; search?: string; limit?: number; language?: PostLanguage } = {}
 ): Promise<Post[]> {
   const clauses = [`posts.status = 'published'`];
   const params: unknown[] = [];
 
+  if (opts.language) {
+    clauses.push(`posts.language = ?`);
+    params.push(opts.language);
+  }
   if (opts.categorySlug) {
     clauses.push(`categories.slug = ?`);
     params.push(opts.categorySlug);
@@ -92,26 +101,27 @@ export async function getPostBySlug(db: D1Database, slug: string): Promise<Post 
   return db.prepare(sql).bind(slug).first<Post>();
 }
 
-export async function getLatestNews(db: D1Database, limit = 3): Promise<Post[]> {
-  return getPublishedPosts(db, { limit });
+export async function getLatestNews(db: D1Database, language: PostLanguage = 'en', limit = 3): Promise<Post[]> {
+  return getPublishedPosts(db, { language, limit });
 }
 
-export async function getRecentPosts(db: D1Database, limit = 4): Promise<Post[]> {
-  return getPublishedPosts(db, { limit });
+export async function getRecentPosts(db: D1Database, language: PostLanguage = 'en', limit = 4): Promise<Post[]> {
+  return getPublishedPosts(db, { language, limit });
 }
 
 export async function getCategoriesWithCounts(
-  db: D1Database
+  db: D1Database,
+  language: PostLanguage = 'en'
 ): Promise<(Category & { count: number })[]> {
   const sql = `
     SELECT categories.id, categories.name, categories.slug,
-           COUNT(posts.id) FILTER (WHERE posts.status = 'published') AS count
+           COUNT(posts.id) FILTER (WHERE posts.status = 'published' AND posts.language = ?) AS count
     FROM categories
     LEFT JOIN posts ON posts.category_id = categories.id
     GROUP BY categories.id
     ORDER BY categories.name ASC
   `;
-  const { results } = await db.prepare(sql).all<Category & { count: number }>();
+  const { results } = await db.prepare(sql).bind(language).all<Category & { count: number }>();
   return results;
 }
 
@@ -119,7 +129,7 @@ export async function getCategoriesWithCounts(
 
 export async function listAllPosts(
   db: D1Database,
-  opts: { search?: string; categorySlug?: string; status?: PostStatus } = {}
+  opts: { search?: string; categorySlug?: string; status?: PostStatus; language?: PostLanguage } = {}
 ): Promise<Post[]> {
   const clauses: string[] = [];
   const params: unknown[] = [];
@@ -135,6 +145,10 @@ export async function listAllPosts(
   if (opts.status) {
     clauses.push(`posts.status = ?`);
     params.push(opts.status);
+  }
+  if (opts.language) {
+    clauses.push(`posts.language = ?`);
+    params.push(opts.language);
   }
 
   let sql = `SELECT ${POST_COLUMNS} ${POST_JOIN}`;
@@ -167,6 +181,7 @@ export interface PostInput {
   author: string;
   tags: string;
   status: PostStatus;
+  language: PostLanguage;
   publishDate: string;
   seoTitle: string;
   seoDescription: string;
@@ -175,14 +190,14 @@ export interface PostInput {
 export async function createPost(db: D1Database, input: PostInput): Promise<number> {
   const sql = `
     INSERT INTO posts
-      (title, slug, category_id, featured_image, excerpt, content, author, tags, status, publish_date, seo_title, seo_description, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+      (title, slug, category_id, featured_image, excerpt, content, author, tags, status, language, publish_date, seo_title, seo_description, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
   `;
   const res = await db
     .prepare(sql)
     .bind(
       input.title, input.slug, input.categoryId, input.featuredImage, input.excerpt,
-      input.content, input.author, input.tags, input.status, input.publishDate,
+      input.content, input.author, input.tags, input.status, input.language, input.publishDate,
       input.seoTitle, input.seoDescription
     )
     .run();
@@ -193,7 +208,7 @@ export async function updatePost(db: D1Database, id: number, input: PostInput): 
   const sql = `
     UPDATE posts SET
       title = ?, slug = ?, category_id = ?, featured_image = ?, excerpt = ?,
-      content = ?, author = ?, tags = ?, status = ?, publish_date = ?,
+      content = ?, author = ?, tags = ?, status = ?, language = ?, publish_date = ?,
       seo_title = ?, seo_description = ?, updated_at = datetime('now')
     WHERE id = ?
   `;
@@ -201,7 +216,7 @@ export async function updatePost(db: D1Database, id: number, input: PostInput): 
     .prepare(sql)
     .bind(
       input.title, input.slug, input.categoryId, input.featuredImage, input.excerpt,
-      input.content, input.author, input.tags, input.status, input.publishDate,
+      input.content, input.author, input.tags, input.status, input.language, input.publishDate,
       input.seoTitle, input.seoDescription, id
     )
     .run();
