@@ -303,7 +303,7 @@
   }
   .hero-engine{
     position:absolute; right:-60px; top:50%; transform:translateY(-50%);
-    width:640px; height:640px; opacity:0.9; pointer-events:none;
+    width:min(640px, 52vw); height:min(640px, 52vw); opacity:0.9; pointer-events:none;
   }
   .hero-inner{
     position:relative; max-width:1280px; margin:0 auto;
@@ -530,8 +530,7 @@
     background:
       radial-gradient(ellipse 500px 400px at 70% 30%, rgba(255,255,255,0.06), transparent 60%),
       linear-gradient(135deg, #2A3E5A 0%, #121C2A 100%);
-    aspect-ratio:420 / 260;
-    min-height:220px;
+    width:100%; height:100%; min-height:220px;
     overflow:hidden;
   }
   .carwash-visual::before{
@@ -546,45 +545,10 @@
     position:absolute; left:50%; top:52%; transform:translate(-50%,-50%);
     width:88%; height:auto;
   }
-
-.carwash-visual {
-  position: relative;
-  background:
-    radial-gradient(
-      ellipse 500px 400px at 70% 30%,
-      rgba(255,255,255,0.06),
-      transparent 60%
-    ),
-    linear-gradient(135deg, #2A3E5A 0%, #121C2A 100%);
-
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  aspect-ratio: auto;
-  overflow: hidden;
-}
-
-.carwash-visual::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size: 36px 36px;
-}
-
-.carwash-visual img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  position: relative;
-  z-index: 1;
-}
-
-
-
+  .carwash-visual img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    position:relative; z-index:1;
+  }
 
   /* middle content panel */
   .carwash-content{
@@ -620,23 +584,11 @@
   .carwash-cta .sparkle{
     position:absolute; color:var(--red); opacity:0.7; font-size:16px;
   }
-
-.carwash-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.carwash-cta .car-icon {
-  width: 280px;
-  height: 150px;
-  display: block;
-  object-fit: contain;
-  margin: 0 auto 5px;
-  position: relative;
-  left: -40px;
-}
-
+  .carwash-cta .car-icon{
+    width:min(280px, 90%); height:auto; max-height:150px;
+    display:block; object-fit:contain;
+    margin:0 auto 5px; position:relative; left:-8%;
+  }
   .carwash-cta .cta-lead{
     color:var(--red); font-size:16px; font-weight:800; letter-spacing:1px;
     text-transform:uppercase; margin-bottom:6px;
@@ -1157,27 +1109,12 @@
   }
 
 
-  .testimonials-summary .stars {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.testimonials-summary .stars .icon {
-  width: 28px !important;
-  height: 28px !important;
-  flex-shrink: 0;
-}
-
-
-
-
   .testimonials-summary .score{
     font-family:var(--font-display); font-size:var(--text-5xl); font-weight:800; color:#fff; line-height:1;
   }
   .testimonials-summary .score-meta{text-align:left;}
-  .testimonials-summary .stars{display:flex; gap:2px; color:var(--red); margin-bottom:4px;}
-  .testimonials-summary .stars .icon{width:16px; height:16px;}
+  .testimonials-summary .stars{display:flex; align-items:center; gap:2px; color:var(--red); margin-bottom:4px;}
+  .testimonials-summary .stars .icon{width:28px; height:28px; flex-shrink:0;}
   .testimonials-summary .score-meta span{font-size:var(--text-xs); color:var(--muted); letter-spacing:0.3px;}
 
   .testimonials-grid{
@@ -1188,39 +1125,16 @@
     padding:var(--space-5); position:relative; box-shadow:var(--shadow-2);
     display:flex; flex-direction:column; gap:var(--space-3);
   }
-.testimonial-card .review-icon {
-  width: 50px !important;
-  height: 50px !important;
-  flex-shrink: 0;
-  color: #F97316;
-}
-
-.testimonial-card .review-icon path {
-  stroke: #F97316;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.testimonial-card .review-icon circle {
-  fill: #F97316;
-}
-
-.testimonial-card .stars {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.testimonial-card .stars .icon {
-  width: 28px !important;
-  height: 28px !important;
-  flex-shrink: 0;
-  color: #F97316;
-}
+  .testimonial-card .review-icon{
+    width:50px; height:50px; flex-shrink:0; color:#F97316;
+  }
+  .testimonial-card .review-icon path{
+    stroke:#F97316; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+  }
+  .testimonial-card .review-icon circle{fill:#F97316;}
   .testimonial-card .quote-icon{color:rgba(249,115,22,0.35); width:30px; height:30px;}
-  .testimonial-card .stars{display:flex; gap:2px; color:var(--red);}
-  .testimonial-card .stars .icon{width:14px; height:14px;}
+  .testimonial-card .stars{display:flex; align-items:center; gap:2px; color:var(--red);}
+  .testimonial-card .stars .icon{width:28px; height:28px; flex-shrink:0; color:#F97316;}
   .testimonial-card p.quote{color:var(--off); font-size:var(--text-sm); line-height:1.75; flex:1;}
   .testimonial-card .person{display:flex; align-items:center; gap:var(--space-3); margin-top:var(--space-2);}
   .testimonial-card .avatar{
@@ -1365,7 +1279,7 @@
 }
 
 .faq-item.open .faq-answer {
-  max-height: 220px;
+  max-height: 340px;
 }
 
 .faq-answer-inner {
