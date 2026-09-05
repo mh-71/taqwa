@@ -1,6 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getLatestNews, formatDisplayDate } from '../lib/blog-data';
+import { postUrl } from '../lib/post-url';
 const base = import.meta.env.BASE_URL;
+// "OUR LATEST NEWS" now reads from the Blog Admin Panel's data instead of
+// hard-coded cards — see src/lib/blog-data.ts. Nothing else on this page
+// (or its markup/CSS below) changed for the Blog Admin Panel work.
+const latestNews = await getLatestNews(Astro.locals.runtime?.env.DB ?? null, 3);
 
 const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG & CNG conversion, engine repair, hybrid vehicle service, car AC service, and car wash & detailing — trusted technicians, genuine parts, quality service.";
 ---
@@ -1105,89 +1111,21 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
     <div class="news-carousel" id="newsCarousel">
       <div class="news-track" id="newsTrack">
 
-        <div class="news-card">
-          <div class="news-image lpg">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/latest-1.jpg"} alt="LPG vs CNG" style="width:100%; height:100%; object-fit:cover;">
-            <div class="news-date">20 May 2026</div>
+        {latestNews.map((post) => (
+          <div class="news-card">
+            <div class="news-image lpg">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + post.featuredImage} alt={post.title} style="width:100%; height:100%; object-fit:cover;">
+              <div class="news-date">{formatDisplayDate(post.publishDate)}</div>
+            </div>
+            <div class="news-body">
+              <h3>{post.title}</h3>
+              <p>{post.excerpt}</p>
+              <a href={postUrl(post.slug)} class="news-read-more">Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
           </div>
-          <div class="news-body">
-            <h3>LPG vs CNG: Which Is Better for Your Car?</h3>
-            <p>Know the difference between LPG and CNG conversion so you can choose the best fuel option for your vehicle.</p>
-            <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="news-card">
-          <div class="news-image lpg">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/latest-2.jpg"} alt="Engine Oil Change" style="width:100%; height:100%; object-fit:cover;">
-            <div class="news-date">20 May 2026</div>
-          </div>
-          <div class="news-body">
-            <h3>How Often Should You Change Engine Oil?</h3>
-            <p>Regular oil changes keep your engine healthy and extend its life. Here's how often you really need one.</p>
-            <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="news-card">
-          <div class="news-image lpg">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/latest-3.jpg"} alt="Car Brake Service" style="width:100%; height:100%; object-fit:cover;">
-            <div class="news-date">20 May 2026</div>
-          </div>
-          <div class="news-body">
-            <h3>Signs Your Car Brakes Need Attention</h3>
-            <p>Don't ignore these warning signs. Keep your brakes in top condition for safety on every drive.</p>
-            <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="news-card">
-          <div class="news-image lpg">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/latest-4.jpg"} alt="Car Servicing Benefits" style="width:100%; height:100%; object-fit:cover;">
-            <div class="news-date">20 May 2026</div>
-          </div>
-          <div class="news-body">
-            <h3>Benefits of Regular Car Servicing</h3>
-            <p>Routine servicing catches small issues early, saving you money and keeping your car reliable for longer.</p>
-            <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="news-card">
-          <div class="news-image lpg">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/latest-5.jpg"} alt="Car Battery Care" style="width:100%; height:100%; object-fit:cover;">
-            <div class="news-date">20 May 2026</div>
-          </div>
-          <div class="news-body">
-            <h3>How to Extend Your Car Battery Life</h3>
-            <p>Simple habits that help your battery last longer and avoid getting stranded with a dead start.</p>
-            <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="news-card">
-          <div class="news-image lpg">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/latest-6.jpg"} alt="Engine Trouble Signs" style="width:100%; height:100%; object-fit:cover;">
-            <div class="news-date">20 May 2026</div>
-          </div>
-          <div class="news-body">
-            <h3>Common Signs of Engine Trouble</h3>
-            <p>Strange noises, smoke, or warning lights? Learn what your engine might be trying to tell you.</p>
-            <a href="blog.html" class="news-read-more">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
+        ))}
 
       </div>
     </div>

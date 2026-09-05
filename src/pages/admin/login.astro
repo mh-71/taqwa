@@ -1,0 +1,50 @@
+---
+import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
+import '../../styles/admin.css';
+
+export const prerender = !IS_CLOUDFLARE_BUILD;
+
+const isLive = !!Astro.locals.runtime;
+const error = Astro.url.searchParams.get('error');
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Login · Taqwa Admin</title>
+</head>
+<body>
+{isLive ? (
+  <div class="login-wrap">
+    <div class="card login-card">
+      <h1>Taqwa Admin</h1>
+      <p class="hint">Sign in to manage blog posts and categories.</p>
+      {error && <div class="alert alert-error">Incorrect password. Please try again.</div>}
+      <form method="post" action="/api/admin/login">
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autofocus autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Log In</button>
+      </form>
+    </div>
+  </div>
+) : (
+  <div class="notice">
+    <h1>Admin panel unavailable here</h1>
+    <p>This build has no Cloudflare Worker runtime, so the Blog Admin Panel can't run. It's only available on the live Cloudflare deployment.</p>
+    <p>Open the admin panel at your Cloudflare Workers URL instead, e.g. <code>https://taqwa.&lt;your-account&gt;.workers.dev/admin</code>.</p>
+  </div>
+)}
+</body>
+</html>
+
+<style>
+  .login-wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .login-card{width:100%; max-width:360px;}
+  .login-card h1{font-size:1.25rem; margin-bottom:4px;}
+  .login-card .hint{color:var(--admin-muted); font-size:.88rem; margin:0 0 18px;}
+  .login-card form{display:flex; flex-direction:column;}
+</style>

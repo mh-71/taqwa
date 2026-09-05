@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 
 // This project deploys to three places at once, and they don't all serve
 // the site from the same place:
@@ -38,4 +39,19 @@ export default defineConfig({
   build: {
     format: 'file',
   },
+  // Blog Admin Panel: only the Cloudflare build gets a real server. The
+  // admin panel and its /api/admin/* routes need to run actual code (auth
+  // check, D1 reads/writes) on every request, which GitHub Pages can never
+  // do and Vercel isn't set up for here — so Cloudflare Workers (already one
+  // of the 3 targets) is the one place this project adds a server adapter.
+  // GitHub Pages and Vercel keep building 100% static, exactly as before;
+  // the admin/api route files themselves detect the missing adapter at
+  // runtime and render/return a "Cloudflare only" notice instead of
+  // crashing the build (see src/middleware.ts and ADMIN.md).
+  ...(isCloudflare
+    ? {
+        output: 'hybrid',
+        adapter: cloudflare({ imageService: 'passthrough' }),
+      }
+    : {}),
 });

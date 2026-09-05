@@ -7,9 +7,18 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "cf:build": "CLOUDFLARE_WORKERS=1 astro build",
+    "cf:preview": "npm run cf:build && wrangler dev",
+    "cf:deploy": "npm run cf:build && wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute taqwa-blog --local --file=./migrations/0001_init.sql",
+    "db:migrate:remote": "wrangler d1 execute taqwa-blog --remote --file=./migrations/0001_init.sql"
   },
   "dependencies": {
     "astro": "^4.16.0"
+  },
+  "devDependencies": {
+    "@astrojs/cloudflare": "^11.1.0",
+    "wrangler": "^3.99.0"
   }
 }

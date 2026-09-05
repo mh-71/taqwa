@@ -1,6 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPublishedPosts, getRecentPosts, getCategories, formatDisplayDate } from '../lib/blog-data';
+import { postUrl } from '../lib/post-url';
 const base = import.meta.env.BASE_URL;
+
+// Blog listing reads from the Blog Admin Panel's data instead of hard-coded
+// cards (see src/lib/blog-data.ts). Search (?q=) and category filter
+// (?category=slug) are plain query-string params — no client-side filtering
+// script needed, and existing bookmarked/shared blog.html links still work.
+const runtimeDb = Astro.locals.runtime?.env.DB ?? null;
+const q = Astro.url.searchParams.get('q') ?? '';
+const categorySlug = Astro.url.searchParams.get('category') ?? '';
+
+const [allPosts, recentPosts, categories] = await Promise.all([
+  getPublishedPosts(runtimeDb, { search: q || undefined, categorySlug: categorySlug || undefined }),
+  getRecentPosts(runtimeDb, 4),
+  getCategories(runtimeDb),
+]);
+const mainPosts = allPosts.slice(0, 6);
+const extraPosts = allPosts.slice(6);
+const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 10);
 ---
 
 <Layout
@@ -583,309 +602,115 @@ const base = import.meta.env.BASE_URL;
     <div class="blog-main">
       <div class="blog-grid" id="blogGrid">
 
-        <div class="blog-card">
-          <div class="blog-card-image">
-            <span class="blog-card-cat">LPG &amp; CNG</span>
-            <img src={base + "img/latest-1.jpg"} alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-date">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-              August 15, 2026
-            </div>
-            <h3>LPG vs CNG: Which Conversion Is Right for Your Car?</h3>
-            <p>Both fuels can cut your running costs, but they suit different driving habits and vehicle types. Here's how to decide which conversion makes sense for you.</p>
-            <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
+        {mainPosts.length === 0 && (
+          <p style="color:var(--text-muted); padding:20px 0;">
+            {q || categorySlug ? 'No posts match this search/category yet.' : 'No posts published yet — check back soon.'}
+          </p>
+        )}
 
-        <div class="blog-card">
-          <div class="blog-card-image">
-            <span class="blog-card-cat">Maintenance</span>
-            <img src={base + "img/latest-2.jpg"} alt="5 Signs Your Car Needs an Oil Change Now">
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-date">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-              August 8, 2026
+        {mainPosts.map((post) => (
+          <div class="blog-card">
+            <div class="blog-card-image">
+              <span class="blog-card-cat">{post.categoryName}</span>
+              <img src={base + post.featuredImage} alt={post.title}>
             </div>
-            <h3>5 Signs Your Car Needs an Oil Change Now</h3>
-            <p>Skipping an oil change can quietly wear down your engine. Watch for these five warning signs before real damage sets in.</p>
-            <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="blog-card">
-          <div class="blog-card-image">
-            <span class="blog-card-cat">Hybrid Tips</span>
-            <img src={base + "img/latest-3.jpg"} alt="How to Extend the Life of Your Hybrid Battery">
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-date">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-              July 29, 2026
+            <div class="blog-card-body">
+              <div class="blog-card-date">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                {formatDisplayDate(post.publishDate)}
+              </div>
+              <h3>{post.title}</h3>
+              <p>{post.excerpt}</p>
+              <a class="blog-read-more" href={postUrl(post.slug)}>Read More
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
             </div>
-            <h3>How to Extend the Life of Your Hybrid Battery</h3>
-            <p>Hybrid batteries are built to last, but a few driving and charging habits can add years to their lifespan.</p>
-            <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
           </div>
-        </div>
-
-        <div class="blog-card">
-          <div class="blog-card-image">
-            <span class="blog-card-cat">Car Care</span>
-            <img src={base + "img/evn-1.jpg"} alt="Why Regular AC Service Matters Before Summer">
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-date">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-              July 20, 2026
-            </div>
-            <h3>Why Regular AC Service Matters Before Summer</h3>
-            <p>A weak or noisy AC usually signals a bigger issue underneath. Here's what a proper AC service checks and why timing matters.</p>
-            <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="blog-card">
-          <div class="blog-card-image">
-            <span class="blog-card-cat">Hybrid Tips</span>
-            <img src={base + "img/hybrid-car.jpg"} alt="Common Myths About Hybrid Cars Debunked">
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-date">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-              July 12, 2026
-            </div>
-            <h3>Common Myths About Hybrid Cars Debunked</h3>
-            <p>From "the battery always needs replacing early" to "hybrids can't handle heavy traffic" &mdash; we separate fact from fiction.</p>
-            <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="blog-card">
-          <div class="blog-card-image">
-            <span class="blog-card-cat">Car Care</span>
-            <img src={base + "img/car-wash.jpg"} alt="The Right Way to Wash Your Car Without Damaging the Paint">
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-date">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-              July 3, 2026
-            </div>
-            <h3>The Right Way to Wash Your Car Without Damaging the Paint</h3>
-            <p>Wrong soap, wrong cloth, wrong technique &mdash; small mistakes at the wash bay can dull your paint over time. Here's how to do it right.</p>
-            <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
+        ))}
 
         <div class="extra-posts" id="extraPosts">
 
-          <div class="blog-card">
-            <div class="blog-card-image">
-              <span class="blog-card-cat">LPG &amp; CNG</span>
-              <img src={base + "img/lpg.jpg"} alt="Is LPG Conversion Safe for Older Vehicles?">
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-card-date">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                June 24, 2026
+          {extraPosts.map((post) => (
+            <div class="blog-card">
+              <div class="blog-card-image">
+                <span class="blog-card-cat">{post.categoryName}</span>
+                <img src={base + post.featuredImage} alt={post.title}>
               </div>
-              <h3>Is LPG Conversion Safe for Older Vehicles?</h3>
-              <p>Age alone isn't the deciding factor &mdash; engine condition and kit quality matter more. Here's what we check before recommending conversion.</p>
-              <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="blog-card">
-            <div class="blog-card-image">
-              <span class="blog-card-cat">Maintenance</span>
-              <img src={base + "img/evn-2.jpg"} alt="Oil & Filter Change: How Often Is Too Often?">
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-card-date">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                June 15, 2026
+              <div class="blog-card-body">
+                <div class="blog-card-date">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  {formatDisplayDate(post.publishDate)}
+                </div>
+                <h3>{post.title}</h3>
+                <p>{post.excerpt}</p>
+                <a class="blog-read-more" href={postUrl(post.slug)}>Read More
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
               </div>
-              <h3>Oil &amp; Filter Change: How Often Is Too Often?</h3>
-              <p>More frequent isn't always better. We break down the right interval based on oil type, driving conditions and mileage.</p>
-              <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
             </div>
-          </div>
-
-          <div class="blog-card">
-            <div class="blog-card-image">
-              <span class="blog-card-cat">News</span>
-              <img src={base + "img/Expert-Technicians.jpg"} alt="Meet the Team Behind Taqwa Automobile's Service Quality">
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-card-date">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                June 5, 2026
-              </div>
-              <h3>Meet the Team Behind Taqwa Automobile's Service Quality</h3>
-              <p>A closer look at the technicians, advisors and specialists who keep every job at our workshop up to standard.</p>
-              <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="blog-card">
-            <div class="blog-card-image">
-              <span class="blog-card-cat">LPG &amp; CNG</span>
-              <img src={base + "img/lpg-and-cng.jpg"} alt="CNG vs Petrol: A Real Cost Comparison for Dhaka Drivers">
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-card-date">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                May 27, 2026
-              </div>
-              <h3>CNG vs Petrol: A Real Cost Comparison for Dhaka Drivers</h3>
-              <p>We ran the numbers on a typical daily commute to see how long it actually takes for a CNG conversion to pay for itself.</p>
-              <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="blog-card">
-            <div class="blog-card-image">
-              <span class="blog-card-cat">Maintenance</span>
-              <img src={base + "img/latest-4.jpg"} alt="Brake Maintenance Checklist Every Driver Should Know">
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-card-date">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                May 18, 2026
-              </div>
-              <h3>Brake Maintenance Checklist Every Driver Should Know</h3>
-              <p>Squealing, pulling, soft pedal feel &mdash; here's what each warning sign usually means and when to get it checked.</p>
-              <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="blog-card">
-            <div class="blog-card-image">
-              <span class="blog-card-cat">News</span>
-              <img src={base + "img/Emergency-Roadside-Assistance.jpg"} alt="How Our 24/7 Roadside Assistance Works">
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-card-date">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                May 9, 2026
-              </div>
-              <h3>How Our 24/7 Roadside Assistance Works</h3>
-              <p>Breakdown, flat tire, dead battery &mdash; here's exactly what happens from the moment you call us to the moment we arrive.</p>
-              <a class="blog-read-more" aria-disabled="true" tabindex="-1">Read More
-                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
-          </div>
+          ))}
 
         </div>
 
       </div>
 
-      <div class="blog-loadmore-wrap">
-        <button class="load-more-btn" id="loadMoreBtn">
-          <span id="loadMoreLabel">Load More Articles</span>
-          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
+      {extraPosts.length > 0 && (
+        <div class="blog-loadmore-wrap">
+          <button class="load-more-btn" id="loadMoreBtn">
+            <span id="loadMoreLabel">Load More Articles</span>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      )}
     </div>
 
     <aside class="blog-sidebar">
 
       <div class="sidebar-widget">
         <h4>Search</h4>
-        <div class="search-box">
-          <input type="text" placeholder="Search articles...">
-          <button aria-label="Search">
+        <form class="search-box" method="get" action="blog.html">
+          {categorySlug && <input type="hidden" name="category" value={categorySlug}>}
+          <input type="text" name="q" placeholder="Search articles..." value={q}>
+          <button type="submit" aria-label="Search">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
           </button>
-        </div>
+        </form>
       </div>
 
       <div class="sidebar-widget">
         <h4>Categories</h4>
         <ul class="cat-list">
-          <li><a aria-disabled="true" tabindex="-1">LPG &amp; CNG</a><span>3</span></li>
-          <li><a aria-disabled="true" tabindex="-1">Maintenance</a><span>3</span></li>
-          <li><a aria-disabled="true" tabindex="-1">Hybrid Tips</a><span>2</span></li>
-          <li><a aria-disabled="true" tabindex="-1">Car Care</a><span>2</span></li>
-          <li><a aria-disabled="true" tabindex="-1">News</a><span>2</span></li>
+          {categories.map((c) => (
+            <li><a href={`blog.html?category=${c.slug}`}>{c.name}</a><span>{c.count}</span></li>
+          ))}
         </ul>
       </div>
 
       <div class="sidebar-widget">
         <h4>Recent Posts</h4>
 
-        <div class="recent-post">
-          <img src={base + "img/latest-1.jpg"} alt="LPG vs CNG: Which Conversion Is Right for Your Car?">
-          <div class="recent-post-info">
-            <h5>LPG vs CNG: Which Conversion Is Right for Your Car?</h5>
-            <span>August 15, 2026</span>
+        {recentPosts.map((post) => (
+          <div class="recent-post">
+            <img src={base + post.featuredImage} alt={post.title}>
+            <div class="recent-post-info">
+              <h5>{post.title}</h5>
+              <span>{formatDisplayDate(post.publishDate)}</span>
+            </div>
           </div>
-        </div>
-
-        <div class="recent-post">
-          <img src={base + "img/latest-2.jpg"} alt="5 Signs Your Car Needs an Oil Change Now">
-          <div class="recent-post-info">
-            <h5>5 Signs Your Car Needs an Oil Change Now</h5>
-            <span>August 8, 2026</span>
-          </div>
-        </div>
-
-        <div class="recent-post">
-          <img src={base + "img/latest-3.jpg"} alt="How to Extend the Life of Your Hybrid Battery">
-          <div class="recent-post-info">
-            <h5>How to Extend the Life of Your Hybrid Battery</h5>
-            <span>July 29, 2026</span>
-          </div>
-        </div>
-
-        <div class="recent-post">
-          <img src={base + "img/evn-1.jpg"} alt="Why Regular AC Service Matters Before Summer">
-          <div class="recent-post-info">
-            <h5>Why Regular AC Service Matters Before Summer</h5>
-            <span>July 20, 2026</span>
-          </div>
-        </div>
+        ))}
 
       </div>
 
-      <div class="sidebar-widget">
-        <h4>Popular Tags</h4>
-        <div class="tag-list">
-          <a aria-disabled="true" tabindex="-1">LPG</a>
-          <a aria-disabled="true" tabindex="-1">CNG</a>
-          <a aria-disabled="true" tabindex="-1">Hybrid</a>
-          <a aria-disabled="true" tabindex="-1">Engine</a>
-          <a aria-disabled="true" tabindex="-1">Battery</a>
-          <a aria-disabled="true" tabindex="-1">AC Service</a>
-          <a aria-disabled="true" tabindex="-1">Brakes</a>
-          <a aria-disabled="true" tabindex="-1">Car Wash</a>
+      {tagCloud.length > 0 && (
+        <div class="sidebar-widget">
+          <h4>Popular Tags</h4>
+          <div class="tag-list">
+            {tagCloud.map((tag) => (
+              <a href={`blog.html?q=${encodeURIComponent(tag)}`}>{tag}</a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div class="sidebar-widget">
         <h4>Newsletter</h4>

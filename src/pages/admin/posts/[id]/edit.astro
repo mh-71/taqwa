@@ -1,0 +1,38 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import PostForm from '../../../../components/admin/PostForm.astro';
+import { IS_CLOUDFLARE_BUILD } from '../../../../lib/runtime-flag';
+import { listCategories, getPostById, type Post } from '../../../../lib/blog-db';
+import { AVAILABLE_IMAGES } from '../../../../lib/available-images';
+
+export const prerender = !IS_CLOUDFLARE_BUILD;
+
+const runtime = Astro.locals.runtime;
+const id = Number(Astro.params.id);
+let categories: Awaited<ReturnType<typeof listCategories>> = [];
+let post: Post | null = null;
+if (runtime && Number.isFinite(id)) {
+  const db = runtime.env.DB;
+  [categories, post] = await Promise.all([listCategories(db), getPostById(db, id)]);
+}
+const errorMessage = Astro.url.searchParams.get('error');
+---
+<AdminLayout title="Edit Post">
+  <div class="page-head">
+    <div><h1>Edit Post</h1></div>
+  </div>
+  {runtime && !post ? (
+    <div class="alert alert-error">Post not found. It may have already been deleted.</div>
+  ) : (
+    <div class="card">
+      <PostForm
+        categories={categories}
+        availableImages={AVAILABLE_IMAGES}
+        formAction={`/api/admin/posts/${id}?_action=update`}
+        submitLabel="Save Changes"
+        errorMessage={errorMessage}
+        post={post}
+      />
+    </div>
+  )}
+</AdminLayout>

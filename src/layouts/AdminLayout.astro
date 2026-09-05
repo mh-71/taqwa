@@ -1,0 +1,50 @@
+---
+// Blog Admin Panel shell. Deliberately isolated from the public site: no
+// Header.astro/Footer.astro, and its CSS (src/styles/admin.css) is never
+// imported by any public page — so nothing here can collide with or affect
+// the public site's design system.
+import '../styles/admin.css';
+
+interface Props {
+  title: string;
+  active?: 'dashboard' | 'new' | 'categories' | '';
+}
+const { title, active = '' } = Astro.props;
+const isLive = !!Astro.locals.runtime;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{title} · Taqwa Admin</title>
+</head>
+<body>
+{isLive ? (
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">Taqwa <span>Admin</span></div>
+      <nav>
+        <a href="/admin" class={active === 'dashboard' ? 'active' : ''}>Dashboard</a>
+        <a href="/admin/posts/new" class={active === 'new' ? 'active' : ''}>New Post</a>
+        <a href="/admin/categories" class={active === 'categories' ? 'active' : ''}>Categories</a>
+        <a href="/" target="_blank" rel="noopener">View Site ↗</a>
+        <form method="post" action="/api/admin/logout" class="logout-form">
+          <button type="submit">Log Out</button>
+        </form>
+      </nav>
+    </header>
+    <main class="content">
+      <slot />
+    </main>
+  </div>
+) : (
+  <div class="notice">
+    <h1>Admin panel unavailable here</h1>
+    <p>This build has no Cloudflare Worker runtime, so the Blog Admin Panel can't run. It's only available on the live Cloudflare deployment (D1 database + server code aren't reachable from the GitHub Pages or Vercel static builds).</p>
+    <p>Open the admin panel at your Cloudflare Workers URL instead, e.g. <code>https://taqwa.&lt;your-account&gt;.workers.dev/admin</code>.</p>
+  </div>
+)}
+</body>
+</html>

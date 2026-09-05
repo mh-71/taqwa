@@ -1,0 +1,86 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
+import { listCategories, listAllPosts } from '../../lib/blog-db';
+
+export const prerender = !IS_CLOUDFLARE_BUILD;
+
+const runtime = Astro.locals.runtime;
+let categories: Awaited<ReturnType<typeof listCategories>> = [];
+let postsByCategory = new Map<number, number>();
+if (runtime) {
+  const db = runtime.env.DB;
+  const [cats, posts] = await Promise.all([listCategories(db), listAllPosts(db)]);
+  categories = cats;
+  for (const p of posts) {
+    postsByCategory.set(p.category_id, (postsByCategory.get(p.category_id) ?? 0) + 1);
+  }
+}
+
+const errorMessage = Astro.url.searchParams.get('error');
+const flash: Record<string, string> = {
+  created: 'Category created.',
+  updated: 'Category updated.',
+  deleted: 'Category deleted.',
+};
+let flashMessage = '';
+for (const key of Object.keys(flash)) {
+  if (Astro.url.searchParams.has(key)) { flashMessage = flash[key]; break; }
+}
+---
+<AdminLayout title="Categories" active="categories">
+  <div class="page-head">
+    <div>
+      <h1>Categories</h1>
+      <p>One primary category per post — matches the categories already shown on the public Blog page.</p>
+    </div>
+  </div>
+
+  {flashMessage && <div class="alert alert-success">{flashMessage}</div>}
+  {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
+
+  <div class="card" style="margin-bottom:22px;">
+    <h2 style="font-size:1rem; margin-bottom:14px;">Add Category</h2>
+    <form method="post" action="/api/admin/categories" style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+      <div class="field" style="flex:1; min-width:200px; margin-bottom:0;">
+        <label for="name">Category Name</label>
+        <input type="text" id="name" name="name" required placeholder="e.g. Seasonal Tips">
+      </div>
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+  </div>
+
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr><th>Name</th><th>Slug</th><th>Posts</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {categories.length === 0 && (
+          <tr class="empty-row"><td colspan="4">No categories yet.</td></tr>
+        )}
+        {categories.map((c) => (
+          <tr>
+            <td>
+              <form method="post" action={`/api/admin/categories/${c.id}?_action=update`} style="display:flex; gap:8px;">
+                <input type="text" name="name" value={c.name} class="rename-input">
+                <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+              </form>
+            </td>
+            <td><code>{c.slug}</code></td>
+            <td>{postsByCategory.get(c.id) ?? 0}</td>
+            <td>
+              <form method="post" action={`/api/admin/categories/${c.id}?_action=delete`} onsubmit="return confirm('Delete this category? Posts using it must be reassigned first.');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</AdminLayout>
+
+<style>
+  .rename-input{border:1px solid var(--admin-border); border-radius:6px; padding:6px 10px; font:inherit; font-size:.88rem; width:160px;}
+</style>

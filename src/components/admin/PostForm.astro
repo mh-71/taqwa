@@ -1,0 +1,146 @@
+---
+// Shared Create/Edit post form — used by both src/pages/admin/posts/new.astro
+// and src/pages/admin/posts/[id]/edit.astro so the two never drift apart.
+import type { Category, Post } from '../../lib/blog-db';
+
+interface Props {
+  categories: Category[];
+  availableImages: string[];
+  formAction: string;
+  submitLabel: string;
+  errorMessage?: string | null;
+  post?: Post | null;
+}
+const { categories, availableImages, formAction, submitLabel, errorMessage, post } = Astro.props;
+const today = new Date().toISOString().slice(0, 10);
+---
+<form method="post" action={formAction} id="postForm">
+  {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="title">Post Title</label>
+      <input type="text" id="title" name="title" required value={post?.title ?? ''}>
+    </div>
+    <div class="field">
+      <label for="slug">Slug <span class="hint">(auto-filled from title, editable)</span></label>
+      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder="auto-generated-from-title">
+    </div>
+  </div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="categoryId">Category</label>
+      <select id="categoryId" name="categoryId" required>
+        <option value="">Select a category</option>
+        {categories.map((c) => (
+          <option value={c.id} selected={post?.category_id === c.id}>{c.name}</option>
+        ))}
+      </select>
+    </div>
+    <div class="field">
+      <label for="featuredImage">Featured Image</label>
+      <select id="featuredImage" name="featuredImage" required>
+        <option value="">Select an image</option>
+        {availableImages.map((img) => (
+          <option value={img} selected={post?.featured_image === img}>{img.replace('img/', '')}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="excerpt">Short Excerpt <span class="hint">(shown on blog cards and in Home's "Latest News")</span></label>
+    <textarea id="excerpt" name="excerpt" required rows="2">{post?.excerpt ?? ''}</textarea>
+  </div>
+
+  <div class="field">
+    <label>Full Blog Content</label>
+    <div class="editor-toolbar">
+      <button type="button" data-cmd="bold"><b>B</b></button>
+      <button type="button" data-cmd="italic"><i>I</i></button>
+      <button type="button" data-cmd="formatBlock" data-value="H2">H2</button>
+      <button type="button" data-cmd="formatBlock" data-value="H3">H3</button>
+      <button type="button" data-cmd="insertUnorderedList">• List</button>
+      <button type="button" data-cmd="insertOrderedList">1. List</button>
+      <button type="button" id="linkBtn">Link</button>
+      <button type="button" data-cmd="formatBlock" data-value="P">¶ Text</button>
+    </div>
+    <div class="editor-body" id="editorBody" contenteditable="true" set:html={post?.content || '<p></p>'} />
+    <input type="hidden" name="content" id="contentInput">
+  </div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="author">Author</label>
+      <input type="text" id="author" name="author" value={post?.author ?? 'Taqwa Automobile Team'}>
+    </div>
+    <div class="field">
+      <label for="publishDate">Publish Date</label>
+      <input type="date" id="publishDate" name="publishDate" required value={post?.publish_date ?? today}>
+    </div>
+  </div>
+
+  <div class="form-grid">
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option value="draft" selected={!post || post.status === 'draft'}>Draft</option>
+        <option value="published" selected={post?.status === 'published'}>Published</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="tags">Tags <span class="hint">(comma separated, optional)</span></label>
+      <input type="text" id="tags" name="tags" value={post?.tags ?? ''}>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="seoTitle">SEO Title <span class="hint">(optional — falls back to Post Title)</span></label>
+    <input type="text" id="seoTitle" name="seoTitle" value={post?.seo_title ?? ''}>
+  </div>
+  <div class="field">
+    <label for="seoDescription">SEO Description <span class="hint">(optional — falls back to Short Excerpt)</span></label>
+    <textarea id="seoDescription" name="seoDescription" rows="2">{post?.seo_description ?? ''}</textarea>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">{submitLabel}</button>
+    <a href="/admin" class="btn btn-ghost">Cancel</a>
+  </div>
+</form>
+
+<script>
+  // Minimal contenteditable rich-text editor — zero dependencies on purpose.
+  // execCommand is deprecated but still functions in current Chromium/Firefox
+  // for this small set of commands; content is sanitized server-side before
+  // storage regardless (see src/lib/sanitize-html.ts).
+  (function () {
+    const toolbar = document.querySelector('.editor-toolbar');
+    const body = document.getElementById('editorBody');
+    const hidden = document.getElementById('contentInput') as HTMLInputElement | null;
+    const form = document.getElementById('postForm');
+    if (!toolbar || !body || !hidden || !form) return;
+
+    toolbar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('button[data-cmd]') as HTMLButtonElement | null;
+      if (!btn) return;
+      e.preventDefault();
+      body.focus();
+      document.execCommand(btn.dataset.cmd as string, false, btn.dataset.value || undefined);
+    });
+
+    const linkBtn = document.getElementById('linkBtn');
+    linkBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const url = window.prompt('Link URL (https://...)');
+      if (!url) return;
+      body.focus();
+      document.execCommand('createLink', false, url);
+    });
+
+    form.addEventListener('submit', () => {
+      hidden.value = body.innerHTML;
+    });
+  })();
+</script>
