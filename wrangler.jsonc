@@ -23,7 +23,7 @@
     {
       "binding": "DB",
       "database_name": "taqwa-blog",
-      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+      "database_id": "bc1d486b-937f-4fac-b5a2-bcb1d9a357eb"
     }
   ]
   // Secrets (never listed here — set with `npx wrangler secret put <NAME>`):
