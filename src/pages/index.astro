@@ -63,6 +63,10 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
       linear-gradient(rgba(16,19,24,0.65), rgba(16,19,24,0.75)),
       var(--heroBg) center/cover no-repeat;
   }
+  /* Homepage-only: service-card body copy is left-aligned here (every other
+     page that reuses .service-card centers it) — preserved as an override
+     now that global.css's shared default is text-align:center. */
+  .service-card .body{text-align:left;}
 </style>
 
 <section class="hero">
