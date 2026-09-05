@@ -612,7 +612,7 @@
   .carwash-cta{
     position:relative;
     background:linear-gradient(160deg, #1A293F 0%, #0B121B 100%);
-    padding:32px 20px;
+    padding:32px 24px;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     text-align:center;
     overflow:hidden;
@@ -620,23 +620,11 @@
   .carwash-cta .sparkle{
     position:absolute; color:var(--red); opacity:0.7; font-size:16px;
   }
-
-.carwash-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.carwash-cta .car-icon {
-  width: 280px;
-  height: 150px;
-  display: block;
-  object-fit: contain;
-  margin: 0 auto 5px;
-  position: relative;
-  left: -40px;
-}
-
+  .carwash-cta .car-icon{
+    width:100%; max-width:230px; height:auto;
+    display:block; object-fit:contain;
+    margin:0 auto 14px;
+  }
   .carwash-cta .cta-lead{
     color:var(--red); font-size:16px; font-weight:800; letter-spacing:1px;
     text-transform:uppercase; margin-bottom:6px;
@@ -649,22 +637,32 @@
     background:var(--red); color:#fff; font-size:16px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:12px 18px; border-radius:var(--radius-sm);
     white-space:nowrap;
+    transition:background-color .2s ease, transform .15s ease;
   }
-  .carwash-book-btn:hover{background:var(--red-dark);}
+  .carwash-book-btn:hover{background:var(--red-dark); transform:translateY(-1px);}
 
   @media (max-width:980px){
     .carwash-inner{grid-template-columns:1fr;}
+    .carwash-cta{padding:36px 24px;}
+    .carwash-cta .car-icon{max-width:260px;}
   }
   @media (max-width:600px){
     .carwash-section{padding:40px 20px;}
     .carwash-content{padding:32px 24px;}
     .carwash-features{grid-template-columns:1fr;}
+    .carwash-cta{padding:32px 20px;}
+    .carwash-cta .car-icon{max-width:220px; margin-bottom:10px;}
+    .carwash-cta h3{font-size:17px; margin-bottom:16px;}
   }
   @media (max-width:420px){
     .carwash-section{padding:32px 16px;}
     .carwash-content{padding:26px 20px;}
     .carwash-content h2{font-size:22px;}
     .carwash-cta{padding:28px 18px;}
+    .carwash-cta .car-icon{max-width:190px;}
+    .carwash-cta .cta-lead{font-size:16px; letter-spacing:0.6px;}
+    .carwash-cta h3{font-size:16px;}
+    .carwash-book-btn{padding:11px 16px; font-size:16px;}
   }
 
   /* ===== OUR SERVICES ===== */
