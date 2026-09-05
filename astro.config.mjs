@@ -52,6 +52,20 @@ export default defineConfig({
     ? {
         output: 'hybrid',
         adapter: cloudflare({ imageService: 'passthrough' }),
+        // index.astro and blog.astro are prerender:false on this build only
+        // (see the comment at the top of each), so they're no longer static
+        // files at dist/index.html / dist/blog.html - they're live routes at
+        // "/" and "/blog" instead. But every other page on the site still
+        // links to them the old way ("index.html", "blog.html", including
+        // "index.html#some-section" anchors), since that's the correct,
+        // unchanged link format for the static GitHub Pages/Vercel builds.
+        // These two redirects keep those exact same links working here too
+        // (a redirect response doesn't affect a "#fragment", so anchor links
+        // still land on the right section after following it).
+        redirects: {
+          '/index.html': '/',
+          '/blog.html': '/blog',
+        },
       }
     : {}),
 });
