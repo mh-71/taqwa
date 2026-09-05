@@ -11,7 +11,7 @@ import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 const base = import.meta.env.BASE_URL;
 const runtimeDb = Astro.locals.runtime?.env.DB ?? null;

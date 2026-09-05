@@ -1,11 +1,10 @@
 ---
 import AdminLayout from '../../../../layouts/AdminLayout.astro';
 import PostForm from '../../../../components/admin/PostForm.astro';
-import { IS_CLOUDFLARE_BUILD } from '../../../../lib/runtime-flag';
 import { listCategories, getPostById, type Post } from '../../../../lib/blog-db';
 import { AVAILABLE_IMAGES } from '../../../../lib/available-images';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 const runtime = Astro.locals.runtime;
 const id = Number(Astro.params.id);

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/build-static.mjs",
     "preview": "astro preview",
     "cf:build": "cross-env CLOUDFLARE_WORKERS=1 astro build",
     "cf:preview": "npm run cf:build && wrangler dev",

@@ -2,6 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, getCategories, formatDisplayDate } from '../lib/blog-data';
 import { postUrl } from '../lib/post-url';
+
+// Cloudflare deployment only: server-render this page per request so
+// publish/edit/draft/search/category-filter all reflect the latest D1 data
+// immediately. See index.astro's identical comment and
+// scripts/build-static.mjs for why this has to be a literal, flipped only
+// at static-build time rather than a computed per-build expression.
+export const prerender = false;
+
 const base = import.meta.env.BASE_URL;
 
 // Blog listing reads from the Blog Admin Panel's data instead of hard-coded

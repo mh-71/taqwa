@@ -1,9 +1,8 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import { listCategories, listAllPosts } from '../../lib/blog-db';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 const runtime = Astro.locals.runtime;
 let categories: Awaited<ReturnType<typeof listCategories>> = [];

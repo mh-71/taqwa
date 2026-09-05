@@ -1,8 +1,7 @@
 import type { APIRoute } from 'astro';
-import { IS_CLOUDFLARE_BUILD } from '../../../lib/runtime-flag';
 import { SESSION_COOKIE, constantTimeEqual, createSessionToken } from '../../../lib/auth';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies, redirect, locals }) => {
   const runtime = (locals as any).runtime;

@@ -2,6 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 import { getLatestNews, formatDisplayDate } from '../lib/blog-data';
 import { postUrl } from '../lib/post-url';
+
+// Cloudflare deployment only: server-render this page per request so a
+// newly published post appears in "Our Latest News" immediately, instead of
+// only after the next full site rebuild. The GitHub Pages/Vercel static
+// builds flip this literal back to `true` at build time (see
+// scripts/build-static.mjs) - Astro requires prerender to be a literal,
+// which is why this can't just be a computed per-build expression.
+export const prerender = false;
+
 const base = import.meta.env.BASE_URL;
 // "OUR LATEST NEWS" now reads from the Blog Admin Panel's data instead of
 // hard-coded cards — see src/lib/blog-data.ts. Nothing else on this page

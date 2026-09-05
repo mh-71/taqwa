@@ -1,9 +1,8 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import { listAllPosts, listCategories } from '../../lib/blog-db';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 const runtime = Astro.locals.runtime;
 const q = Astro.url.searchParams.get('q') ?? '';

@@ -1,9 +1,8 @@
 import type { APIRoute } from 'astro';
-import { IS_CLOUDFLARE_BUILD } from '../../../../lib/runtime-flag';
 import { updatePost, deletePost, setPostStatus, slugExists } from '../../../../lib/blog-db';
 import { parsePostForm } from '../../../../lib/post-form';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 export const POST: APIRoute = async ({ params, request, locals, redirect, url }) => {
   const runtime = (locals as any).runtime;

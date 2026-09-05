@@ -1,8 +1,7 @@
 ---
-import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import '../../styles/admin.css';
 
-export const prerender = !IS_CLOUDFLARE_BUILD;
+export const prerender = false;
 
 const isLive = !!Astro.locals.runtime;
 const error = Astro.url.searchParams.get('error');
