@@ -1467,3 +1467,13 @@
     .news-header h2{font-size:var(--text-3xl);}
     .news-track{gap:18px;}
   }
+
+  /* Home "OUR LATEST NEWS" always shows exactly 3 posts, and the carousel's
+     own JS already shows all 3 at once at >=1024px (see visibleCount() in
+     index.astro) - so the prev/next arrows can never do anything at that
+     width and just sit there permanently disabled. Hide them there; they
+     stay visible and functional below 1024px, where fewer than 3 cards fit
+     on screen at once and scrolling is meaningful. */
+  @media (min-width:1024px){
+    .news-nav{display:none;}
+  }
