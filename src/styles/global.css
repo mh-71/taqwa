@@ -22,8 +22,13 @@
     --surface-border:#EAEDF2; /* hairline borders on light surfaces */
 
     /* ===== Typography scale ===== */
-    --font-display:'Poppins', "Arial Narrow", Arial, sans-serif;
-    --font-body:'Inter', "Segoe UI", Arial, sans-serif;
+    /* 'Hind Siliguri' sits between the Latin display/body fonts and the
+       generic fallbacks purely as a per-character fallback: neither Poppins
+       nor Inter ship Bengali glyphs, so the browser skips to the first font
+       in the stack that does (Hind Siliguri) only for Bengali characters -
+       English/Latin text keeps rendering in Poppins/Inter exactly as before. */
+    --font-display:'Poppins', 'Hind Siliguri', "Arial Narrow", Arial, sans-serif;
+    --font-body:'Inter', 'Hind Siliguri', "Segoe UI", Arial, sans-serif;
     /* Fluid via clamp(): scales smoothly between a 375px and 1440px viewport
        instead of jumping at breakpoints. Layout still changes at @media steps;
        only type size and spacing flow continuously. */
