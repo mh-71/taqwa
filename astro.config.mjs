@@ -39,6 +39,21 @@ export default defineConfig({
   build: {
     format: 'file',
   },
+  // src/lib/runtime-flag.ts needs to know "is this the Cloudflare build" in
+  // code that runs INSIDE the deployed Worker (e.g. postUrl() called while
+  // rendering src/pages/blog.astro per-request) - not just in code that runs
+  // during `astro build` on this machine. `process.env.CLOUDFLARE_WORKERS`
+  // only exists in the latter (the Cloudflare Workers runtime has no such
+  // env var - it isn't inherited from the machine that ran the build), so a
+  // plain runtime env-var read was always false once deployed, which made
+  // every post link get a wrong ".html" suffix live on Cloudflare and 404.
+  // `vite.define` instead bakes the flag in as a literal at bundle time, so
+  // it reads correctly in both places.
+  vite: {
+    define: {
+      __IS_CLOUDFLARE__: JSON.stringify(isCloudflare),
+    },
+  },
   // Blog Admin Panel: only the Cloudflare build gets a real server. The
   // admin panel and its /api/admin/* routes need to run actual code (auth
   // check, D1 reads/writes) on every request, which GitHub Pages can never
