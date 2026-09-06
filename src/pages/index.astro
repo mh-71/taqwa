@@ -15,7 +15,7 @@ const base = import.meta.env.BASE_URL;
 // "OUR LATEST NEWS" now reads from the Blog Admin Panel's data instead of
 // hard-coded cards — see src/lib/blog-data.ts. Nothing else on this page
 // (or its markup/CSS below) changed for the Blog Admin Panel work.
-const latestNews = await getLatestNews(Astro.locals.runtime?.env.DB ?? null, 'en', 3);
+const latestNews = await getLatestNews(Astro.locals.runtime?.env.DB ?? null, 'all', 3);
 
 const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG & CNG conversion, engine repair, hybrid vehicle service, car AC service, and car wash & detailing — trusted technicians, genuine parts, quality service.";
 ---
@@ -1129,7 +1129,7 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
             <div class="news-body">
               <h3>{post.title}</h3>
               <p>{post.excerpt}</p>
-              <a href={postUrl(post.slug)} class="news-read-more">Read More
+              <a href={postUrl(post.slug, post.language)} class="news-read-more">Read More
                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
             </div>

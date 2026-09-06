@@ -99,16 +99,20 @@ function snapshotPublishedPosts(): PublicPost[] {
 
 export async function getPublishedPosts(
   runtimeDb: D1Database | null,
-  opts: { categorySlug?: string; search?: string; limit?: number; language?: PostLanguage } = {}
+  opts: { categorySlug?: string; search?: string; limit?: number; language?: PostLanguage | 'all' } = {}
 ): Promise<PublicPost[]> {
-  const language: PostLanguage = opts.language ?? 'en';
+  // 'all' means "don't filter by language" (used by Home's "Latest News" -
+  // see getLatestNews below); every other existing caller still defaults to
+  // 'en' exactly as before.
+  const language: PostLanguage | 'all' = opts.language ?? 'en';
+  const dbLanguage = language === 'all' ? undefined : language;
 
   if (runtimeDb) {
-    const posts = await db.getPublishedPosts(runtimeDb, { ...opts, language });
+    const posts = await db.getPublishedPosts(runtimeDb, { ...opts, language: dbLanguage });
     return posts.map(fromD1);
   }
 
-  let posts = snapshotPublishedPosts().filter((p) => p.language === language);
+  let posts = language === 'all' ? snapshotPublishedPosts() : snapshotPublishedPosts().filter((p) => p.language === language);
   if (opts.categorySlug) posts = posts.filter((p) => p.categorySlug === opts.categorySlug);
   if (opts.search) {
     const q = opts.search.toLowerCase();
@@ -126,7 +130,7 @@ export async function getPublishedPosts(
 
 export async function getLatestNews(
   runtimeDb: D1Database | null,
-  language: PostLanguage = 'en',
+  language: PostLanguage | 'all' = 'en',
   limit = 3
 ): Promise<PublicPost[]> {
   return getPublishedPosts(runtimeDb, { language, limit });
