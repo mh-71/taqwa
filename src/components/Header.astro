@@ -65,14 +65,14 @@ const isActive = (id: string) => (current === id ? 'active' : '');
       </ul>
     </nav>
 
-    {langToggle && (
+    {langToggle ? (
       <a href={base + langToggle.href} class="lang-toggle-btn">{langToggle.label}</a>
+    ) : (
+      <a href="tel:+8801854226757" class="call-btn">
+        <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
+        <span class="txt">Call Now</span>
+      </a>
     )}
-
-    <a href="tel:+8801854226757" class="call-btn">
-      <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
-      <span class="txt">Call Now</span>
-    </a>
 
     <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
