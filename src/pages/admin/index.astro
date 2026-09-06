@@ -105,6 +105,7 @@ const base = import.meta.env.BASE_URL;
             <td>
               <div class="row-actions">
                 <a class="btn btn-ghost btn-sm" href={`/admin/posts/${post.id}/edit`}>Edit</a>
+                <a class="btn btn-ghost btn-sm" href={`/admin/preview/${post.id}`} target="_blank" rel="noopener">Preview</a>
                 <form method="post" action={`/api/admin/posts/${post.id}?_action=${post.status === 'published' ? 'unpublish' : 'publish'}`}>
                   <button type="submit" class="btn btn-ghost btn-sm">
                     {post.status === 'published' ? 'Unpublish' : 'Publish'}

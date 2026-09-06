@@ -31,6 +31,7 @@ const FILES = [
   'src/pages/admin/posts/new.astro',
   'src/pages/admin/posts/[id]/edit.astro',
   'src/pages/admin/categories.astro',
+  'src/pages/admin/preview/[id].astro',
   'src/pages/api/admin/login.ts',
   'src/pages/api/admin/logout.ts',
   'src/pages/api/admin/posts.ts',

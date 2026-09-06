@@ -1,0 +1,124 @@
+---
+// Admin-only Draft/Published post preview — renders a post using the exact
+// same visual template as the real public detail pages (blog/[slug].astro /
+// bn/blog/[slug].astro), but looked up by id (not slug) via getPostById, so
+// it works for Draft posts too (which the public pages correctly never show
+// - see getPostBySlug's `status = 'published'` filter in blog-db.ts).
+//
+// Protected by the existing admin auth middleware (src/middleware.ts) simply
+// by living under /admin/ - no new auth logic needed here.
+import Layout from '../../../layouts/Layout.astro';
+import { getPostById } from '../../../lib/blog-db';
+import { postUrl } from '../../../lib/post-url';
+
+export const prerender = false;
+
+// Admin-only page: doesn't exist at all on the static GitHub Pages/Vercel
+// builds (no ids to prerender there, same as the rest of /admin/*) - only
+// relevant on Cloudflare, where prerender:false means this is ignored anyway.
+export function getStaticPaths() {
+  return [];
+}
+
+const runtime = Astro.locals.runtime;
+const id = Number(Astro.params.id);
+const post = runtime && Number.isFinite(id) ? await getPostById(runtime.env.DB, id) : null;
+const base = import.meta.env.BASE_URL;
+---
+{!post ? (
+  <Layout title="Preview not found" description="" current="blog">
+    <div style="max-width:640px; margin:80px auto; padding:0 24px; text-align:center;">
+      <h1>Post not found</h1>
+      <p><a href="/admin">Back to Dashboard</a></p>
+    </div>
+  </Layout>
+) : (
+<Layout
+  title={`Preview: ${post.title}`}
+  description={post.seo_description || post.excerpt}
+  path={postUrl(post.slug, post.language)}
+  ogImage={base + post.featured_image}
+  current="blog"
+>
+<style>
+  .preview-banner{
+    position:sticky; top:0; z-index:100;
+    background:#1B2430; color:#fff;
+    padding:12px 20px; text-align:center; font-size:16px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
+  }
+  .preview-banner .status{
+    padding:2px 10px; border-radius:20px; text-transform:uppercase; font-size:16px;
+  }
+  .preview-banner .status.draft{background:#FBF1DC; color:#9A6A12;}
+  .preview-banner .status.published{background:#E7F5EC; color:#1B7F4C;}
+  .preview-banner a{color:#8FB8FF; text-decoration:underline;}
+
+  .page-banner{
+    position:relative;
+    background:linear-gradient(150deg, var(--charcoal-2) 0%, var(--charcoal) 100%);
+    overflow:hidden;
+    padding:var(--space-8) var(--space-6) 58px;
+    text-align:center;
+  }
+  .page-banner-inner{position:relative; max-width:900px; margin:0 auto;}
+  .page-banner .post-cat{
+    color:var(--red); font-size:16px; font-weight:800; letter-spacing:3px; text-transform:uppercase;
+    margin-bottom:16px; display:block;
+  }
+  .page-banner h1{font-size:var(--text-5xl); color:#fff; letter-spacing:0.4px; margin-bottom:16px; line-height:1.25;}
+  .post-meta{
+    display:flex; justify-content:center; align-items:center; gap:18px; flex-wrap:wrap;
+    color:var(--muted); font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;
+  }
+
+  .article-section{background:var(--surface-1); padding:var(--space-8) var(--space-6);}
+  .article-inner{max-width:820px; margin:0 auto;}
+  .article-image{border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-4); margin-bottom:var(--space-6); aspect-ratio:16/9;}
+  .article-image img{width:100%; height:100%; object-fit:cover; display:block;}
+  .article-body{
+    background:#fff; border-radius:var(--radius-lg); padding:40px 44px; box-shadow:var(--shadow-3);
+    color:var(--text-strong); font-size:var(--text-base); line-height:1.85;
+  }
+  .article-body p{margin-bottom:1.1em;}
+  .article-body h2{font-size:var(--text-3xl); margin:1.3em 0 .5em; color:var(--text-strong);}
+  .article-body h3{font-size:var(--text-2xl); margin:1.1em 0 .5em; color:var(--text-strong);}
+  .article-body ul, .article-body ol{margin:0 0 1.1em; padding-left:1.4em;}
+  .article-body a{color:var(--red); text-decoration:underline;}
+
+  @media (max-width:760px){
+    .page-banner h1{font-size:var(--text-3xl);}
+    .article-body{padding:28px 24px;}
+  }
+</style>
+
+<div class="preview-banner">
+  🔍 Admin Preview —
+  <span class={`status ${post.status}`}>{post.status}</span>
+  <span>({post.language === 'bn' ? 'বাংলা' : 'English'})</span>
+  <a href={`/admin/posts/${post.id}/edit`}>Edit this post</a>
+  <a href="/admin">Back to Dashboard</a>
+</div>
+
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <span class="post-cat">{post.category_name}</span>
+    <h1 class="display">{post.title}</h1>
+    <div class="post-meta">
+      <span>{post.publish_date}</span>
+      <span>&middot;</span>
+      <span>By {post.author}</span>
+    </div>
+  </div>
+</section>
+
+<section class="article-section">
+  <div class="article-inner">
+    <div class="article-image">
+      <img src={base + post.featured_image} alt={post.title}>
+    </div>
+    <div class="article-body" set:html={post.content} />
+  </div>
+</section>
+</Layout>
+)}
