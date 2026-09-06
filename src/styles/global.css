@@ -241,6 +241,19 @@
     white-space:nowrap;
   }
   .call-btn:hover{background:var(--red-dark);}
+  /* Bilingual blog only: small "switch language" link, shown next to the
+     Call Now button only when a page passes Header's `langToggle` prop
+     (English/Bangla blog listing + detail pages) - absent everywhere else,
+     so it never affects any other page's header layout. */
+  .lang-toggle-btn{
+    font-size:16px; font-weight:700; letter-spacing:0.3px;
+    color:var(--text-strong); border:1.5px solid var(--surface-border);
+    border-radius:var(--radius-full); padding:7px 16px; white-space:nowrap;
+  }
+  .lang-toggle-btn:hover{color:var(--red); border-color:var(--red);}
+  @media (max-width:1024px){
+    .lang-toggle-btn{display:none;}
+  }
   .hamburger{
     display:none; flex-direction:column; justify-content:center; gap:5px;
     background:none; width:32px; height:32px; flex-shrink:0;

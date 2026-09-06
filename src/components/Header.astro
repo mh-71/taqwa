@@ -7,8 +7,13 @@ const base = import.meta.env.BASE_URL;
 // "Services" nav item highlights, matching the original site's behavior.
 interface Props {
   current?: string;
+  /** Bilingual blog only: {href, label} for a small "switch language" link
+   *  (e.g. English blog pages pass {href: "bn/blog.html", label: "বাংলা"}).
+   *  Omitted (undefined) everywhere else, so the header is unchanged on
+   *  every non-blog page. */
+  langToggle?: { href: string; label: string } | null;
 }
-const { current = '' } = Astro.props;
+const { current = '', langToggle = null } = Astro.props;
 const isActive = (id: string) => (current === id ? 'active' : '');
 ---
 
@@ -59,6 +64,10 @@ const isActive = (id: string) => (current === id ? 'active' : '');
         </li>
       </ul>
     </nav>
+
+    {langToggle && (
+      <a href={base + langToggle.href} class="lang-toggle-btn">{langToggle.label}</a>
+    )}
 
     <a href="tel:+8801854226757" class="call-btn">
       <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
@@ -112,6 +121,10 @@ const isActive = (id: string) => (current === id ? 'active' : '');
       <li class={isActive('contact')}>
         <a href={base + "contact.html"}>Contact Us</a>
       </li>
+
+      {langToggle && (
+        <li><a href={base + langToggle.href}>{langToggle.label}</a></li>
+      )}
     </ul>
   </div>
 </header>

@@ -15,6 +15,8 @@ interface Props {
   themeColor?: string;
   /** Which top-level nav item to highlight - see Header.astro for valid values */
   current?: string;
+  /** Bilingual blog only - forwarded as-is to Header's `langToggle` prop */
+  langToggle?: { href: string; label: string } | null;
   /** Optional Schema.org JSON-LD object; a sensible AutoRepair default is used if omitted */
   jsonLd?: Record<string, unknown>;
 }
@@ -26,6 +28,7 @@ const {
   ogImage = '/img/hero-background.jpg',
   themeColor = '#101318',
   current = '',
+  langToggle = null,
   jsonLd,
 } = Astro.props;
 
@@ -107,7 +110,7 @@ const finalJsonLd = jsonLd ?? defaultJsonLd;
 <body>
 
 <IconSprite />
-<Header current={current} />
+<Header current={current} langToggle={langToggle} />
 
 <slot />
 

@@ -48,6 +48,7 @@ const description = post.seoDescription || post.excerpt;
   title={`${post.seoTitle || post.title} - Taqwa Automobile Service Center`}
   description={description}
   path={postUrl(post.slug)}
+  langToggle={{ href: 'bn/blog.html', label: 'বাংলা' }}
   ogImage={base + post.featuredImage}
   current="blog"
 >
