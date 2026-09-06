@@ -34,7 +34,12 @@ export function parsePostForm(form: FormData): PostFormResult {
   if (!publishDate) errors.push('Publish date is required.');
 
   slug = slugify(slug || title);
-  if (!slug) errors.push('Slug could not be generated from the title — try adding one manually.');
+  // slugify() only keeps a-z0-9 (see src/lib/slug.ts), so a title written
+  // entirely in Bangla (or any non-Latin script) with no manual slug
+  // produces an empty string here. Fall back to a short generated slug
+  // instead of blocking the post - it's still unique (slugExists is checked
+  // by the caller) and the admin can always edit it to something readable.
+  if (!slug) slug = `post-${Date.now().toString(36)}`;
 
   const content = sanitizeHtml(contentRaw);
 

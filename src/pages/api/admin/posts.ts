@@ -19,7 +19,11 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   }
 
   if (errors.length) {
-    return redirect(`/admin/posts/new?error=${encodeURIComponent(errors.join(' '))}`);
+    // Preserve `lang` on the bounce-back — without it the New Post page has
+    // no way to know which language editor to re-show and falls back to the
+    // language-choice screen, silently swallowing the error message instead
+    // of displaying it.
+    return redirect(`/admin/posts/new?lang=${input.language}&error=${encodeURIComponent(errors.join(' '))}`);
   }
 
   const id = await createPost(db, input);
