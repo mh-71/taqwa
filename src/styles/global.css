@@ -252,7 +252,7 @@
   }
   .lang-toggle-btn:hover{color:var(--red); border-color:var(--red);}
   @media (max-width:1024px){
-    .lang-toggle-btn{padding:6px 12px; font-size:16px;}
+    .lang-toggle-btn{padding:6px 12px; font-size:16px; margin-right:30px;}
   }
   .hamburger{
     display:none; flex-direction:column; justify-content:center; gap:5px;
