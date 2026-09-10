@@ -1,7 +1,8 @@
 ---
 import AdminLayout from '../../../../layouts/AdminLayout.astro';
 import PostForm from '../../../../components/admin/PostForm.astro';
-import { listCategories, getPostById, type Post } from '../../../../lib/blog-db';
+import { listCategories, getPostById, getPostTranslations } from '../../../../lib/blog-db';
+import type { PostTranslation } from '../../../../lib/blog-db';
 import { AVAILABLE_IMAGES } from '../../../../lib/available-images';
 
 export const prerender = false;
@@ -9,13 +10,22 @@ export const prerender = false;
 const runtime = Astro.locals.runtime;
 const id = Number(Astro.params.id);
 let categories: Awaited<ReturnType<typeof listCategories>> = [];
-let post: Post | null = null;
+let post = null;
+let translations: PostTranslation[] = [];
+
 if (runtime && Number.isFinite(id)) {
   const db = runtime.env.DB;
   [categories, post] = await Promise.all([listCategories(db), getPostById(db, id)]);
+  if (post) {
+    translations = await getPostTranslations(db, id);
+  }
 }
+
+// Find existing translation if any (language different from original)
+const existingTranslation = post && translations.find(t => t.language !== post.original_language);
 const errorMessage = Astro.url.searchParams.get('error');
 ---
+
 <AdminLayout title="Edit Post">
   <div class="page-head">
     <div><h1>Edit Post</h1></div>
@@ -28,10 +38,11 @@ const errorMessage = Astro.url.searchParams.get('error');
         categories={categories}
         availableImages={AVAILABLE_IMAGES}
         formAction={`/api/admin/posts/${id}?_action=update`}
-        submitLabel={post?.language === 'bn' ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes'}
+        submitLabel={post?.original_language === 'bn' ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes'}
         errorMessage={errorMessage}
         post={post}
-        lang={post?.language ?? 'en'}
+        originalLanguage={post?.original_language ?? 'en'}
+        translation={existingTranslation}
       />
     </div>
   )}

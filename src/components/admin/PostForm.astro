@@ -1,12 +1,5 @@
 ---
-// Shared Create/Edit post form — used by both src/pages/admin/posts/new.astro
-// and src/pages/admin/posts/[id]/edit.astro so the two never drift apart.
-//
-// Bilingual support: the `lang` prop only swaps the visible label text (see
-// LABELS below) and adds a hidden `language` field carrying it to the API —
-// layout, spacing, fields, and the rich-text editor are all completely
-// untouched, so the existing English editor stays exactly as it was.
-import type { Category, Post, PostLanguage } from '../../lib/blog-db';
+import type { Category, Post, PostLanguage, PostTranslation } from '../../lib/blog-db';
 
 interface Props {
   categories: Category[];
@@ -15,93 +8,98 @@ interface Props {
   submitLabel: string;
   errorMessage?: string | null;
   post?: Post | null;
-  lang?: PostLanguage;
+  originalLanguage?: PostLanguage;
+  translation?: PostTranslation | null;
 }
-const { categories, availableImages, formAction, submitLabel, errorMessage, post, lang = 'en' } = Astro.props;
+
+const { categories, availableImages, formAction, submitLabel, errorMessage, post, originalLanguage = 'en', translation } = Astro.props;
 const today = new Date().toISOString().slice(0, 10);
 
-const LABELS = lang === 'bn'
-  ? {
-      title: 'পোস্টের শিরোনাম',
-      slug: 'স্লাগ',
-      slugHint: '(শিরোনাম থেকে অটো-তৈরি, প্রয়োজনে পরিবর্তনযোগ্য)',
-      slugPlaceholder: 'শিরোনাম-থেকে-অটো-তৈরি',
-      category: 'ক্যাটাগরি',
-      selectCategory: 'একটি ক্যাটাগরি বেছে নিন',
-      featuredImage: 'ফিচার্ড ছবি',
-      selectImage: 'একটি ছবি বেছে নিন',
-      excerpt: 'সংক্ষিপ্ত বিবরণ',
-      excerptHint: '(ব্লগ কার্ডে ও হোমের "Latest News"-এ দেখানো হবে)',
-      content: 'সম্পূর্ণ ব্লগ লেখা',
-      author: 'লেখক',
-      publishDate: 'প্রকাশের তারিখ',
-      status: 'স্ট্যাটাস',
-      statusDraft: 'ড্রাফট',
-      statusPublished: 'প্রকাশিত',
-      tags: 'ট্যাগ',
-      tagsHint: '(কমা দিয়ে আলাদা করুন, ঐচ্ছিক)',
-      seoTitle: 'SEO শিরোনাম',
-      seoTitleHint: '(ঐচ্ছিক — না দিলে পোস্টের শিরোনাম ব্যবহার হবে)',
-      seoDescription: 'SEO বিবরণ',
-      seoDescriptionHint: '(ঐচ্ছিক — না দিলে সংক্ষিপ্ত বিবরণ ব্যবহার হবে)',
-      cancel: 'বাতিল',
-    }
-  : {
-      title: 'Post Title',
-      slug: 'Slug',
-      slugHint: '(auto-filled from title, editable)',
-      slugPlaceholder: 'auto-generated-from-title',
-      category: 'Category',
-      selectCategory: 'Select a category',
-      featuredImage: 'Featured Image',
-      selectImage: 'Select an image',
-      excerpt: 'Short Excerpt',
-      excerptHint: `(shown on blog cards and in Home's "Latest News")`,
-      content: 'Full Blog Content',
-      author: 'Author',
-      publishDate: 'Publish Date',
-      status: 'Status',
-      statusDraft: 'Draft',
-      statusPublished: 'Published',
-      tags: 'Tags',
-      tagsHint: '(comma separated, optional)',
-      seoTitle: 'SEO Title',
-      seoTitleHint: '(optional — falls back to Post Title)',
-      seoDescription: 'SEO Description',
-      seoDescriptionHint: '(optional — falls back to Short Excerpt)',
-      cancel: 'Cancel',
-    };
+const LABELS = {
+  en: {
+    originalLanguage: 'Original Language',
+    english: 'English',
+    bengali: 'বাংলা (Bengali)',
+    title: 'Post Title',
+    slug: 'Slug',
+    slugHint: '(auto-filled from title, editable)',
+    slugPlaceholder: 'auto-generated-from-title',
+    category: 'Category',
+    selectCategory: 'Select a category',
+    featuredImage: 'Featured Image',
+    selectImage: 'Select an image',
+    excerpt: 'Short Excerpt',
+    excerptHint: `(shown on blog cards and in Home's "Latest News")`,
+    content: 'Full Blog Content (Original Language)',
+    author: 'Author',
+    publishDate: 'Publish Date',
+    status: 'Status',
+    statusDraft: 'Draft',
+    statusPublished: 'Published',
+    tags: 'Tags',
+    tagsHint: '(comma separated, optional)',
+    seoTitle: 'SEO Title',
+    seoTitleHint: '(optional — falls back to Post Title)',
+    seoDescription: 'SEO Description',
+    seoDescriptionHint: '(optional — falls back to Short Excerpt)',
+    translationSection: 'Add Translation (Optional)',
+    translationLanguage: 'Translation Language',
+    noTranslation: 'No translation',
+    translationTitle: 'Title (Translation)',
+    translationExcerpt: 'Short Excerpt (Translation)',
+    translationContent: 'Full Content (Translation)',
+    translationSeoTitle: 'SEO Title (Translation)',
+    translationSeoDescription: 'SEO Description (Translation)',
+    translationHint: 'Leave empty to skip translation for now.',
+    cancel: 'Cancel',
+  },
+};
 ---
+
 <form method="post" action={formAction} id="postForm">
   {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
 
-  <input type="hidden" name="language" value={lang}>
+  <!-- Original Language Selection -->
+  <fieldset>
+    <legend>{LABELS.en.originalLanguage}</legend>
+    <div style="display: flex; gap: 20px;">
+      <label>
+        <input type="radio" name="original_language" value="en" checked={originalLanguage === 'en' || !post} required>
+        {LABELS.en.english}
+      </label>
+      <label>
+        <input type="radio" name="original_language" value="bn" checked={originalLanguage === 'bn'} required>
+        {LABELS.en.bengali}
+      </label>
+    </div>
+  </fieldset>
 
+  <!-- Original Post Content -->
   <div class="form-grid">
     <div class="field">
-      <label for="title">{LABELS.title}</label>
+      <label for="title">{LABELS.en.title}</label>
       <input type="text" id="title" name="title" required value={post?.title ?? ''}>
     </div>
     <div class="field">
-      <label for="slug">{LABELS.slug} <span class="hint">{LABELS.slugHint}</span></label>
-      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder={LABELS.slugPlaceholder}>
+      <label for="slug">{LABELS.en.slug} <span class="hint">{LABELS.en.slugHint}</span></label>
+      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder={LABELS.en.slugPlaceholder}>
     </div>
   </div>
 
   <div class="form-grid">
     <div class="field">
-      <label for="categoryId">{LABELS.category}</label>
+      <label for="categoryId">{LABELS.en.category}</label>
       <select id="categoryId" name="categoryId" required>
-        <option value="">{LABELS.selectCategory}</option>
+        <option value="">{LABELS.en.selectCategory}</option>
         {categories.map((c) => (
           <option value={c.id} selected={post?.category_id === c.id}>{c.name}</option>
         ))}
       </select>
     </div>
     <div class="field">
-      <label for="featuredImage">{LABELS.featuredImage}</label>
+      <label for="featuredImage">{LABELS.en.featuredImage}</label>
       <select id="featuredImage" name="featuredImage" required>
-        <option value="">{LABELS.selectImage}</option>
+        <option value="">{LABELS.en.selectImage}</option>
         {availableImages.map((img) => (
           <option value={img} selected={post?.featured_image === img}>{img.replace('img/', '')}</option>
         ))}
@@ -110,12 +108,12 @@ const LABELS = lang === 'bn'
   </div>
 
   <div class="field">
-    <label for="excerpt">{LABELS.excerpt} <span class="hint">{LABELS.excerptHint}</span></label>
+    <label for="excerpt">{LABELS.en.excerpt} <span class="hint">{LABELS.en.excerptHint}</span></label>
     <textarea id="excerpt" name="excerpt" required rows="2">{post?.excerpt ?? ''}</textarea>
   </div>
 
   <div class="field">
-    <label>{LABELS.content}</label>
+    <label>{LABELS.en.content}</label>
     <div class="editor-toolbar">
       <button type="button" data-cmd="bold"><b>B</b></button>
       <button type="button" data-cmd="italic"><i>I</i></button>
@@ -132,54 +130,122 @@ const LABELS = lang === 'bn'
 
   <div class="form-grid">
     <div class="field">
-      <label for="author">{LABELS.author}</label>
+      <label for="author">{LABELS.en.author}</label>
       <input type="text" id="author" name="author" value={post?.author ?? 'Taqwa Automobile Team'}>
     </div>
     <div class="field">
-      <label for="publishDate">{LABELS.publishDate}</label>
+      <label for="publishDate">{LABELS.en.publishDate}</label>
       <input type="date" id="publishDate" name="publishDate" required value={post?.publish_date ?? today}>
     </div>
   </div>
 
   <div class="form-grid">
     <div class="field">
-      <label for="status">{LABELS.status}</label>
+      <label for="status">{LABELS.en.status}</label>
       <select id="status" name="status">
-        <option value="draft" selected={!post || post.status === 'draft'}>{LABELS.statusDraft}</option>
-        <option value="published" selected={post?.status === 'published'}>{LABELS.statusPublished}</option>
+        <option value="draft" selected={!post || post.status === 'draft'}>{LABELS.en.statusDraft}</option>
+        <option value="published" selected={post?.status === 'published'}>{LABELS.en.statusPublished}</option>
       </select>
     </div>
     <div class="field">
-      <label for="tags">{LABELS.tags} <span class="hint">{LABELS.tagsHint}</span></label>
+      <label for="tags">{LABELS.en.tags} <span class="hint">{LABELS.en.tagsHint}</span></label>
       <input type="text" id="tags" name="tags" value={post?.tags ?? ''}>
     </div>
   </div>
 
   <div class="field">
-    <label for="seoTitle">{LABELS.seoTitle} <span class="hint">{LABELS.seoTitleHint}</span></label>
+    <label for="seoTitle">{LABELS.en.seoTitle} <span class="hint">{LABELS.en.seoTitleHint}</span></label>
     <input type="text" id="seoTitle" name="seoTitle" value={post?.seo_title ?? ''}>
   </div>
   <div class="field">
-    <label for="seoDescription">{LABELS.seoDescription} <span class="hint">{LABELS.seoDescriptionHint}</span></label>
+    <label for="seoDescription">{LABELS.en.seoDescription} <span class="hint">{LABELS.en.seoDescriptionHint}</span></label>
     <textarea id="seoDescription" name="seoDescription" rows="2">{post?.seo_description ?? ''}</textarea>
   </div>
 
+  <!-- Optional Translation Section -->
+  <fieldset>
+    <legend>{LABELS.en.translationSection}</legend>
+    <p class="hint">{LABELS.en.translationHint}</p>
+
+    <div class="field">
+      <label for="translation_language">{LABELS.en.translationLanguage}</label>
+      <select id="translation_language" name="translation_language">
+        <option value="">{LABELS.en.noTranslation}</option>
+        <option value="en">English</option>
+        <option value="bn">বাংলা (Bengali)</option>
+      </select>
+    </div>
+
+    <div id="translation-fields" style="display:none;">
+      <div class="field">
+        <label for="translation_title">{LABELS.en.translationTitle}</label>
+        <input type="text" id="translation_title" name="translation_title" value={translation?.title ?? ''}>
+      </div>
+
+      <div class="field">
+        <label for="translation_excerpt">{LABELS.en.translationExcerpt}</label>
+        <textarea id="translation_excerpt" name="translation_excerpt" rows="2">{translation?.excerpt ?? ''}</textarea>
+      </div>
+
+      <div class="field">
+        <label>{LABELS.en.translationContent}</label>
+        <div class="editor-toolbar" id="translationToolbar">
+          <button type="button" data-cmd="bold"><b>B</b></button>
+          <button type="button" data-cmd="italic"><i>I</i></button>
+          <button type="button" data-cmd="formatBlock" data-value="H2">H2</button>
+          <button type="button" data-cmd="formatBlock" data-value="H3">H3</button>
+          <button type="button" data-cmd="insertUnorderedList">• List</button>
+          <button type="button" data-cmd="insertOrderedList">1. List</button>
+          <button type="button" id="translationLinkBtn">Link</button>
+          <button type="button" data-cmd="formatBlock" data-value="P">¶ Text</button>
+        </div>
+        <div class="editor-body" id="translationEditorBody" contenteditable="true" set:html={translation?.content || '<p></p>'} />
+        <input type="hidden" name="translation_content" id="translationContentInput">
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="translation_seoTitle">{LABELS.en.translationSeoTitle}</label>
+          <input type="text" id="translation_seoTitle" name="translation_seoTitle" value={translation?.seo_title ?? ''}>
+        </div>
+        <div class="field">
+          <label for="translation_seoDescription">{LABELS.en.translationSeoDescription}</label>
+          <input type="text" id="translation_seoDescription" name="translation_seoDescription" value={translation?.seo_description ?? ''}>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">{submitLabel}</button>
-    <a href="/admin" class="btn btn-ghost">{LABELS.cancel}</a>
+    <a href="/admin" class="btn btn-ghost">{LABELS.en.cancel}</a>
   </div>
 </form>
 
 <script>
-  // Minimal contenteditable rich-text editor — zero dependencies on purpose.
-  // execCommand is deprecated but still functions in current Chromium/Firefox
-  // for this small set of commands; content is sanitized server-side before
-  // storage regardless (see src/lib/sanitize-html.ts).
-  (function () {
-    const toolbar = document.querySelector('.editor-toolbar');
-    const body = document.getElementById('editorBody');
-    const hidden = document.getElementById('contentInput') as HTMLInputElement | null;
+  // Show/hide translation fields based on language selection
+  const translationLangSelect = document.getElementById('translation_language');
+  const translationFields = document.getElementById('translation-fields');
+
+  translationLangSelect?.addEventListener('change', (e) => {
+    const value = (e.target as HTMLSelectElement).value;
+    if (translationFields) {
+      translationFields.style.display = value ? 'block' : 'none';
+    }
+  });
+
+  // Initialize translation fields visibility
+  if (translationLangSelect && translationFields) {
+    translationFields.style.display = (translationLangSelect as HTMLSelectElement).value ? 'block' : 'none';
+  }
+
+  // Rich text editor setup function
+  function setupEditor(toolbarSelector: string, bodySelector: string, hiddenInputSelector: string) {
+    const toolbar = document.querySelector(toolbarSelector);
+    const body = document.getElementById(bodySelector);
+    const hidden = document.getElementById(hiddenInputSelector) as HTMLInputElement | null;
     const form = document.getElementById('postForm');
+
     if (!toolbar || !body || !hidden || !form) return;
 
     toolbar.addEventListener('click', (e) => {
@@ -190,7 +256,8 @@ const LABELS = lang === 'bn'
       document.execCommand(btn.dataset.cmd as string, false, btn.dataset.value || undefined);
     });
 
-    const linkBtn = document.getElementById('linkBtn');
+    // Link button
+    const linkBtn = toolbar.querySelector('#linkBtn') || toolbar.querySelector('[id$="LinkBtn"]');
     linkBtn?.addEventListener('click', (e) => {
       e.preventDefault();
       const url = window.prompt('Link URL (https://...)');
@@ -202,5 +269,150 @@ const LABELS = lang === 'bn'
     form.addEventListener('submit', () => {
       hidden.value = body.innerHTML;
     });
-  })();
+  }
+
+  // Setup both editors
+  setupEditor('.editor-toolbar', 'editorBody', 'contentInput');
+  setupEditor('#translationToolbar', 'translationEditorBody', 'translationContentInput');
 </script>
+
+<style>
+  fieldset {
+    border: 1px solid var(--surface-border, #ddd);
+    border-radius: 4px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  legend {
+    padding: 0 8px;
+    font-weight: 600;
+  }
+
+  .editor-toolbar {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    flex-wrap: wrap;
+  }
+
+  .editor-toolbar button {
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .editor-toolbar button:hover {
+    background: #f0f0f0;
+  }
+
+  .editor-body {
+    min-height: 200px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background: white;
+    line-height: 1.6;
+    font-family: inherit;
+  }
+
+  .editor-body:focus {
+    outline: 2px solid #007bff;
+    outline-offset: -1px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: #666;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-weight: 500;
+  }
+
+  .field input,
+  .field textarea,
+  .field select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    outline: 2px solid #007bff;
+    outline-offset: -1px;
+  }
+
+  .alert {
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  .alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: #007bff;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #0056b3;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #007bff;
+    border: 1px solid #007bff;
+  }
+
+  .btn-ghost:hover {
+    background: #f0f0f0;
+  }
+</style>

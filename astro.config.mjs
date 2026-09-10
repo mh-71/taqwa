@@ -87,7 +87,8 @@ export default defineConfig({
         redirects: {
           '/index.html': '/',
           '/blog.html': '/blog',
-          '/bn/blog.html': '/bn/blog',
+          '/bn/blog.html': '/blog?lang=bn',
+          // Dynamic /bn/blog/:slug redirects are handled in middleware.ts
         },
       }
     : {}),

@@ -1,12 +1,6 @@
 ---
-// Blog post detail page — new (the public site previously had no individual
-// post pages at all; every "Read More" link was inert). Reuses the site's
-// existing design tokens (colors/spacing/radius from global.css's :root) and
-// the same page-banner/breadcrumb pattern every other inner page already
-// repeats in its own <style> block, so it looks consistent with the rest of
-// the site rather than introducing a new design language.
 import Layout from '../../layouts/Layout.astro';
-import { getPostBySlug, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
+import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
@@ -17,41 +11,70 @@ const base = import.meta.env.BASE_URL;
 const runtimeDb = Astro.locals.runtime?.env.DB ?? null;
 const { slug } = Astro.params;
 
-// On the static GitHub Pages / Vercel builds there is no per-request routing
-// (every page is prerendered once at build time from the snapshot data), so
-// getStaticPaths supplies the known slugs then; on Cloudflare this page is
-// server-rendered per request straight from D1 and getStaticPaths is skipped.
+// Prerender paths for static builds
 export function getStaticPaths() {
   if (IS_CLOUDFLARE_BUILD) return [];
   return blogSnapshot.posts
-    .filter((p) => p.status === 'published' && ((p as { language?: string }).language ?? 'en') === 'en')
+    .filter((p) => p.status === 'published')
     .map((p) => ({ params: { slug: p.slug } }));
 }
 
-const post = slug ? await getPostBySlug(runtimeDb, slug) : null;
+// Fetch all posts to find the one we need
+const allPosts = await getPublishedPosts(runtimeDb);
+const postWithTranslations = slug ? allPosts.find(p => p.slug === slug) : null;
 
-if (!post) {
+if (!postWithTranslations) {
   return Astro.redirect(`${base}blog.html`, 302);
 }
 
-// This route is the English blog's detail page - a Bangla post's slug (see
-// src/pages/bn/blog/[slug].astro) must never render here, only redirect to
-// its own Bangla URL, so the two languages' posts never mix.
-if (post.language !== 'en') {
-  return Astro.redirect(`${base}${postUrl(post.slug, post.language)}`, 302);
-}
+// Get preferred language from query param or default to original
+const preferredLang = (Astro.url.searchParams.get('lang') ?? postWithTranslations.original_language) as 'en' | 'bn';
 
-const related = (await getRecentPosts(runtimeDb, 'en', 5)).filter((p) => p.slug !== post.slug).slice(0, 4);
+// Apply language preference
+const translation = postWithTranslations.translations?.find(t => t.language === preferredLang);
+const post = {
+  ...postWithTranslations,
+  title: translation?.title ?? postWithTranslations.title,
+  excerpt: translation?.excerpt ?? postWithTranslations.excerpt,
+  content: translation?.content ?? postWithTranslations.content,
+  seoTitle: translation?.seo_title ?? postWithTranslations.seoTitle,
+  seoDescription: translation?.seo_description ?? postWithTranslations.seoDescription,
+};
+
+// Check if alternate language is available
+const otherLang = preferredLang === 'en' ? 'bn' : 'en';
+const hasOtherLang = postWithTranslations.translations?.some(t => t.language === otherLang);
+const langToggleHref = hasOtherLang ? `${base}blog/${slug}?lang=${otherLang}` : null;
+
+const related = (await getRecentPosts(runtimeDb, 5))
+  .filter((p) => p.slug !== post.slug)
+  .slice(0, 4)
+  .map(r => {
+    const rTrans = r.translations?.find(t => t.language === preferredLang);
+    return {
+      ...r,
+      title: rTrans?.title ?? r.title,
+      excerpt: rTrans?.excerpt ?? r.excerpt,
+    };
+  });
+
 const description = post.seoDescription || post.excerpt;
 ---
+
 <Layout
   title={`${post.seoTitle || post.title} - Taqwa Automobile Service Center`}
   description={description}
-  path={postUrl(post.slug)}
-  langToggle={{ href: 'bn/blog.html', label: 'বাংলা' }}
+  path={`blog/${slug}`}
+  isBlog={true}
+  htmlLang={preferredLang}
+  langToggle={hasOtherLang ? {
+    href: langToggleHref,
+    label: otherLang === 'en' ? 'English' : 'বাংলা'
+  } : null}
   ogImage={base + post.featuredImage}
   current="blog"
 >
+
 <style>
   .page-banner{
     position:relative;
@@ -165,4 +188,5 @@ const description = post.seoDescription || post.excerpt;
     </div>
   </section>
 )}
+
 </Layout>

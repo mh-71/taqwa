@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    {
+      "source": "/bn/blog",
+      "destination": "/blog?lang=bn",
+      "permanent": true,
+      "statusCode": 301
+    },
+    {
+      "source": "/bn/blog/:slug",
+      "destination": "/blog/:slug?lang=bn",
+      "permanent": true,
+      "statusCode": 301
+    }
+  ]
+}

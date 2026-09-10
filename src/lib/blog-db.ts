@@ -36,6 +36,19 @@ export type PostStatus = 'draft' | 'published';
 // the pre-existing English-only site keeps behaving exactly as before.
 export type PostLanguage = 'en' | 'bn';
 
+export interface PostTranslation {
+  id: number;
+  post_id: number;
+  language: PostLanguage;
+  title: string;
+  excerpt: string;
+  content: string;
+  seo_title: string | null;
+  seo_description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Post {
   id: number;
   title: string;
@@ -49,7 +62,7 @@ export interface Post {
   author: string;
   tags: string; // comma-separated in storage
   status: PostStatus;
-  language: PostLanguage;
+  original_language: PostLanguage;
   publish_date: string; // YYYY-MM-DD
   seo_title: string;
   seo_description: string;
@@ -57,11 +70,15 @@ export interface Post {
   updated_at: string;
 }
 
+export interface PostWithTranslations extends Post {
+  translations: PostTranslation[];
+}
+
 const POST_COLUMNS = `
   posts.id, posts.title, posts.slug, posts.category_id,
   categories.name AS category_name, categories.slug AS category_slug,
   posts.featured_image, posts.excerpt, posts.content, posts.author, posts.tags,
-  posts.status, posts.language, posts.publish_date, posts.seo_title, posts.seo_description,
+  posts.status, posts.original_language, posts.publish_date, posts.seo_title, posts.seo_description,
   posts.created_at, posts.updated_at
 `;
 const POST_JOIN = `FROM posts JOIN categories ON categories.id = posts.category_id`;
@@ -70,15 +87,11 @@ const POST_JOIN = `FROM posts JOIN categories ON categories.id = posts.category_
 
 export async function getPublishedPosts(
   db: D1Database,
-  opts: { categorySlug?: string; search?: string; limit?: number; language?: PostLanguage } = {}
+  opts: { categorySlug?: string; search?: string; limit?: number } = {}
 ): Promise<Post[]> {
   const clauses = [`posts.status = 'published'`];
   const params: unknown[] = [];
 
-  if (opts.language) {
-    clauses.push(`posts.language = ?`);
-    params.push(opts.language);
-  }
   if (opts.categorySlug) {
     clauses.push(`categories.slug = ?`);
     params.push(opts.categorySlug);
@@ -101,27 +114,26 @@ export async function getPostBySlug(db: D1Database, slug: string): Promise<Post 
   return db.prepare(sql).bind(slug).first<Post>();
 }
 
-export async function getLatestNews(db: D1Database, language: PostLanguage = 'en', limit = 3): Promise<Post[]> {
-  return getPublishedPosts(db, { language, limit });
+export async function getLatestNews(db: D1Database, limit = 3): Promise<Post[]> {
+  return getPublishedPosts(db, { limit });
 }
 
-export async function getRecentPosts(db: D1Database, language: PostLanguage = 'en', limit = 4): Promise<Post[]> {
-  return getPublishedPosts(db, { language, limit });
+export async function getRecentPosts(db: D1Database, limit = 4): Promise<Post[]> {
+  return getPublishedPosts(db, { limit });
 }
 
 export async function getCategoriesWithCounts(
-  db: D1Database,
-  language: PostLanguage = 'en'
+  db: D1Database
 ): Promise<(Category & { count: number })[]> {
   const sql = `
     SELECT categories.id, categories.name, categories.slug,
-           COUNT(posts.id) FILTER (WHERE posts.status = 'published' AND posts.language = ?) AS count
+           COUNT(posts.id) FILTER (WHERE posts.status = 'published') AS count
     FROM categories
     LEFT JOIN posts ON posts.category_id = categories.id
     GROUP BY categories.id
     ORDER BY categories.name ASC
   `;
-  const { results } = await db.prepare(sql).bind(language).all<Category & { count: number }>();
+  const { results } = await db.prepare(sql).all<Category & { count: number }>();
   return results;
 }
 
@@ -129,7 +141,7 @@ export async function getCategoriesWithCounts(
 
 export async function listAllPosts(
   db: D1Database,
-  opts: { search?: string; categorySlug?: string; status?: PostStatus; language?: PostLanguage } = {}
+  opts: { search?: string; categorySlug?: string; status?: PostStatus } = {}
 ): Promise<Post[]> {
   const clauses: string[] = [];
   const params: unknown[] = [];
@@ -145,10 +157,6 @@ export async function listAllPosts(
   if (opts.status) {
     clauses.push(`posts.status = ?`);
     params.push(opts.status);
-  }
-  if (opts.language) {
-    clauses.push(`posts.language = ?`);
-    params.push(opts.language);
   }
 
   let sql = `SELECT ${POST_COLUMNS} ${POST_JOIN}`;
@@ -181,7 +189,7 @@ export interface PostInput {
   author: string;
   tags: string;
   status: PostStatus;
-  language: PostLanguage;
+  original_language: PostLanguage;
   publishDate: string;
   seoTitle: string;
   seoDescription: string;
@@ -190,14 +198,14 @@ export interface PostInput {
 export async function createPost(db: D1Database, input: PostInput): Promise<number> {
   const sql = `
     INSERT INTO posts
-      (title, slug, category_id, featured_image, excerpt, content, author, tags, status, language, publish_date, seo_title, seo_description, created_at, updated_at)
+      (title, slug, category_id, featured_image, excerpt, content, author, tags, status, original_language, publish_date, seo_title, seo_description, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
   `;
   const res = await db
     .prepare(sql)
     .bind(
       input.title, input.slug, input.categoryId, input.featuredImage, input.excerpt,
-      input.content, input.author, input.tags, input.status, input.language, input.publishDate,
+      input.content, input.author, input.tags, input.status, input.original_language, input.publishDate,
       input.seoTitle, input.seoDescription
     )
     .run();
@@ -208,7 +216,7 @@ export async function updatePost(db: D1Database, id: number, input: PostInput): 
   const sql = `
     UPDATE posts SET
       title = ?, slug = ?, category_id = ?, featured_image = ?, excerpt = ?,
-      content = ?, author = ?, tags = ?, status = ?, language = ?, publish_date = ?,
+      content = ?, author = ?, tags = ?, status = ?, original_language = ?, publish_date = ?,
       seo_title = ?, seo_description = ?, updated_at = datetime('now')
     WHERE id = ?
   `;
@@ -216,7 +224,7 @@ export async function updatePost(db: D1Database, id: number, input: PostInput): 
     .prepare(sql)
     .bind(
       input.title, input.slug, input.categoryId, input.featuredImage, input.excerpt,
-      input.content, input.author, input.tags, input.status, input.language, input.publishDate,
+      input.content, input.author, input.tags, input.status, input.original_language, input.publishDate,
       input.seoTitle, input.seoDescription, id
     )
     .run();
@@ -238,6 +246,106 @@ export async function slugExists(db: D1Database, slug: string, excludeId?: numbe
     ? await db.prepare(sql).bind(slug, excludeId).first()
     : await db.prepare(sql).bind(slug).first();
   return !!row;
+}
+
+// ---------- Translation reads ----------
+
+export async function getPostTranslation(
+  db: D1Database,
+  postId: number,
+  language: PostLanguage
+): Promise<PostTranslation | null> {
+  const sql = `
+    SELECT id, post_id, language, title, excerpt, content, seo_title, seo_description, created_at, updated_at
+    FROM post_translations
+    WHERE post_id = ? AND language = ?
+    LIMIT 1
+  `;
+  return db.prepare(sql).bind(postId, language).first<PostTranslation>();
+}
+
+export async function getPostTranslations(db: D1Database, postId: number): Promise<PostTranslation[]> {
+  const sql = `
+    SELECT id, post_id, language, title, excerpt, content, seo_title, seo_description, created_at, updated_at
+    FROM post_translations
+    WHERE post_id = ?
+    ORDER BY language ASC
+  `;
+  const { results } = await db.prepare(sql).bind(postId).all<PostTranslation>();
+  return results;
+}
+
+export async function getPostBySlugWithTranslations(
+  db: D1Database,
+  slug: string
+): Promise<PostWithTranslations | null> {
+  const post = await getPostBySlug(db, slug);
+  if (!post) return null;
+  const translations = await getPostTranslations(db, post.id);
+  return { ...post, translations };
+}
+
+// ---------- Translation writes ----------
+
+export interface TranslationInput {
+  title?: string;
+  excerpt?: string;
+  content?: string;
+  seo_title?: string;
+  seo_description?: string;
+}
+
+export async function upsertPostTranslation(
+  db: D1Database,
+  postId: number,
+  language: PostLanguage,
+  input: TranslationInput
+): Promise<void> {
+  const existing = await getPostTranslation(db, postId, language);
+
+  if (existing) {
+    const sql = `
+      UPDATE post_translations SET
+        title = ?, excerpt = ?, content = ?, seo_title = ?, seo_description = ?, updated_at = datetime('now')
+      WHERE id = ?
+    `;
+    await db
+      .prepare(sql)
+      .bind(
+        input.title || existing.title,
+        input.excerpt || existing.excerpt,
+        input.content || existing.content,
+        input.seo_title || existing.seo_title,
+        input.seo_description || existing.seo_description,
+        existing.id
+      )
+      .run();
+  } else {
+    if (!input.title || !input.excerpt || !input.content) {
+      throw new Error('Translation must have title, excerpt, and content');
+    }
+    const sql = `
+      INSERT INTO post_translations
+        (post_id, language, title, excerpt, content, seo_title, seo_description, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+    `;
+    await db
+      .prepare(sql)
+      .bind(
+        postId,
+        language,
+        input.title,
+        input.excerpt,
+        input.content,
+        input.seo_title || null,
+        input.seo_description || null
+      )
+      .run();
+  }
+}
+
+export async function deletePostTranslation(db: D1Database, postId: number, language: PostLanguage): Promise<void> {
+  await db.prepare(`DELETE FROM post_translations WHERE post_id = ? AND language = ?`).bind(postId, language).run();
 }
 
 export async function createCategory(db: D1Database, name: string, slug: string): Promise<number> {

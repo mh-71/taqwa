@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { updatePost, deletePost, setPostStatus, slugExists } from '../../../../lib/blog-db';
+import { updatePost, deletePost, setPostStatus, slugExists, upsertPostTranslation } from '../../../../lib/blog-db';
 import { parsePostForm } from '../../../../lib/post-form';
 
 export const prerender = false;
@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ params, request, locals, redirect, url })
 
   // action === 'update'
   const form = await request.formData();
-  const { input, errors } = parsePostForm(form);
+  const { input, translation, errors } = parsePostForm(form);
 
   if (!errors.length && (await slugExists(db, input.slug, id))) {
     errors.push('That slug is already used by another post — choose a different one.');
@@ -38,5 +38,16 @@ export const POST: APIRoute = async ({ params, request, locals, redirect, url })
   }
 
   await updatePost(db, id, input);
+
+  // Update or add translation if provided
+  if (translation && (translation.title || translation.excerpt || translation.content)) {
+    try {
+      await upsertPostTranslation(db, id, translation.language || (input.original_language === 'en' ? 'bn' : 'en'), translation);
+    } catch (err) {
+      console.error('Failed to update translation:', err);
+      // Continue - post was updated successfully even if translation failed
+    }
+  }
+
   return redirect('/admin?updated=1');
 };

@@ -3,10 +3,11 @@
 // so the two never validate/normalize a post differently.
 import { slugify } from './slug';
 import { sanitizeHtml } from './sanitize-html';
-import type { PostInput, PostStatus, PostLanguage } from './blog-db';
+import type { PostInput, PostStatus, PostLanguage, TranslationInput } from './blog-db';
 
 export interface PostFormResult {
   input: PostInput;
+  translation?: TranslationInput;
   errors: string[];
 }
 
@@ -22,7 +23,7 @@ export function parsePostForm(form: FormData): PostFormResult {
   const author = String(form.get('author') ?? '').trim() || 'Taqwa Automobile Team';
   const tags = String(form.get('tags') ?? '').trim();
   const status: PostStatus = String(form.get('status') ?? 'draft') === 'published' ? 'published' : 'draft';
-  const language: PostLanguage = String(form.get('language') ?? 'en') === 'bn' ? 'bn' : 'en';
+  const original_language: PostLanguage = String(form.get('original_language') ?? 'en') === 'bn' ? 'bn' : 'en';
   const publishDate = String(form.get('publishDate') ?? '').trim();
   const seoTitle = String(form.get('seoTitle') ?? '').trim();
   const seoDescription = String(form.get('seoDescription') ?? '').trim();
@@ -34,14 +35,29 @@ export function parsePostForm(form: FormData): PostFormResult {
   if (!publishDate) errors.push('Publish date is required.');
 
   slug = slugify(slug || title);
-  // slugify() only keeps a-z0-9 (see src/lib/slug.ts), so a title written
-  // entirely in Bangla (or any non-Latin script) with no manual slug
-  // produces an empty string here. Fall back to a short generated slug
-  // instead of blocking the post - it's still unique (slugExists is checked
-  // by the caller) and the admin can always edit it to something readable.
   if (!slug) slug = `post-${Date.now().toString(36)}`;
 
   const content = sanitizeHtml(contentRaw);
+
+  // Parse optional translation
+  let translation: TranslationInput | undefined;
+  const translationLanguage = String(form.get('translation_language') ?? '');
+  if (translationLanguage === 'en' || translationLanguage === 'bn') {
+    const translationTitle = String(form.get('translation_title') ?? '').trim();
+    const translationExcerpt = String(form.get('translation_excerpt') ?? '').trim();
+    const translationContentRaw = String(form.get('translation_content') ?? '');
+
+    // Only create translation if at least title is provided
+    if (translationTitle || translationExcerpt || translationContentRaw) {
+      translation = {
+        title: translationTitle || undefined,
+        excerpt: translationExcerpt || undefined,
+        content: translationContentRaw ? sanitizeHtml(translationContentRaw) : undefined,
+        seo_title: String(form.get('translation_seoTitle') ?? '').trim() || undefined,
+        seo_description: String(form.get('translation_seoDescription') ?? '').trim() || undefined,
+      };
+    }
+  }
 
   return {
     errors,
@@ -55,10 +71,11 @@ export function parsePostForm(form: FormData): PostFormResult {
       author,
       tags,
       status,
-      language,
+      original_language,
       publishDate,
       seoTitle,
       seoDescription,
     },
+    translation,
   };
 }

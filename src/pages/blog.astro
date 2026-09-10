@@ -16,26 +16,69 @@ const base = import.meta.env.BASE_URL;
 // cards (see src/lib/blog-data.ts). Search (?q=) and category filter
 // (?category=slug) are plain query-string params — no client-side filtering
 // script needed, and existing bookmarked/shared blog.html links still work.
+// Language preference: ?lang=bn or ?lang=en (default: en)
 const runtimeDb = Astro.locals.runtime?.env.DB ?? null;
 const q = Astro.url.searchParams.get('q') ?? '';
 const categorySlug = Astro.url.searchParams.get('category') ?? '';
+const lang = (Astro.url.searchParams.get('lang') ?? 'en') as 'en' | 'bn';
 
-const [allPosts, recentPosts, categories] = await Promise.all([
-  getPublishedPosts(runtimeDb, { search: q || undefined, categorySlug: categorySlug || undefined, language: 'en' }),
-  getRecentPosts(runtimeDb, 'en', 4),
-  getCategories(runtimeDb, 'en'),
+// Fetch all posts with translations, then filter to user's preferred language
+const [allPostsWithTranslations, recentPostsAll, categoriesAll] = await Promise.all([
+  getPublishedPosts(runtimeDb, { search: q || undefined, categorySlug: categorySlug || undefined }),
+  getRecentPosts(runtimeDb, 4),
+  getCategories(runtimeDb),
 ]);
+
+// Apply language preference: show content in preferred language, fallback to original
+const allPosts = allPostsWithTranslations.map(post => {
+  const translation = post.translations?.find(t => t.language === lang);
+  if (translation && lang !== post.original_language) {
+    return {
+      ...post,
+      title: translation.title,
+      excerpt: translation.excerpt,
+      content: translation.content,
+      seoTitle: translation.seo_title || post.seoTitle,
+      seoDescription: translation.seo_description || post.seoDescription,
+    };
+  }
+  return post;
+});
+
+const recentPosts = recentPostsAll.map(post => {
+  const translation = post.translations?.find(t => t.language === lang);
+  if (translation && lang !== post.original_language) {
+    return {
+      ...post,
+      title: translation.title,
+      excerpt: translation.excerpt,
+      content: translation.content,
+      seoTitle: translation.seo_title || post.seoTitle,
+      seoDescription: translation.seo_description || post.seoDescription,
+    };
+  }
+  return post;
+});
+
+const categories = categoriesAll;
 const mainPosts = allPosts.slice(0, 6);
 const extraPosts = allPosts.slice(6);
 const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 10);
 ---
 
 <Layout
-  title="Blog - Taqwa Automobile Service Center"
-  description="Car care tips, LPG & CNG conversion advice, hybrid maintenance guides and news from Taqwa Automobile Service Center in Uttara, Dhaka."
+  title={lang === 'bn' ? 'ব্লগ - Taqwa Automobile Service Center' : 'Blog - Taqwa Automobile Service Center'}
+  description={lang === 'bn'
+    ? 'Taqwa Automobile Service Center-এর বাংলা ব্লগ — গাড়ির যত্ন, LPG ও CNG কনভার্সন পরামর্শ, হাইব্রিড মেইনটেনেন্স গাইড এবং সর্বশেষ খবর।'
+    : 'Car care tips, LPG & CNG conversion advice, hybrid maintenance guides and news from Taqwa Automobile Service Center in Uttara, Dhaka.'}
   path="blog.html"
   current="blog"
-  langToggle={{ href: 'bn/blog.html', label: 'বাংলা' }}
+  isBlog={true}
+  htmlLang={lang}
+  langToggle={{
+    href: `${base}blog.html?lang=${lang === 'en' ? 'bn' : 'en'}`,
+    label: lang === 'en' ? 'বাংলা' : 'English'
+  }}
 >
 
 <style>

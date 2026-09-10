@@ -10,6 +10,19 @@ import { SESSION_COOKIE, verifySessionToken } from './lib/auth';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const path = context.url.pathname;
+
+  // Handle old Bengali blog redirects (Cloudflare only)
+  // /bn/blog -> /blog?lang=bn
+  // /bn/blog/:slug -> /blog/:slug?lang=bn
+  if (path === '/bn/blog' || path === '/bn/blog/') {
+    return context.redirect('/blog?lang=bn', 301);
+  }
+  const bengliBlogMatch = path.match(/^\/bn\/blog\/([^/]+)$/);
+  if (bengliBlogMatch) {
+    const slug = bengliBlogMatch[1];
+    return context.redirect(`/blog/${slug}?lang=bn`, 301);
+  }
+
   const isLoginPage = path === '/admin/login';
   const isLoginApi = path === '/api/admin/login';
   const isAdminPage = path === '/admin' || path.startsWith('/admin/');

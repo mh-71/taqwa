@@ -9,36 +9,18 @@ export const prerender = false;
 const runtime = Astro.locals.runtime;
 const categories = runtime ? await listCategories(runtime.env.DB) : [];
 const errorMessage = Astro.url.searchParams.get('error');
-
-// Bilingual New Post: language must be picked first (?lang=en / ?lang=bn)
-// before the editor itself renders — see src/components/admin/PostForm.astro
-// for how `lang` only swaps label text, leaving the English editor's layout
-// and behavior otherwise completely unchanged.
-const langParam = Astro.url.searchParams.get('lang');
-const lang = langParam === 'en' || langParam === 'bn' ? langParam : null;
 ---
 <AdminLayout title="Add New Post" active="new">
   <div class="page-head">
     <div><h1>Add New Post</h1></div>
   </div>
-  {lang === null ? (
-    <div class="card">
-      <p class="lang-choice-hint">Choose the post's language to continue / পোস্টের ভাষা বেছে নিন:</p>
-      <div class="lang-choice">
-        <a href="/admin/posts/new?lang=en" class="btn btn-primary">🇬🇧 English</a>
-        <a href="/admin/posts/new?lang=bn" class="btn btn-primary">🇧🇩 বাংলা</a>
-      </div>
-    </div>
-  ) : (
-    <div class="card">
-      <PostForm
-        categories={categories}
-        availableImages={AVAILABLE_IMAGES}
-        formAction="/api/admin/posts"
-        submitLabel={lang === 'bn' ? 'পোস্ট সংরক্ষণ করুন' : 'Save Post'}
-        errorMessage={errorMessage}
-        lang={lang}
-      />
-    </div>
-  )}
+  <div class="card">
+    <PostForm
+      categories={categories}
+      availableImages={AVAILABLE_IMAGES}
+      formAction="/api/admin/posts"
+      submitLabel="Save Post"
+      errorMessage={errorMessage}
+    />
+  </div>
 </AdminLayout>

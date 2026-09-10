@@ -10,7 +10,7 @@
 //   build time): falls back to the checked-in snapshot in blog-snapshot.json,
 //   which is a point-in-time mirror of D1. See ADMIN.md for how to refresh it.
 import * as db from './blog-db';
-import type { D1Database, PostStatus, PostLanguage } from './blog-db';
+import type { D1Database, PostStatus, PostLanguage, PostTranslation } from './blog-db';
 import snapshotData from './blog-snapshot.json';
 
 export interface PublicPost {
@@ -24,10 +24,11 @@ export interface PublicPost {
   content: string;
   author: string;
   tags: string[];
-  language: PostLanguage;
+  original_language: PostLanguage;
   publishDate: string;
   seoTitle: string;
   seoDescription: string;
+  translations?: PostTranslation[];
 }
 
 export interface PublicCategory {
@@ -36,7 +37,7 @@ export interface PublicCategory {
   count: number;
 }
 
-function fromD1(p: db.Post): PublicPost {
+function fromD1(p: db.Post, translations?: PostTranslation[]): PublicPost {
   return {
     id: p.id,
     title: p.title,
@@ -48,10 +49,11 @@ function fromD1(p: db.Post): PublicPost {
     content: p.content,
     author: p.author,
     tags: p.tags ? p.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
-    language: p.language,
+    original_language: p.original_language,
     publishDate: p.publish_date,
     seoTitle: p.seo_title,
     seoDescription: p.seo_description,
+    translations: translations,
   };
 }
 
@@ -65,10 +67,8 @@ interface SnapshotPost {
   author: string;
   tags: string[];
   status: PostStatus;
-  // Absent on every entry in the checked-in snapshot (it predates bilingual
-  // support) - treated as 'en', matching the column DEFAULT the D1 migration
-  // uses for the exact same reason.
-  language?: PostLanguage;
+  // Snapshot predates translation support - all entries treated as 'en' original_language
+  original_language?: PostLanguage;
   publish_date: string;
   seo_title: string;
   seo_description: string;
@@ -89,30 +89,25 @@ function snapshotPublishedPosts(): PublicPost[] {
       content: p.content,
       author: p.author,
       tags: p.tags ?? [],
-      language: p.language ?? 'en',
+      original_language: p.original_language ?? 'en',
       publishDate: p.publish_date,
       seoTitle: p.seo_title,
       seoDescription: p.seo_description,
+      translations: [],
     }))
     .sort((a, b) => (a.publishDate < b.publishDate ? 1 : -1));
 }
 
 export async function getPublishedPosts(
   runtimeDb: D1Database | null,
-  opts: { categorySlug?: string; search?: string; limit?: number; language?: PostLanguage | 'all' } = {}
+  opts: { categorySlug?: string; search?: string; limit?: number } = {}
 ): Promise<PublicPost[]> {
-  // 'all' means "don't filter by language" (used by Home's "Latest News" -
-  // see getLatestNews below); every other existing caller still defaults to
-  // 'en' exactly as before.
-  const language: PostLanguage | 'all' = opts.language ?? 'en';
-  const dbLanguage = language === 'all' ? undefined : language;
-
   if (runtimeDb) {
-    const posts = await db.getPublishedPosts(runtimeDb, { ...opts, language: dbLanguage });
-    return posts.map(fromD1);
+    const posts = await db.getPublishedPosts(runtimeDb, opts);
+    return posts.map((p) => fromD1(p, []));
   }
 
-  let posts = language === 'all' ? snapshotPublishedPosts() : snapshotPublishedPosts().filter((p) => p.language === language);
+  let posts = snapshotPublishedPosts();
   if (opts.categorySlug) posts = posts.filter((p) => p.categorySlug === opts.categorySlug);
   if (opts.search) {
     const q = opts.search.toLowerCase();
@@ -130,18 +125,16 @@ export async function getPublishedPosts(
 
 export async function getLatestNews(
   runtimeDb: D1Database | null,
-  language: PostLanguage | 'all' = 'en',
   limit = 3
 ): Promise<PublicPost[]> {
-  return getPublishedPosts(runtimeDb, { language, limit });
+  return getPublishedPosts(runtimeDb, { limit });
 }
 
 export async function getRecentPosts(
   runtimeDb: D1Database | null,
-  language: PostLanguage = 'en',
   limit = 4
 ): Promise<PublicPost[]> {
-  return getPublishedPosts(runtimeDb, { language, limit });
+  return getPublishedPosts(runtimeDb, { limit });
 }
 
 /** Looked up by slug alone (slugs are globally unique across both languages) -
@@ -164,14 +157,13 @@ export function formatDisplayDate(isoDate: string): string {
 }
 
 export async function getCategories(
-  runtimeDb: D1Database | null,
-  language: PostLanguage = 'en'
+  runtimeDb: D1Database | null
 ): Promise<PublicCategory[]> {
   if (runtimeDb) {
-    const cats = await db.getCategoriesWithCounts(runtimeDb, language);
+    const cats = await db.getCategoriesWithCounts(runtimeDb);
     return cats.map((c) => ({ name: c.name, slug: c.slug, count: c.count }));
   }
-  const posts = snapshotPublishedPosts().filter((p) => p.language === language);
+  const posts = snapshotPublishedPosts();
   return snapshotData.categories.map((c) => ({
     name: c.name,
     slug: c.slug,
