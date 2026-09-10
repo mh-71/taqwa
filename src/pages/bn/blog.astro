@@ -1,6 +1,0 @@
----
-// Redirect old Bengali blog listing to unified blog system with language param
-export const prerender = false;
-const base = import.meta.env.BASE_URL;
-return Astro.redirect(`${base}blog?lang=bn`, 302);
----
