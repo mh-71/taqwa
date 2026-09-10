@@ -18,7 +18,7 @@
 // `astro build`, then always flips it back - so the working tree returns
 // to its committed state whether the build succeeds or fails.
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const FILES = [
   'src/pages/index.astro',
@@ -26,18 +26,6 @@ const FILES = [
   'src/pages/blog/[slug].astro',
   'src/pages/bn/blog.astro',
   'src/pages/bn/blog/[slug].astro',
-  'src/pages/admin/login.astro',
-  'src/pages/admin/index.astro',
-  'src/pages/admin/posts/new.astro',
-  'src/pages/admin/posts/[id]/edit.astro',
-  'src/pages/admin/categories.astro',
-  'src/pages/admin/preview/[id].astro',
-  'src/pages/api/admin/login.ts',
-  'src/pages/api/admin/logout.ts',
-  'src/pages/api/admin/posts.ts',
-  'src/pages/api/admin/posts/[id].ts',
-  'src/pages/api/admin/categories.ts',
-  'src/pages/api/admin/categories/[id].ts',
 ];
 
 const FALSE_LINE = 'export const prerender = false;';
@@ -45,6 +33,7 @@ const TRUE_LINE = 'export const prerender = true;';
 
 function setAll(from, to) {
   for (const file of FILES) {
+    if (!existsSync(file)) continue;
     const contents = readFileSync(file, 'utf8');
     if (!contents.includes(from)) {
       throw new Error(

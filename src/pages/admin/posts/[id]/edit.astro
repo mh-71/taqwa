@@ -7,6 +7,11 @@ import { AVAILABLE_IMAGES } from '../../../../lib/available-images';
 
 export const prerender = false;
 
+// For static builds that can't prerender, return no paths to skip this dynamic route
+export function getStaticPaths() {
+  return [];
+}
+
 const runtime = Astro.locals.runtime;
 const id = Number(Astro.params.id);
 let categories: Awaited<ReturnType<typeof listCategories>> = [];
