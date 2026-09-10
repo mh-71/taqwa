@@ -1,0 +1,461 @@
+---
+import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
+
+// First real article page on the site. The blog index (blog.astro) lists twelve
+// posts; this is the one that has an actual page behind it, so its card there
+// links here while the remaining eleven stay unlinked until they are written.
+const headline = 'LPG vs CNG: Which Conversion Is Right for Your Car?';
+const description =
+  'LPG or CNG for your car in Dhaka? Compare running cost, boot space, power, refuelling and engine wear to pick the right conversion for how you actually drive.';
+const published = '2026-08-15';
+const publishedLabel = 'August 15, 2026';
+---
+
+<Layout
+  title="LPG vs CNG: Which Is Right for Your Car? - Taqwa Automobile"
+  description={description}
+  path="lpg-vs-cng.html"
+  current="blog"
+  ogImage="/img/latest-1.jpg"
+  jsonLd={{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": headline,
+    "description": description,
+    "image": "https://taqwa.autos/img/latest-1.jpg",
+    "datePublished": published,
+    "dateModified": published,
+    "inLanguage": "en",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://taqwa.autos/lpg-vs-cng.html"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Taqwa Automobile Service Center",
+      "url": "https://taqwa.autos"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Taqwa Automobile Service Center",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://taqwa.autos/img/logo.png"
+      }
+    }
+  }}
+>
+
+<style>
+  /* Only the rules this page actually uses. The banner and breadcrumb values
+     are kept identical to blog.astro so the two pages read as one section of
+     the site; Astro scopes <style> per component, so they cannot be shared
+     from there without moving them into global.css. */
+
+  .accent{color:var(--red);}
+
+  /* ===== PAGE BANNER (matches blog.astro) ===== */
+  .page-banner{
+    position:relative;
+    background:linear-gradient(150deg, var(--charcoal-2) 0%, var(--charcoal) 100%);
+    overflow:hidden;
+    padding:var(--space-8) var(--space-6) 58px;
+    text-align:center;
+  }
+  .page-banner::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 40%, black, transparent);
+    pointer-events:none;
+  }
+  .page-banner-inner{position:relative; max-width:1280px; margin:0 auto;}
+  .page-banner .eyebrow{justify-content:center; display:flex;}
+  .page-banner h1{
+    font-size:var(--text-4xl); color:#fff; letter-spacing:0.4px; margin-bottom:16px;
+    max-width:900px; margin-left:auto; margin-right:auto; line-height:1.2;
+  }
+  .breadcrumb{
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    font-size:16px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;
+    font-weight:700; flex-wrap:wrap;
+  }
+  .breadcrumb a{color:var(--off);}
+  .breadcrumb a:hover{color:var(--red);}
+  .breadcrumb .sep{color:var(--red); font-size:16px;}
+  .breadcrumb .current{color:var(--red);}
+
+  /* ===== ARTICLE ===== */
+  .post-section{background:var(--surface-1); padding:60px 32px;}
+  .post{
+    max-width:820px; margin:0 auto;
+    background:#fff; border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-3);
+    padding:40px 44px 44px;
+  }
+
+  .post-meta{
+    display:flex; align-items:center; flex-wrap:wrap; gap:10px 16px;
+    padding-bottom:20px; margin-bottom:26px;
+    border-bottom:1px solid var(--surface-border);
+  }
+  .post-cat{
+    background:var(--red); color:#fff; font-size:16px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase;
+    padding:5px 13px; border-radius:var(--radius-sm);
+  }
+  .post-date{
+    color:var(--muted); font-size:16px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.3px; display:inline-flex; align-items:center; gap:7px;
+  }
+
+  .post-hero{margin:0 0 30px;}
+  .post-hero img{
+    width:100%; height:auto; display:block;
+    border-radius:var(--radius-md); background:#dfe3e8;
+  }
+
+  .post-lead{
+    color:var(--text-strong); font-size:var(--text-lg); line-height:1.8;
+    font-weight:600; margin-bottom:26px;
+  }
+  .post h2{
+    font-size:var(--text-3xl); color:var(--text-strong);
+    letter-spacing:0.2px; line-height:1.3;
+    margin:36px 0 14px;
+  }
+  .post h3{
+    font-size:var(--text-xl); color:var(--text-strong);
+    line-height:1.4; margin:26px 0 10px;
+  }
+  .post p{color:var(--text-muted); font-size:16px; line-height:1.85; margin-bottom:16px;}
+  .post strong{color:var(--text-strong); font-weight:700;}
+
+  .post ul{margin:0 0 20px; padding:0;}
+  .post ul li{
+    position:relative; padding-left:26px; margin-bottom:11px;
+    color:var(--text-muted); font-size:16px; line-height:1.8;
+  }
+  .post ul li::before{
+    content:""; position:absolute; left:6px; top:12px;
+    width:7px; height:7px; border-radius:var(--radius-full);
+    background:var(--red);
+  }
+
+  /* Tables are the one element allowed to scroll sideways on narrow screens. */
+  .post-table-wrap{overflow-x:auto; margin:0 0 24px; -webkit-overflow-scrolling:touch;}
+  .post-table{border-collapse:collapse; width:100%; min-width:520px;}
+  .post-table th, .post-table td{
+    text-align:left; padding:13px 16px; font-size:16px; line-height:1.6;
+    border-bottom:1px solid var(--surface-border);
+  }
+  .post-table thead th{
+    background:var(--charcoal); color:#fff; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase;
+  }
+  .post-table tbody th{color:var(--text-strong); font-weight:700; width:30%;}
+  .post-table tbody td{color:var(--text-muted);}
+  .post-table tbody tr:last-child th, .post-table tbody tr:last-child td{border-bottom:none;}
+
+  .post-note{
+    background:var(--surface-2); border-left:3px solid var(--red);
+    border-radius:var(--radius-md);
+    padding:20px 22px; margin:0 0 24px;
+  }
+  .post-note p{margin-bottom:0;}
+
+  /* ===== CTA ===== */
+  .post-cta{
+    background:linear-gradient(150deg, var(--red) 0%, var(--red-dark) 100%);
+    border-radius:var(--radius-lg);
+    padding:30px 26px; text-align:center; color:#fff;
+    margin-top:38px;
+  }
+  .post-cta h3{color:#fff; font-size:var(--text-2xl); margin:0 0 8px; line-height:1.3;}
+  .post-cta p{color:rgba(255,255,255,0.9); font-size:16px; line-height:1.7; margin-bottom:20px;}
+  .post-cta-actions{display:flex; justify-content:center; flex-wrap:wrap; gap:12px;}
+  .post-cta-actions a{
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:16px; font-weight:800; letter-spacing:0.4px;
+    padding:13px 24px; border-radius:var(--radius-sm);
+  }
+  .cta-call{background:#fff; color:var(--red);}
+  .cta-call:hover{background:#F3EFE3;}
+  .cta-wa{background:var(--green); color:#fff;}
+  .cta-wa:hover{background:#13873D;}
+
+  .post-back{
+    display:inline-flex; align-items:center; gap:9px; margin-top:30px;
+    color:var(--red); font-size:16px; font-weight:800;
+    letter-spacing:0.4px; text-transform:uppercase;
+  }
+  .post-back:hover{color:var(--red-dark);}
+  .post-back svg{width:15px; height:15px; transition:transform .2s ease;}
+  .post-back:hover svg{transform:translateX(-4px);}
+
+  @media (max-width:760px){
+    .page-banner{padding:var(--space-7) var(--space-5) 40px;}
+    .page-banner h1{font-size:var(--text-2xl);}
+    .post-section{padding:44px 20px;}
+    .post{padding:30px 24px 34px;}
+  }
+  @media (max-width:420px){
+    .page-banner{padding:36px 16px 32px;}
+    .post-section{padding:36px 16px;}
+    .post{padding:26px 18px 30px;}
+    .post-cta-actions a{width:100%; justify-content:center;}
+  }
+</style>
+
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <div class="eyebrow">LPG &amp; CNG</div>
+    <h1 class="display">LPG vs CNG: Which Conversion Is <span class="accent">Right for Your Car?</span></h1>
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">»</span>
+      <a href="blog.html">Blog</a>
+      <span class="sep">»</span>
+      <span class="current">LPG vs CNG</span>
+    </div>
+  </div>
+</section>
+
+<section class="post-section">
+  <article class="post">
+
+    <div class="post-meta">
+      <span class="post-cat">LPG &amp; CNG</span>
+      <span class="post-date">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <time datetime={published}>{publishedLabel}</time>
+      </span>
+    </div>
+
+    <figure class="post-hero">
+      <img
+        src={base + "img/latest-1.jpg"}
+        alt="LPG and CNG conversion kit components on a workshop bench"
+        width="1920" height="1280"
+        loading="eager" decoding="async"
+      >
+    </figure>
+
+    <p class="post-lead">
+      Both LPG and CNG will cut what you spend at the pump. They are not, however,
+      interchangeable — they suit different cars, different boot-space needs and
+      different driving patterns. Here is how the two actually compare, and how to
+      tell which one fits the way you drive.
+    </p>
+
+    <h2>The short answer</h2>
+
+    <p>
+      If you drive long distances every day, rarely need the boot and have a CNG
+      station on your regular route, <strong>CNG</strong> usually gives the lowest
+      running cost per kilometre. If you want to keep your boot usable, care about
+      the car still feeling like it did on petrol, and would rather refuel quickly,
+      <strong>LPG</strong> is normally the better fit.
+    </p>
+
+    <h2>They are not the same kind of gas</h2>
+
+    <p>
+      The names get used almost interchangeably in conversation, but the two fuels
+      behave very differently once they are in your car.
+    </p>
+
+    <p>
+      <strong>CNG</strong> is compressed natural gas — mostly methane. It stays a gas
+      and has to be squeezed to roughly 200 bar to fit a useful amount on board. That
+      pressure is why a CNG cylinder is a thick-walled steel vessel: heavy, and shaped
+      as a large cylinder that has to sit upright in your boot.
+    </p>
+
+    <p>
+      <strong>LPG</strong> is liquefied petroleum gas — a propane and butane mix. It
+      turns liquid at only about 8 to 12 bar, so the tank is far lighter and can be
+      made in a doughnut shape that drops into the spare-wheel well. Being liquid in
+      the tank, LPG also packs more than twice the energy into the same volume as CNG
+      does, which is why a smaller LPG tank can still deliver a sensible range.
+    </p>
+
+    <h2>Side by side</h2>
+
+    <div class="post-table-wrap">
+      <table class="post-table">
+        <thead>
+          <tr>
+            <th scope="col">&nbsp;</th>
+            <th scope="col">LPG</th>
+            <th scope="col">CNG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Running cost</th>
+            <td>Lower than petrol</td>
+            <td>Usually the lowest per kilometre</td>
+          </tr>
+          <tr>
+            <th scope="row">Tank pressure</th>
+            <td>About 8–12 bar</td>
+            <td>About 200 bar</td>
+          </tr>
+          <tr>
+            <th scope="row">Boot space</th>
+            <td>Doughnut tank can fit the spare-wheel well — boot stays usable</td>
+            <td>Large upright cylinder takes most of the boot</td>
+          </tr>
+          <tr>
+            <th scope="row">Added weight</th>
+            <td>Comparatively light</td>
+            <td>Noticeably heavier</td>
+          </tr>
+          <tr>
+            <th scope="row">Power vs petrol</th>
+            <td>Small drop — close to petrol feel</td>
+            <td>Larger drop, most obvious on hills and overtaking</td>
+          </tr>
+          <tr>
+            <th scope="row">Refuelling time</th>
+            <td>Similar to filling petrol</td>
+            <td>Slower fill, and queues are common</td>
+          </tr>
+          <tr>
+            <th scope="row">Combustion heat</th>
+            <td>Cooler than CNG</td>
+            <td>Hotter — valves need closer attention</td>
+          </tr>
+          <tr>
+            <th scope="row">If it leaks</th>
+            <td>Heavier than air, settles low</td>
+            <td>Lighter than air, rises and disperses</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Boot space decides it for a lot of owners</h2>
+
+    <p>
+      This is the part people underestimate until the kit is fitted. A CNG cylinder is
+      big, upright and heavy, and in most sedans and hatchbacks it claims the majority
+      of the boot permanently. If you carry family luggage, tools, stock for a business
+      or a pram, that is a daily cost you pay forever in exchange for the fuel saving.
+    </p>
+
+    <p>
+      A toroidal LPG tank sits where the spare wheel lives, so the boot floor stays
+      flat and usable. You give up the spare wheel instead — something to plan for,
+      but for most owners far easier to live with than losing the boot.
+    </p>
+
+    <h2>How the car will feel to drive</h2>
+
+    <p>
+      Any gas conversion costs a little power, because gas displaces some of the air
+      the engine would otherwise draw in. With LPG the difference is small enough that
+      most drivers stop noticing it within a week. With CNG the drop is larger and
+      shows up where you have least margin — pulling away on an incline, or overtaking
+      with a full car.
+    </p>
+
+    <p>
+      A properly tuned kit matters more here than the choice of fuel. A well set-up
+      CNG car drives better than a badly set-up LPG one, which is why the quality of
+      the installation and the calibration afterwards is worth more than any spec
+      sheet comparison.
+    </p>
+
+    <h2>What changes in your maintenance routine</h2>
+
+    <p>
+      A converted car is not a petrol car with a cheaper fuel bill. Plan for these:
+    </p>
+
+    <ul>
+      <li><strong>Spark plugs</strong> wear faster on gas and need replacing more often, with the type and gap the kit specifies — not whatever was in the car before.</li>
+      <li><strong>Valve clearances</strong> need periodic checking. Gas does not cool and lubricate the valve seats the way liquid petrol does, and CNG's hotter burn makes this more important on some engines.</li>
+      <li><strong>Gas filters</strong> on the supply line are a consumable, like an oil filter.</li>
+      <li><strong>Run petrol occasionally.</strong> Letting the petrol system sit unused for months causes its own problems — stale fuel, a tired pump, sticking injectors.</li>
+      <li><strong>Cylinder recertification</strong> is a legal requirement at a set interval. Diarise it; an expired cylinder is both unsafe and uninsurable.</li>
+    </ul>
+
+    <h2>Safety, honestly</h2>
+
+    <p>
+      Both fuels are safe when the work is done properly — a certified kit, a tested
+      cylinder, correctly routed and secured lines, and a leak test afterwards. Both
+      are dangerous when it is not. Almost every gas conversion problem traces back to
+      the installation rather than to the fuel.
+    </p>
+
+    <div class="post-note">
+      <p>
+        One practical difference worth knowing: LPG is heavier than air, so a leak
+        settles into low spaces rather than dispersing. If you routinely park in a
+        basement or over a pit, mention it before you convert — it changes what we
+        check and how we advise you.
+      </p>
+    </div>
+
+    <h2>So which should you choose?</h2>
+
+    <h3>Choose CNG if</h3>
+    <ul>
+      <li>You cover high daily mileage and want the lowest cost per kilometre.</li>
+      <li>There is a CNG station you pass anyway, and the queue does not bother you.</li>
+      <li>You rarely need boot space, or the car is mainly used for ride-sharing or commuting alone.</li>
+    </ul>
+
+    <h3>Choose LPG if</h3>
+    <ul>
+      <li>You need the boot — family car, luggage, business use.</li>
+      <li>You want the car to keep feeling close to how it drives on petrol.</li>
+      <li>You would rather refuel in a couple of minutes than wait in a line.</li>
+      <li>Your mileage is moderate, so convenience matters more than squeezing out the last bit of saving.</li>
+    </ul>
+
+    <h3>Think again if</h3>
+    <ul>
+      <li>You drive only a few thousand kilometres a year — the saving will take a long time to pay back the conversion.</li>
+      <li>Your engine already has untreated problems. Fix those first; gas will not hide them, and it tends to expose weak ignition and worn valves faster.</li>
+    </ul>
+
+    <h2>Still not sure?</h2>
+
+    <p>
+      Bring the car in. We will look at your engine, your boot, and how you actually
+      use the car, and tell you plainly which conversion makes sense — including when
+      the honest answer is that neither is worth it yet. We will also quote you the
+      current price for your specific model rather than a generic figure.
+    </p>
+
+    <div class="post-cta">
+      <h3>Talk to a conversion specialist</h3>
+      <p>Straight advice on LPG and CNG for your car, from the technicians who fit them.</p>
+      <div class="post-cta-actions">
+        <a href="tel:+8801854226757" class="cta-call">
+          <svg class="icon" width="15" height="15" aria-hidden="true"><use href="#icon-phone"/></svg>
+          Call 01854226757
+        </a>
+        <a href="https://wa.me/8801854226757" class="cta-wa" target="_blank" rel="noopener noreferrer">
+          <svg class="icon" width="16" height="16" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+          WhatsApp Us
+        </a>
+      </div>
+    </div>
+
+    <a href="blog.html" class="post-back">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Blog
+    </a>
+
+  </article>
+</section>
+
+</Layout>
