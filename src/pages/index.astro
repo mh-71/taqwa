@@ -69,7 +69,7 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
   }}
 >
 
-<style define:vars={{ heroBg: `url(${base}img/hero-background.jpg)` }}>
+<style define:vars={{ heroBg: `url(${base}img/hero-background-opt.jpg)` }}>
   /* Overrides global.css's .hero background so the hero image URL is
      base-path-aware (global.css is a plain imported stylesheet and can't
      use Astro's define:vars itself). Gradient values match global.css exactly. */
@@ -312,15 +312,19 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
 
 <div class="carwash-visual">
-  <img
-    loading="lazy"
-    decoding="async"
-    class="lazy-fade"
-    onload="this.classList.add('is-loaded')"
-    src={base + "img/car-wash.jpg"}
-    alt="Car Wash & Detailing"
-    style="width:100%; height:100%; object-fit:cover;"
-  >
+  <picture>
+    <source srcset={base + "img/car-wash.avif"} type="image/avif">
+    <source srcset={base + "img/car-wash.webp"} type="image/webp">
+    <img
+      loading="lazy"
+      decoding="async"
+      class="lazy-fade"
+      onload="this.classList.add('is-loaded')"
+      src={base + "img/car-wash-opt.jpg"}
+      alt="Car Wash & Detailing"
+      style="width:100%; height:100%; object-fit:cover;"
+    >
+  </picture>
 </div>
 
 
@@ -370,11 +374,14 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
   </svg>
 
   <!-- Car image -->
-  <img
-    class="car-icon"
-    src={base + "img/car-wash-car.png"}
-    alt="Car Wash"
-  />
+  <picture>
+    <source srcset={base + "img/car-wash-car.webp"} type="image/webp">
+    <img
+      class="car-icon"
+      src={base + "img/car-wash-car-opt.jpg"}
+      alt="Car Wash"
+    />
+  </picture>
 
   <div class="cta-lead">Make Your Car</div>
 
@@ -553,7 +560,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Cooling-System-Service.jpg"} alt="Cooling System Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          <picture>
+            <source srcset={base + "img/Cooling-System-Service.avif"} type="image/avif">
+            <source srcset={base + "img/Cooling-System-Service.webp"} type="image/webp">
+            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Cooling-System-Service-opt.jpg"} alt="Cooling System Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          </picture>
         </div>
           <div class="body">
             <h3>Cooling System Service</h3>
@@ -641,7 +652,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-battery-diagnostics.jpg"} alt="Hybrid Battery Diagnostics">
+            <picture>
+              <source srcset={base + "img/hybrid-battery-diagnostics.avif"} type="image/avif">
+              <source srcset={base + "img/hybrid-battery-diagnostics.webp"} type="image/webp">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-battery-diagnostics-opt.jpg"} alt="Hybrid Battery Diagnostics">
+            </picture>
           </div>
           <div class="hybrid-item-body">
             <h4>Hybrid Battery Diagnostics</h4>
@@ -651,7 +666,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-battery-replacement.jpg"} alt="Hybrid Battery Repair & Replacement">
+            <picture>
+              <source srcset={base + "img/hybrid-battery-replacement.avif"} type="image/avif">
+              <source srcset={base + "img/hybrid-battery-replacement.webp"} type="image/webp">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-battery-replacement-opt.jpg"} alt="Hybrid Battery Repair & Replacement">
+            </picture>
           </div>
           <div class="hybrid-item-body">
             <h4>Hybrid Battery Repair &amp; Replacement</h4>
@@ -681,7 +700,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-car-motor.jpg"} alt="Hybrid Motor & Generator Service">
+            <picture>
+              <source srcset={base + "img/hybrid-car-motor.avif"} type="image/avif">
+              <source srcset={base + "img/hybrid-car-motor.webp"} type="image/webp">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-car-motor-opt.jpg"} alt="Hybrid Motor & Generator Service">
+            </picture>
           </div>
           <div class="hybrid-item-body">
             <h4>Hybrid Motor &amp; Generator Service</h4>
@@ -691,7 +714,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-ac-Service.jpg"} alt="Hybrid AC Service">
+            <picture>
+              <source srcset={base + "img/Car-ac-Service.avif"} type="image/avif">
+              <source srcset={base + "img/Car-ac-Service.webp"} type="image/webp">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-ac-Service-opt.jpg"} alt="Hybrid AC Service">
+            </picture>
           </div>
           <div class="hybrid-item-body">
             <h4>Hybrid AC Service</h4>
@@ -701,8 +728,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-ecu-scanning.jpg"} alt="Hybrid ECU Scanning">
-
+            <picture>
+              <source srcset={base + "img/hybrid-ecu-scanning.avif"} type="image/avif">
+              <source srcset={base + "img/hybrid-ecu-scanning.webp"} type="image/webp">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-ecu-scanning-opt.jpg"} alt="Hybrid ECU Scanning">
+            </picture>
           </div>
           <div class="hybrid-item-body">
             <h4>Hybrid ECU Scanning</h4>
@@ -712,8 +742,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/regenerative-brake-service.jpg"} alt="Regenerative Brake Service">
-         
+            <picture>
+              <source srcset={base + "img/regenerative-brake-service.avif"} type="image/avif">
+              <source srcset={base + "img/regenerative-brake-service.webp"} type="image/webp">
+              <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/regenerative-brake-service-opt.jpg"} alt="Regenerative Brake Service">
+            </picture>
           </div>
           <div class="hybrid-item-body">
             <h4>Regenerative Brake Service</h4>
@@ -955,14 +988,14 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
 <div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
 
-  <svg class="icon review-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M20 11.5C20 15.09 16.42 18 12 18C10.9 18 9.86 17.82 8.92 17.5L5 20V16.25C3.76 15.03 3 13.35 3 11.5C3 7.91 6.58 5 11 5H12C16.42 5 20 7.91 20 11.5Z"
-    />
-    <circle cx="8" cy="11.5" r="1.2"/>
-    <circle cx="12" cy="11.5" r="1.2"/>
-    <circle cx="16" cy="11.5" r="1.2"/>
-  </svg>
+
+<img
+  src="../../public/icon/quote.svg"
+  alt=""
+  class="icon review-icon"
+  aria-hidden="true"
+/>
+
 
   <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
     <meta itemprop="ratingValue" content="5">
@@ -991,14 +1024,12 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
 <div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
 
-  <svg class="icon review-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M20 11.5C20 15.09 16.42 18 12 18C10.9 18 9.86 17.82 8.92 17.5L5 20V16.25C3.76 15.03 3 13.35 3 11.5C3 7.91 6.58 5 11 5H12C16.42 5 20 7.91 20 11.5Z"
-    />
-    <circle cx="8" cy="11.5" r="1.2"/>
-    <circle cx="12" cy="11.5" r="1.2"/>
-    <circle cx="16" cy="11.5" r="1.2"/>
-  </svg>
+<img
+  src="../../public/icon/quote.svg"
+  alt=""
+  class="icon review-icon"
+  aria-hidden="true"
+/>
 
   <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
     <meta itemprop="ratingValue" content="5">
@@ -1027,14 +1058,12 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
 <div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
 
-  <svg class="icon review-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M20 11.5C20 15.09 16.42 18 12 18C10.9 18 9.86 17.82 8.92 17.5L5 20V16.25C3.76 15.03 3 13.35 3 11.5C3 7.91 6.58 5 11 5H12C16.42 5 20 7.91 20 11.5Z"
-    />
-    <circle cx="8" cy="11.5" r="1.2"/>
-    <circle cx="12" cy="11.5" r="1.2"/>
-    <circle cx="16" cy="11.5" r="1.2"/>
-  </svg>
+<img
+  src="../../public/icon/quote.svg"
+  alt=""
+  class="icon review-icon"
+  aria-hidden="true"
+/>
 
   <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
     <meta itemprop="ratingValue" content="5">

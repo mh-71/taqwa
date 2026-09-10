@@ -1,0 +1,67 @@
+---
+/**
+ * Responsive Image Component
+ * Automatically serves AVIF → WebP → JPG based on browser support
+ *
+ * Usage:
+ * <ResponsiveImage
+ *   src="img/hybrid-ecu-scanning"
+ *   alt="Hybrid ECU Scanning Service"
+ * />
+ */
+
+interface Props {
+  src: string;           // Without extension or -opt.jpg (e.g., "img/hybrid-ecu-scanning")
+  alt: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'sync' | 'async';
+  class?: string;
+  style?: string;
+}
+
+const {
+  src,
+  alt,
+  loading = 'lazy',
+  decoding = 'async',
+  class: className = '',
+  style = '',
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const imageBase = base + src;
+
+// Determine if source uses AVIF (modern) or just WebP/JPG
+// Check if AVIF file exists by looking at common patterns
+const hasAvif = true; // Assume all optimized images have AVIF version
+
+---
+
+<picture>
+  {hasAvif && (
+    <source srcset={imageBase + '.avif'} type="image/avif">
+  )}
+  <source srcset={imageBase + '.webp'} type="image/webp">
+  <img
+    src={imageBase + '-opt.jpg'}
+    alt={alt}
+    loading={loading}
+    decoding={decoding}
+    class:list={['lazy-fade', className]}
+    onload="this.classList.add('is-loaded')"
+    style={style}
+  >
+</picture>
+
+<style>
+img.lazy-fade {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  width: 100%;
+  height: auto;
+}
+
+img.lazy-fade.is-loaded {
+  opacity: 1;
+}
+</style>
