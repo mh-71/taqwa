@@ -24,8 +24,9 @@ let allPosts: any[] = [];
 try {
   allPosts = await getPublishedPosts(runtimeDb);
 } catch (err) {
-  console.error('Failed to fetch posts:', err);
-  return Astro.redirect(`${base}blog.html`, 302);
+  console.error('Failed to fetch posts from D1:', err);
+  // Fallback to snapshot if D1 fails
+  allPosts = await getPublishedPosts(null);
 }
 
 if (!allPosts || allPosts.length === 0) {
@@ -46,7 +47,13 @@ let currentBlogLanguage = post.original_language;
 
 if (post.id && queryLang && queryLang !== post.original_language) {
   try {
-    const translation = await getPostTranslation(runtimeDb, post.id, queryLang);
+    let translation = await getPostTranslation(runtimeDb, post.id, queryLang);
+
+    // If D1 fails, try snapshot fallback
+    if (!translation && !runtimeDb) {
+      translation = await getPostTranslation(null, post.id, queryLang);
+    }
+
     if (translation) {
       displayPost = translation;
       hasTranslation = true;
