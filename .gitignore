@@ -8,6 +8,16 @@ dist/
 # env
 .env
 .env.production
+# Cloudflare local dev secrets (ADMIN_PASSWORD / ADMIN_SESSION_SECRET).
+# Real values live as encrypted Worker secrets - see ADMIN.md.
+.dev.vars
+.dev.vars.*
+
+# wrangler local emulator state (D1/KV/R2/cache SQLite) - machine-specific
+.wrangler/
+
+# temp file written by scripts/sync-d1-to-snapshot.mjs
+.sync-query.sql
 
 # logs
 npm-debug.log*
