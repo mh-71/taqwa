@@ -1486,6 +1486,13 @@
   .news-nav-btn:hover{background:var(--red);}
   .news-nav-btn:disabled{opacity:0.35; cursor:default; background:var(--charcoal);}
 
+  .news-cta{
+    display:flex; justify-content:center; margin-top:40px;
+  }
+  .news-cta .btn{
+    display:flex; align-items:center; gap:8px;
+  }
+
   @media (max-width:640px){
     .news-section{padding:var(--space-7) var(--space-5);}
     .news-header h2{font-size:var(--text-3xl);}
