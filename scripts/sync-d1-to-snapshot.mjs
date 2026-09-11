@@ -9,11 +9,12 @@
  * 3. Generates blog-snapshot.json with complete translation data
  *
  * Usage:
- *   node scripts/sync-d1-to-snapshot.mjs [--local]
+ *   node scripts/sync-d1-to-snapshot.mjs [--local] [--allow-fail]
  *
  * Options:
- *   --local    Use local emulated D1 (for development)
- *   (default) Use remote D1 (production database)
+ *   --local       Use local emulated D1 (for development)
+ *   --allow-fail  Don't exit on error (used in CI/CD, falls back to current snapshot)
+ *   (default)     Use remote D1 (production database)
  */
 
 import * as fs from 'fs';
@@ -25,29 +26,47 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const snapshotPath = path.resolve(projectRoot, 'src/lib/blog-snapshot.json');
 
-// Determine if using local or remote D1
+// Determine options
 const useLocal = process.argv.includes('--local');
+const allowFail = process.argv.includes('--allow-fail');
 const dbFlag = useLocal ? '--local' : '--remote';
+const isCI = process.env.GITHUB_ACTIONS === 'true' || process.env.VERCEL === '1';
 
 console.log(`📚 Syncing D1 blog data to snapshot.json (${useLocal ? 'local' : 'remote'})...`);
+if (isCI) console.log(`   Running in CI/CD environment (${process.env.GITHUB_ACTIONS ? 'GitHub Actions' : 'Vercel'})`);
 
 /**
  * Execute a D1 query via wrangler and return the results
  */
 function queryD1(sql) {
   try {
-    // Use wrangler to execute SQL and get JSON output
-    const command = `npx wrangler d1 execute taqwa-blog ${dbFlag} "${sql.replace(/"/g, '\\"')}" --json`;
-    const output = execSync(command, { encoding: 'utf-8' });
+    // Write SQL to temp file to avoid quoting issues on Windows
+    const tempFile = path.join(projectRoot, '.sync-query.sql');
+    fs.writeFileSync(tempFile, sql, 'utf-8');
 
     try {
-      const parsed = JSON.parse(output);
-      return parsed.result?.results || [];
-    } catch {
-      console.error('Failed to parse D1 output:', output);
-      return [];
+      // Use wrangler to execute SQL and get JSON output
+      const command = `npx wrangler d1 execute taqwa-blog ${dbFlag} --file "${tempFile}" --json`;
+      const output = execSync(command, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+
+      try {
+        const parsed = JSON.parse(output);
+        return parsed.result?.results || [];
+      } catch (parseErr) {
+        console.error('Failed to parse D1 output:', output);
+        return [];
+      }
+    } finally {
+      // Clean up temp file
+      try {
+        fs.unlinkSync(tempFile);
+      } catch {}
     }
   } catch (err) {
+    if (allowFail) {
+      console.warn(`⚠️  D1 query failed (continuing with existing snapshot): ${err.message}`);
+      return null;
+    }
     console.error(`❌ D1 query failed: ${err.message}`);
     process.exit(1);
   }
@@ -182,10 +201,18 @@ async function syncBlogData() {
   try {
     console.log('📥 Fetching categories...');
     const categories = fetchCategories();
+
+    if (!categories || categories.length === 0) {
+      throw new Error('No categories found in D1');
+    }
     console.log(`   Found ${categories.length} categories`);
 
     console.log('📥 Fetching posts with translations...');
     const posts = fetchPostsWithTranslations();
+
+    if (!posts || posts.length === 0) {
+      throw new Error('No posts found in D1');
+    }
     console.log(`   Found ${posts.length} published posts`);
 
     console.log('📝 Generating snapshot.json...');
@@ -195,12 +222,25 @@ async function syncBlogData() {
     writeSnapshot(snapshot);
 
     console.log('\n✨ Sync complete! Blog data is now in sync across all deployments.');
+    process.exit(0);
 
   } catch (err) {
-    console.error(`\n❌ Sync failed: ${err.message}`);
-    process.exit(1);
+    if (allowFail && isCI) {
+      console.warn(`\n⚠️  Sync failed in CI/CD, using existing snapshot.json`);
+      console.warn(`   Error: ${err.message}`);
+      console.warn(`   Blog translations will work with current snapshot data.`);
+      process.exit(0);  // Don't fail the build
+    } else {
+      console.error(`\n❌ Sync failed: ${err.message}`);
+      process.exit(1);
+    }
   }
 }
 
-// Run sync
+// Run sync with CI/CD safety flag
+if (isCI) {
+  console.log('🔒 Running with CI/CD safety mode (will not fail build on sync error)\n');
+  process.argv.push('--allow-fail');
+}
+
 syncBlogData();

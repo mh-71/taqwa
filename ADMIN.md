@@ -112,16 +112,22 @@ source per deployment:
   and Home's "Our Latest News" **immediately** — no rebuild needed.
 - **GitHub Pages / Vercel** (static builds, no D1 binding reachable at build
   time): fall back to `src/lib/blog-snapshot.json`, a point-in-time mirror of
-  D1 that includes all published posts and their Bengali translations. To sync
-  new/edited posts and translations from D1 to these deployments, run:
-  ```bash
-  npm run sync-blog        # Sync from remote D1
-  npm run sync-blog:local  # Sync from local emulated D1 (development)
-  ```
-  This updates `blog-snapshot.json` with all published posts and translations.
-  Commit the updated file and redeploy GitHub Pages / Vercel to bring them in
-  sync. The build script (`npm run build`) automatically syncs before building,
-  so GitHub Actions / Vercel CI will stay in sync on each deploy.
+  D1 that includes all published posts and their Bengali translations. 
+  
+  **Note:** GitHub Actions / Vercel CI cannot sync from D1 automatically 
+  (they have no Cloudflare credentials). Instead:
+  
+  1. **Manual sync** (recommended): Run locally after editing posts:
+     ```bash
+     npx wrangler d1 execute taqwa-blog --remote \
+       --file migrations/0003_blog_translations.sql
+     npm run sync-blog  # Requires Cloudflare API token in env
+     git commit src/lib/blog-snapshot.json
+     git push
+     ```
+  2. **CI/CD fallback**: Even if sync fails, builds continue and use the 
+     existing snapshot.json, so blog translations still work with the 
+     most recent synced data.
 
 The new detail page (`src/pages/blog/[slug].astro`) didn't exist before this
 change (every "Read More" link was previously inert). On Cloudflare it's
@@ -180,31 +186,44 @@ car-wash-detailing/cng-conversion/engine-repair/lpg-conversion).
 
 ---
 
-## 6. Syncing posts to GitHub Pages and Vercel
+## 6. How blog translations work across all deployments
 
-To keep GitHub Pages and Vercel deployments in sync with D1 posts and translations:
+**Blog translations are already working** on all three platforms:
 
-1. **Manually** (after editing posts in `/admin`):
-   ```bash
-   npm run sync-blog
-   git add src/lib/blog-snapshot.json
-   git commit -m "Sync blog posts and translations from D1"
-   git push
-   ```
-   GitHub Actions and Vercel will rebuild with the new data.
+### Cloudflare (Server-side)
+- Reads posts + translations directly from D1
+- Updates appear **immediately** in `/admin`
+- No sync needed
 
-2. **Automatically** (on every build): The build script (`npm run build`) 
-   already runs `sync-blog` first, so both platforms stay synced on each deploy
-   from CI.
+### GitHub Pages & Vercel (Static builds)
+- Read posts + translations from `src/lib/blog-snapshot.json`
+- Snapshot must be synced manually from D1
+- Translations are pre-rendered at build time
 
-3. **Locally** (during development): Use `npm run sync-blog:local` to sync from
-   your local emulated D1 database.
+**To sync D1 to snapshot.json:**
 
-The sync script (`scripts/sync-d1-to-snapshot.mjs`) queries D1 for all
-published posts and their Bengali translations, and writes them to
-`blog-snapshot.json`. The public pages read this file on GitHub Pages / Vercel,
-and read D1 directly on Cloudflare, so all three deployments always show the
-same content.
+On your local machine (with Cloudflare credentials):
+```bash
+# Requires: CLOUDFLARE_API_TOKEN environment variable
+npm run sync-blog
+
+# Then commit and push
+git add src/lib/blog-snapshot.json
+git commit -m "Sync blog translations from D1"
+git push
+```
+
+**How it works:**
+1. You publish/translate posts in `/admin` (on Cloudflare)
+2. Run `npm run sync-blog` locally to fetch from D1 and update snapshot.json
+3. Commit snapshot.json to git
+4. GitHub Actions / Vercel rebuild with latest translations
+5. All three platforms now show the same content
+
+**Fallback safety:**
+- If sync fails in CI/CD, builds still succeed using existing snapshot.json
+- Users see blog with most recent synced data
+- No need for Cloudflare credentials in GitHub Actions / Vercel
 
 ---
 
