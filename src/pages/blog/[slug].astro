@@ -20,7 +20,18 @@ export function getStaticPaths() {
 }
 
 // Fetch all posts to find the one we need
-const allPosts = await getPublishedPosts(runtimeDb);
+let allPosts: any[] = [];
+try {
+  allPosts = await getPublishedPosts(runtimeDb);
+} catch (err) {
+  console.error('Failed to fetch posts:', err);
+  return Astro.redirect(`${base}blog.html`, 302);
+}
+
+if (!allPosts || allPosts.length === 0) {
+  return Astro.redirect(`${base}blog.html`, 302);
+}
+
 const post = slug ? allPosts.find(p => p.slug === slug) : null;
 
 if (!post) {
