@@ -1,0 +1,85 @@
+---
+// Astro serves this for any unmatched route: as dist/404.html on the static
+// GitHub Pages / Vercel builds, and from the Worker on Cloudflare. Without
+// it the visitor got Astro's own bare "404: Not found" screen - no header,
+// no footer, and no way back into the site.
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout
+  title="Page Not Found - Taqwa Automobile Service Center"
+  description="This page doesn't exist. Browse our services, gallery and blog, or get in touch with Taqwa Automobile Service Center in Uttara, Dhaka."
+  path="404.html"
+>
+
+<style>
+  /* Same banner treatment the rest of the site uses for its page headers. */
+  .nf-section{
+    background:linear-gradient(150deg, var(--charcoal-2) 0%, var(--charcoal) 100%);
+    padding:clamp(56px, 8vw, 104px) 20px;
+  }
+  .nf-inner{max-width:720px; margin:0 auto; text-align:center;}
+  .nf-code{
+    font-family:var(--font-display); font-weight:900; line-height:1;
+    font-size:clamp(72px, 18vw, 140px); color:var(--red); letter-spacing:2px;
+  }
+  .nf-inner h1{font-size:var(--text-4xl); color:#fff; margin:10px 0 14px;}
+  .nf-inner > p{
+    color:var(--muted); font-size:var(--text-lg); line-height:1.7;
+    max-width:520px; margin:0 auto 32px;
+  }
+  .nf-actions{display:flex; flex-wrap:wrap; gap:14px; justify-content:center;}
+  /* global.css's .btn is display:flex (it normally sits in a flex row of its
+     own); inline-flex keeps these two shrink-to-fit and centred here. */
+  .nf-actions .btn{display:inline-flex; justify-content:center;}
+
+  .nf-links{margin-top:40px; padding-top:28px; border-top:1px solid var(--line);}
+  .nf-links-title{
+    color:#fff; font-size:16px; font-weight:800; text-transform:uppercase;
+    letter-spacing:0.5px; margin-bottom:16px;
+  }
+  .nf-links ul{
+    display:flex; flex-wrap:wrap; gap:10px 26px; justify-content:center;
+    list-style:none; padding:0; margin:0;
+  }
+  .nf-links a{
+    color:var(--off); font-size:16px; font-weight:700;
+    border-bottom:1px solid transparent; padding-bottom:2px;
+  }
+  .nf-links a:hover{color:var(--red); border-bottom-color:var(--red);}
+
+  @media (max-width:480px){
+    .nf-actions{flex-direction:column;}
+    .nf-actions .btn{width:100%;}
+  }
+</style>
+
+<section class="nf-section">
+  <div class="nf-inner">
+    <div class="nf-code display">404</div>
+    <h1 class="display">Page Not Found</h1>
+    <p>The page you were looking for has moved or never existed. Nothing is wrong with your car &mdash; just this link.</p>
+
+    <div class="nf-actions">
+      <a href={base + "index.html"} class="btn btn-red">Back to Home</a>
+      <a href="tel:+8801854226757" class="btn btn-green">Call 01854226757</a>
+    </div>
+
+    <nav class="nf-links" aria-label="Popular pages">
+      <div class="nf-links-title">Popular Pages</div>
+      <ul>
+        <li><a href={base + "index.html#services"}>Our Services</a></li>
+        <li><a href={base + "lpg-conversion.html"}>LPG Conversion</a></li>
+        <li><a href={base + "cng-conversion.html"}>CNG Conversion</a></li>
+        <li><a href={base + "hybrid-services.html"}>Hybrid Services</a></li>
+        <li><a href={base + "gallery.html"}>Gallery</a></li>
+        <li><a href={base + "blog.html"}>Blog</a></li>
+        <li><a href={base + "contact.html"}>Contact Us</a></li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+</Layout>

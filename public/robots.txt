@@ -1,0 +1,20 @@
+# Taqwa Automobile Service Center - https://taqwa.autos
+#
+# Served from public/, so this same file ships to all three deployment
+# targets. It is only actually read at a domain root, which is the
+# Cloudflare (taqwa.autos) and Vercel case; on the GitHub Pages project
+# site the site lives under /taqwa/ and this file is ignored there.
+
+User-agent: *
+Allow: /
+
+# Blog Admin Panel. These routes only exist on the Cloudflare deployment
+# and already send <meta name="robots" content="noindex, nofollow">, but
+# there is no reason for a crawler to request them at all.
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# NOTE: no `Sitemap:` line yet - this project generates no sitemap.
+# Add one here the moment a sitemap exists, e.g.
+#   Sitemap: https://taqwa.autos/sitemap-index.xml
