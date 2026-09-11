@@ -104,14 +104,7 @@ export async function getPublishedPosts(
 ): Promise<PublicPost[]> {
   if (runtimeDb) {
     const posts = await db.getPublishedPosts(runtimeDb, opts);
-    // Fetch translations for each post
-    const postsWithTranslations = await Promise.all(
-      posts.map(async (p) => {
-        const translations = await db.getPostTranslations(runtimeDb, p.id);
-        return fromD1(p, translations);
-      })
-    );
-    return postsWithTranslations;
+    return posts.map((p) => fromD1(p));
   }
 
   let posts = snapshotPublishedPosts();
