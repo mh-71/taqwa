@@ -21,42 +21,15 @@ export function getStaticPaths() {
 
 // Fetch all posts to find the one we need
 const allPosts = await getPublishedPosts(runtimeDb);
-const postWithTranslations = slug ? allPosts.find(p => p.slug === slug) : null;
+const post = slug ? allPosts.find(p => p.slug === slug) : null;
 
-if (!postWithTranslations) {
+if (!post) {
   return Astro.redirect(`${base}blog.html`, 302);
 }
 
-// Get preferred language from query param or default to original
-const preferredLang = (Astro.url.searchParams.get('lang') ?? postWithTranslations.original_language) as 'en' | 'bn';
-
-// Apply language preference
-const translation = postWithTranslations.translations?.find(t => t.language === preferredLang);
-const post = {
-  ...postWithTranslations,
-  title: translation?.title ?? postWithTranslations.title,
-  excerpt: translation?.excerpt ?? postWithTranslations.excerpt,
-  content: translation?.content ?? postWithTranslations.content,
-  seoTitle: translation?.seo_title ?? postWithTranslations.seoTitle,
-  seoDescription: translation?.seo_description ?? postWithTranslations.seoDescription,
-};
-
-// Check if alternate language is available
-const otherLang = preferredLang === 'en' ? 'bn' : 'en';
-const hasOtherLang = postWithTranslations.translations?.some(t => t.language === otherLang);
-const langToggleHref = hasOtherLang ? `${base}blog/${slug}?lang=${otherLang}` : null;
-
 const related = (await getRecentPosts(runtimeDb, 5))
   .filter((p) => p.slug !== post.slug)
-  .slice(0, 4)
-  .map(r => {
-    const rTrans = r.translations?.find(t => t.language === preferredLang);
-    return {
-      ...r,
-      title: rTrans?.title ?? r.title,
-      excerpt: rTrans?.excerpt ?? r.excerpt,
-    };
-  });
+  .slice(0, 4);
 
 const description = post.seoDescription || post.excerpt;
 ---
@@ -66,11 +39,6 @@ const description = post.seoDescription || post.excerpt;
   description={description}
   path={`blog/${slug}`}
   isBlog={true}
-  htmlLang={preferredLang}
-  langToggle={hasOtherLang ? {
-    href: langToggleHref,
-    label: otherLang === 'en' ? 'English' : 'বাংলা'
-  } : null}
   ogImage={base + post.featuredImage}
   current="blog"
 >
