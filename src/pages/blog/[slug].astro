@@ -31,16 +31,21 @@ if (!post) {
 const queryLang = (Astro.url.searchParams.get('lang') ?? post.original_language) as 'en' | 'bn';
 let displayPost = post;
 let hasTranslation = false;
+let currentBlogLanguage = post.original_language;
 
 if (post.id && queryLang && queryLang !== post.original_language) {
-  const translation = await getPostTranslation(runtimeDb, post.id, queryLang);
-  if (translation) {
-    displayPost = translation;
-    hasTranslation = true;
+  try {
+    const translation = await getPostTranslation(runtimeDb, post.id, queryLang);
+    if (translation) {
+      displayPost = translation;
+      hasTranslation = true;
+      currentBlogLanguage = queryLang;
+    }
+  } catch (err) {
+    // Translation not available, fall back to original
+    console.error('Translation fetch failed:', err);
   }
 }
-
-const currentBlogLanguage = hasTranslation ? queryLang : post.original_language;
 
 const related = (await getRecentPosts(runtimeDb, 5))
   .filter((p) => p.slug !== post.slug)
