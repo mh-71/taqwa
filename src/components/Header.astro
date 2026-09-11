@@ -69,7 +69,7 @@ const isActive = (id: string) => (current === id ? 'active' : '');
     </nav>
 
     {showBlogLanguageToggle ? (
-      <button id="blogLangToggle" class="blog-lang-toggle-btn" data-current-lang={currentBlogLanguage}>
+      <button id="blogLangToggle" class="blog-lang-toggle-btn" data-current-lang={currentBlogLanguage} data-debug-toggle="true">
         {currentBlogLanguage === 'en' ? '[ বাংলা ]' : '[ English ]'}
       </button>
     ) : langToggle ? (
