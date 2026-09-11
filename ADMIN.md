@@ -112,12 +112,16 @@ source per deployment:
   and Home's "Our Latest News" **immediately** — no rebuild needed.
 - **GitHub Pages / Vercel** (static builds, no D1 binding reachable at build
   time): fall back to `src/lib/blog-snapshot.json`, a point-in-time mirror of
-  D1 seeded from the same 12 original posts. **These two deployments do not
-  automatically pick up new posts published in `/admin`.** To refresh them:
-  export the current D1 data into that JSON file's shape (categories +
-  posts) and commit it, then let those two platforms rebuild as usual. There
-  is no automated sync job for this in the current setup — see "What's not
-  done" below if you want one.
+  D1 that includes all published posts and their Bengali translations. To sync
+  new/edited posts and translations from D1 to these deployments, run:
+  ```bash
+  npm run sync-blog        # Sync from remote D1
+  npm run sync-blog:local  # Sync from local emulated D1 (development)
+  ```
+  This updates `blog-snapshot.json` with all published posts and translations.
+  Commit the updated file and redeploy GitHub Pages / Vercel to bring them in
+  sync. The build script (`npm run build`) automatically syncs before building,
+  so GitHub Actions / Vercel CI will stay in sync on each deploy.
 
 The new detail page (`src/pages/blog/[slug].astro`) didn't exist before this
 change (every "Read More" link was previously inert). On Cloudflare it's
@@ -140,6 +144,9 @@ this project only ever grows one server adapter, not two.
 
 **New:**
 - `migrations/0001_init.sql` — D1 schema + migrated data
+- `migrations/0002_add_language.sql` — bilingual blog support
+- `migrations/0003_blog_translations.sql` — post translations table
+- `scripts/sync-d1-to-snapshot.mjs` — D1 to snapshot.json sync script
 - `src/lib/blog-db.ts` — all D1 queries (single source of truth for SQL)
 - `src/lib/blog-data.ts` — public-page data accessor (D1 or snapshot fallback)
 - `src/lib/blog-snapshot.json` — static fallback data for GH Pages/Vercel
@@ -173,14 +180,37 @@ car-wash-detailing/cng-conversion/engine-repair/lpg-conversion).
 
 ---
 
-## 6. Known limitations / what's not done
+## 6. Syncing posts to GitHub Pages and Vercel
 
-- **GitHub Pages and Vercel don't auto-sync** with new/edited posts — see
-  §3. If you want that automated, the next step would be a small script that
-  pulls current D1 data via Cloudflare's D1 REST API and writes
-  `blog-snapshot.json`, run in those platforms' build step — not built here
-  since it needs a real Cloudflare API token to test against, which wasn't
-  available in this environment.
+To keep GitHub Pages and Vercel deployments in sync with D1 posts and translations:
+
+1. **Manually** (after editing posts in `/admin`):
+   ```bash
+   npm run sync-blog
+   git add src/lib/blog-snapshot.json
+   git commit -m "Sync blog posts and translations from D1"
+   git push
+   ```
+   GitHub Actions and Vercel will rebuild with the new data.
+
+2. **Automatically** (on every build): The build script (`npm run build`) 
+   already runs `sync-blog` first, so both platforms stay synced on each deploy
+   from CI.
+
+3. **Locally** (during development): Use `npm run sync-blog:local` to sync from
+   your local emulated D1 database.
+
+The sync script (`scripts/sync-d1-to-snapshot.mjs`) queries D1 for all
+published posts and their Bengali translations, and writes them to
+`blog-snapshot.json`. The public pages read this file on GitHub Pages / Vercel,
+and read D1 directly on Cloudflare, so all three deployments always show the
+same content.
+
+---
+
+## 7. Known limitations / what's not done
+
+
 - **No file upload** for featured images — the admin picks from the existing
   `public/img/` files (per the "don't overengineer" instruction). Adding a
   new photo still means adding it to `public/img/` and to

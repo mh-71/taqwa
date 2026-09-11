@@ -1,5 +1,5 @@
 {
-  "_comment": "Static fallback blog data for the GitHub Pages and Vercel builds, which cannot reach the live Cloudflare D1 database at build time. Mirrors migrations/0001_init.sql at the moment of migration. Regenerate from the admin panel's Dashboard -> \"Export Snapshot\" action (see ADMIN.md) after publishing changes, then commit this file and redeploy those two targets to bring them back in sync. The Cloudflare deployment never reads this file - it queries D1 directly and always reflects the latest published posts immediately.",
+  "_comment": "Static fallback blog data with translations for GitHub Pages and Vercel builds (which cannot reach Cloudflare D1 at build time). Synced from D1 database. To regenerate: npm run sync-blog (remote D1) or npm run sync-blog:local (local dev). Commit the updated file and redeploy GitHub Pages/Vercel to bring them in sync with latest posts and translations. The Cloudflare deployment never reads this file - it queries D1 directly and always reflects the latest published posts and translations immediately.",
   "categories": [
     { "name": "LPG & CNG", "slug": "lpg-cng" },
     { "name": "Maintenance", "slug": "maintenance" },

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "node scripts/build-static.mjs",
+    "sync-blog": "node scripts/sync-d1-to-snapshot.mjs",
+    "sync-blog:local": "node scripts/sync-d1-to-snapshot.mjs --local",
+    "build": "npm run sync-blog && node scripts/build-static.mjs",
     "preview": "astro preview",
     "cf:build": "cross-env CLOUDFLARE_WORKERS=1 astro build",
     "cf:preview": "npm run cf:build && wrangler dev",

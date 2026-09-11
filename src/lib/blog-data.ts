@@ -67,11 +67,18 @@ interface SnapshotPost {
   author: string;
   tags: string[];
   status: PostStatus;
-  // Snapshot predates translation support - all entries treated as 'en' original_language
   original_language?: PostLanguage;
   publish_date: string;
   seo_title: string;
   seo_description: string;
+  translations?: Array<{
+    language: PostLanguage;
+    title: string;
+    excerpt: string;
+    content: string;
+    seo_title?: string;
+    seo_description?: string;
+  }>;
 }
 
 function snapshotPublishedPosts(): PublicPost[] {
@@ -154,28 +161,63 @@ export async function getPostTranslation(
   postId: number,
   language: 'en' | 'bn'
 ): Promise<PublicPost | null> {
-  if (!runtimeDb) return null;
-  const translation = await db.getPostTranslation(runtimeDb, postId, language);
-  if (!translation) return null;
-  const originalPost = await db.getPostById(runtimeDb, postId);
-  if (!originalPost) return null;
-  return {
-    id: originalPost.id,
-    title: translation.title,
-    slug: originalPost.slug,
-    categoryName: originalPost.category_name,
-    categorySlug: originalPost.category_slug,
-    featuredImage: originalPost.featured_image,
-    excerpt: translation.excerpt,
-    content: translation.content,
-    author: originalPost.author,
-    tags: originalPost.tags ? originalPost.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
-    original_language: originalPost.original_language,
-    publishDate: originalPost.publish_date,
-    seoTitle: translation.seo_title || originalPost.seo_title,
-    seoDescription: translation.seo_description || originalPost.seo_description,
-    translations: [],
-  };
+  // Try D1 first (Cloudflare deployment)
+  if (runtimeDb) {
+    const translation = await db.getPostTranslation(runtimeDb, postId, language);
+    if (translation) {
+      const originalPost = await db.getPostById(runtimeDb, postId);
+      if (originalPost) {
+        return {
+          id: originalPost.id,
+          title: translation.title,
+          slug: originalPost.slug,
+          categoryName: originalPost.category_name,
+          categorySlug: originalPost.category_slug,
+          featuredImage: originalPost.featured_image,
+          excerpt: translation.excerpt,
+          content: translation.content,
+          author: originalPost.author,
+          tags: originalPost.tags ? originalPost.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+          original_language: originalPost.original_language,
+          publishDate: originalPost.publish_date,
+          seoTitle: translation.seo_title || originalPost.seo_title,
+          seoDescription: translation.seo_description || originalPost.seo_description,
+          translations: [],
+        };
+      }
+    }
+  }
+
+  // Fallback to snapshot for static builds (GitHub Pages, Vercel)
+  const posts = snapshotPublishedPosts();
+  const post = posts.find((p) => p.id === postId);
+  if (!post) return null;
+
+  // Check if translation exists in snapshot
+  if (post.translations && post.translations.length > 0) {
+    const translation = post.translations.find((t) => t.language === language);
+    if (translation) {
+      return {
+        id: postId,
+        title: translation.title,
+        slug: post.slug,
+        categoryName: post.categoryName,
+        categorySlug: post.categorySlug,
+        featuredImage: post.featuredImage,
+        excerpt: translation.excerpt,
+        content: translation.content,
+        author: post.author,
+        tags: post.tags,
+        original_language: post.original_language,
+        publishDate: post.publishDate,
+        seoTitle: translation.seo_title || post.seoTitle,
+        seoDescription: translation.seo_description || post.seoDescription,
+        translations: [],
+      };
+    }
+  }
+
+  return null;
 }
 
 /** "2026-08-15" -> "15 Aug 2026", matching the date style the site already used on Home's news cards. */
