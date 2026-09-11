@@ -247,6 +247,13 @@
     white-space:nowrap;
   }
   .call-btn:hover{background:var(--red-dark);}
+  /* Blog translation: language toggle button on blog detail pages */
+  .blog-lang-toggle-btn{
+    background:var(--red); color:#fff; font-size:16px; font-weight:700;
+    letter-spacing:0.4px; padding:11px 22px; border-radius:var(--radius-sm);
+    border:none; cursor:pointer; white-space:nowrap; text-transform:uppercase;
+  }
+  .blog-lang-toggle-btn:hover{background:var(--red-dark);}
   /* Bilingual blog only: small "switch language" link, shown next to the
      Call Now button only when a page passes Header's `langToggle` prop
      (English/Bangla blog listing + detail pages) - absent everywhere else,

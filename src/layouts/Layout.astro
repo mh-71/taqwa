@@ -23,6 +23,9 @@ interface Props {
   isBlog?: boolean;
   /** Blog-specific: language attribute for <html> (only used if isBlog=true) */
   htmlLang?: string;
+  /** Blog translation: show language toggle on blog detail page */
+  showBlogLanguageToggle?: boolean;
+  currentBlogLanguage?: 'en' | 'bn';
 }
 
 const {
@@ -36,6 +39,8 @@ const {
   jsonLd,
   isBlog = false,
   htmlLang = 'en',
+  showBlogLanguageToggle = false,
+  currentBlogLanguage = 'en',
 } = Astro.props;
 
 const siteUrl = 'https://taqwa.autos';
@@ -116,7 +121,7 @@ const finalJsonLd = jsonLd ?? defaultJsonLd;
 <body>
 
 <IconSprite />
-<Header current={current} langToggle={langToggle} />
+<Header current={current} langToggle={langToggle} showBlogLanguageToggle={showBlogLanguageToggle} currentBlogLanguage={currentBlogLanguage} />
 
 <slot />
 

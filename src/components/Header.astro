@@ -12,8 +12,11 @@ interface Props {
    *  Omitted (undefined) everywhere else, so the header is unchanged on
    *  every non-blog page. */
   langToggle?: { href: string; label: string } | null;
+  /** Blog translation: show language toggle instead of CALL NOW on blog pages */
+  showBlogLanguageToggle?: boolean;
+  currentBlogLanguage?: 'en' | 'bn';
 }
-const { current = '', langToggle = null } = Astro.props;
+const { current = '', langToggle = null, showBlogLanguageToggle = false, currentBlogLanguage = 'en' } = Astro.props;
 const isActive = (id: string) => (current === id ? 'active' : '');
 ---
 
@@ -65,7 +68,11 @@ const isActive = (id: string) => (current === id ? 'active' : '');
       </ul>
     </nav>
 
-    {langToggle ? (
+    {showBlogLanguageToggle ? (
+      <button id="blogLangToggle" class="blog-lang-toggle-btn" data-current-lang={currentBlogLanguage}>
+        {currentBlogLanguage === 'en' ? '[ বাংলা ]' : '[ English ]'}
+      </button>
+    ) : langToggle ? (
       <a href={base + langToggle.href} class="lang-toggle-btn">{langToggle.label}</a>
     ) : (
       <a href="tel:+8801854226757" class="call-btn">

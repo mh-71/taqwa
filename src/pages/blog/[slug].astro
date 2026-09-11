@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
+import { getPublishedPosts, getRecentPosts, formatDisplayDate, getPostTranslation } from '../../lib/blog-data';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
@@ -27,20 +27,37 @@ if (!post) {
   return Astro.redirect(`${base}blog.html`, 302);
 }
 
+// Blog translation: check if translation available and load it
+const queryLang = (Astro.url.searchParams.get('lang') ?? post.original_language) as 'en' | 'bn';
+let displayPost = post;
+let hasTranslation = false;
+
+if (post.id && queryLang && queryLang !== post.original_language) {
+  const translation = await getPostTranslation(runtimeDb, post.id, queryLang);
+  if (translation) {
+    displayPost = translation;
+    hasTranslation = true;
+  }
+}
+
+const currentBlogLanguage = hasTranslation ? queryLang : post.original_language;
+
 const related = (await getRecentPosts(runtimeDb, 5))
   .filter((p) => p.slug !== post.slug)
   .slice(0, 4);
 
-const description = post.seoDescription || post.excerpt;
+const description = displayPost.seoDescription || displayPost.excerpt;
 ---
 
 <Layout
-  title={`${post.seoTitle || post.title} - Taqwa Automobile Service Center`}
+  title={`${displayPost.seoTitle || displayPost.title} - Taqwa Automobile Service Center`}
   description={description}
   path={`blog/${slug}`}
   isBlog={true}
-  ogImage={base + post.featuredImage}
+  ogImage={base + displayPost.featuredImage}
   current="blog"
+  showBlogLanguageToggle={true}
+  currentBlogLanguage={currentBlogLanguage}
 >
 
 <style>
@@ -112,12 +129,12 @@ const description = post.seoDescription || post.excerpt;
 
 <section class="page-banner">
   <div class="page-banner-inner">
-    <span class="post-cat">{post.categoryName}</span>
-    <h1 class="display">{post.title}</h1>
+    <span class="post-cat">{displayPost.categoryName}</span>
+    <h1 class="display">{displayPost.title}</h1>
     <div class="post-meta">
-      <span>{formatDisplayDate(post.publishDate)}</span>
+      <span>{formatDisplayDate(displayPost.publishDate)}</span>
       <span>&middot;</span>
-      <span>By {post.author}</span>
+      <span>By {displayPost.author}</span>
     </div>
     <div class="breadcrumb">
       <a href={base + "index.html"}>Home</a>
@@ -132,9 +149,9 @@ const description = post.seoDescription || post.excerpt;
 <section class="article-section">
   <div class="article-inner">
     <div class="article-image">
-      <img src={base + post.featuredImage} alt={post.title}>
+      <img src={base + displayPost.featuredImage} alt={displayPost.title}>
     </div>
-    <div class="article-body" set:html={post.content} />
+    <div class="article-body" set:html={displayPost.content} />
   </div>
 </section>
 
@@ -156,5 +173,31 @@ const description = post.seoDescription || post.excerpt;
     </div>
   </section>
 )}
+
+<div id="blogTranslationData" hidden data-post-id={post.id} data-slug={slug} data-current-lang={currentBlogLanguage}></div>
+
+<script>
+  (function() {
+    const blogData = document.getElementById('blogTranslationData');
+    if (!blogData) return;
+
+    const postId = blogData.getAttribute('data-post-id');
+    const slug = blogData.getAttribute('data-slug');
+    const currentLang = blogData.getAttribute('data-current-lang');
+
+    const toggleBtn = document.getElementById('blogLangToggle');
+    if (!toggleBtn) return;
+
+    toggleBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+
+      const nextLang = currentLang === 'en' ? 'bn' : 'en';
+      const newUrl = window.location.pathname + `?lang=${nextLang}`;
+
+      // Simple page reload with new lang parameter
+      window.location.href = newUrl;
+    });
+  })();
+</script>
 
 </Layout>

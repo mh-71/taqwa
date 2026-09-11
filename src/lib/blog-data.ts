@@ -149,6 +149,35 @@ export async function getPostBySlug(runtimeDb: D1Database | null, slug: string):
   return posts.find((p) => p.slug === slug) ?? null;
 }
 
+export async function getPostTranslation(
+  runtimeDb: D1Database | null,
+  postId: number,
+  language: 'en' | 'bn'
+): Promise<PublicPost | null> {
+  if (!runtimeDb) return null;
+  const translation = await db.getPostTranslation(runtimeDb, postId, language);
+  if (!translation) return null;
+  const originalPost = await db.getPostById(runtimeDb, postId);
+  if (!originalPost) return null;
+  return {
+    id: originalPost.id,
+    title: translation.title,
+    slug: originalPost.slug,
+    categoryName: originalPost.category_name,
+    categorySlug: originalPost.category_slug,
+    featuredImage: originalPost.featured_image,
+    excerpt: translation.excerpt,
+    content: translation.content,
+    author: originalPost.author,
+    tags: originalPost.tags ? originalPost.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+    original_language: originalPost.original_language,
+    publishDate: originalPost.publish_date,
+    seoTitle: translation.seo_title || originalPost.seo_title,
+    seoDescription: translation.seo_description || originalPost.seo_description,
+    translations: [],
+  };
+}
+
 /** "2026-08-15" -> "15 Aug 2026", matching the date style the site already used on Home's news cards. */
 export function formatDisplayDate(isoDate: string): string {
   const d = new Date(isoDate + 'T00:00:00Z');
