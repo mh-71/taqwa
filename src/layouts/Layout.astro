@@ -26,6 +26,10 @@ interface Props {
   /** Blog translation: show language toggle on blog detail page */
   showBlogLanguageToggle?: boolean;
   currentBlogLanguage?: 'en' | 'bn';
+  /** Bilingual blog only: <link rel="alternate" hreflang> entries. `path` is
+   *  site-root-relative (e.g. "blog/my-post?lang=bn") and gets the same
+   *  absolute prefix as the canonical URL below. Empty everywhere else. */
+  alternates?: Array<{ hreflang: string; path: string }>;
 }
 
 const {
@@ -41,6 +45,7 @@ const {
   htmlLang = 'en',
   showBlogLanguageToggle = false,
   currentBlogLanguage = 'en',
+  alternates = [],
 } = Astro.props;
 
 const siteUrl = 'https://taqwa.autos';
@@ -95,6 +100,9 @@ const finalJsonLd = jsonLd ?? defaultJsonLd;
 <title>{title}</title>
 <meta name="description" content={description}>
 <link rel="canonical" href={canonicalUrl}>
+{alternates.map((alt) => (
+  <link rel="alternate" hreflang={alt.hreflang} href={`${siteUrl}/${alt.path}`} />
+))}
 
 <!-- ===== Open Graph / Social sharing ===== -->
 <meta property="og:type" content="website">

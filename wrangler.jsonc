@@ -34,5 +34,8 @@
   // Secrets (never listed here — set with `npx wrangler secret put <NAME>`):
   //   ADMIN_PASSWORD          the login password for /admin
   //   ADMIN_SESSION_SECRET    a long random string used to sign session cookies
+  //   ANTHROPIC_API_KEY       optional; enables automatic Bangla/English blog
+  //                           translation (src/lib/translate.ts). Without it
+  //                           posts just stay in their original language.
   // See ADMIN.md for the exact setup commands.
 }

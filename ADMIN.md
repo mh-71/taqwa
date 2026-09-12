@@ -65,6 +65,22 @@ npx wrangler secret put ADMIN_SESSION_SECRET
 Neither of these is ever written to source code — see `src/lib/auth.ts` and
 `src/pages/api/admin/login.ts`.
 
+### 1.4b Optional: automatic blog translation
+
+```bash
+npx wrangler secret put ANTHROPIC_API_KEY
+```
+
+Set this and every blog post becomes readable in both English and বাংলা from a
+button on the post itself. The first reader who asks for a post in the other
+language triggers one Claude API call; the result is written straight into the
+`post_translations` table, so that post is never translated again and the
+translation can be edited by hand in the admin panel afterwards. Get a key at
+<https://console.anthropic.com> → API Keys.
+
+Leave it unset and nothing breaks — the language button simply doesn't appear
+and posts stay in the language they were written in. See `src/lib/translate.ts`.
+
 ### 1.5 Deploy
 
 ```bash

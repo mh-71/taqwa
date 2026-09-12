@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getPublishedPosts, getRecentPosts, formatDisplayDate, getPostTranslation } from '../../lib/blog-data';
+import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
+import { ensureTranslation, otherLanguage, canTranslate } from '../../lib/translate';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
@@ -39,31 +40,55 @@ if (!post) {
   return Astro.redirect(`${base}blog.html`, 302);
 }
 
-// Blog translation: check if translation available and load it
-const queryLang = (Astro.url.searchParams.get('lang') ?? post.original_language) as 'en' | 'bn';
+// ===== Bilingual reading =====
+// Every post is offered in both languages. The other language is translated
+// once on the first request for it and stored (see src/lib/translate.ts), so
+// this costs one API call per post, ever - and the admin can edit the result.
+//
+// The toggle used to be gated on `?lang=` already differing from the post's own
+// language, which meant it could never appear on the post as written - a reader
+// had no way to reach the translation at all. It is now offered in both
+// directions, whenever a translation exists or can be made.
+const otherLang = otherLanguage(post.original_language);
+const apiKey = Astro.locals.runtime?.env.ANTHROPIC_API_KEY;
+const wantsOtherLanguage = Astro.url.searchParams.get('lang') === otherLang;
+
 let displayPost = post;
-let hasTranslation = false;
 let currentBlogLanguage = post.original_language;
+let showLanguageToggle = false;
 
-if (post.id && queryLang && queryLang !== post.original_language) {
+if (post.id && runtimeDb) {
   try {
-    let translation = await getPostTranslation(runtimeDb, post.id, queryLang);
-
-    // If D1 fails, try snapshot fallback
-    if (!translation && !runtimeDb) {
-      translation = await getPostTranslation(null, post.id, queryLang);
-    }
-
-    if (translation) {
-      displayPost = translation;
-      hasTranslation = true;
-      currentBlogLanguage = queryLang;
+    if (wantsOtherLanguage) {
+      const translated = await ensureTranslation(runtimeDb, apiKey, post, otherLang);
+      if (translated) {
+        displayPost = translated;
+        currentBlogLanguage = otherLang;
+        showLanguageToggle = true;
+      }
+    } else {
+      // Reading the original: offer the toggle if the other language is already
+      // stored, or if we could produce it on demand when the reader asks.
+      const stored = await ensureTranslation(runtimeDb, null, post, otherLang);
+      showLanguageToggle = !!stored || canTranslate(apiKey);
     }
   } catch (err) {
-    // Translation not available, fall back to original
-    console.error('Translation fetch failed:', err);
+    // A failed or unconfigured translation must never break the post - the
+    // reader just gets it in the language it was written in.
+    console.error('Translation failed:', err);
   }
 }
+
+// Both language versions live at the same path and differ only by ?lang=, so
+// tell search engines they are alternates of each other rather than duplicates.
+// `path` is relative here for the same reason the `path` prop is - Layout is
+// the one place that knows the site's absolute URL.
+const alternates = showLanguageToggle
+  ? [
+      { hreflang: post.original_language, path: `blog/${slug}` },
+      { hreflang: otherLang, path: `blog/${slug}?lang=${otherLang}` },
+    ]
+  : [];
 
 const related = (await getRecentPosts(runtimeDb, 5))
   .filter((p) => p.slug !== post.slug)
@@ -79,8 +104,9 @@ const description = displayPost.seoDescription || displayPost.excerpt;
   isBlog={true}
   ogImage={base + displayPost.featuredImage}
   current="blog"
-  showBlogLanguageToggle={hasTranslation}
+  showBlogLanguageToggle={showLanguageToggle}
   currentBlogLanguage={currentBlogLanguage}
+  alternates={alternates}
 >
 
 <style>

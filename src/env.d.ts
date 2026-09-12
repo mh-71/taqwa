@@ -15,6 +15,10 @@ type AdminEnv = {
   DB: import('./lib/blog-db').D1Database;
   ADMIN_PASSWORD: string;
   ADMIN_SESSION_SECRET: string;
+  /** Optional. Set it and every blog post becomes readable in both languages
+   *  (see src/lib/translate.ts); leave it unset and posts simply stay in the
+   *  language they were written in. */
+  ANTHROPIC_API_KEY?: string;
 };
 
 declare namespace App {
