@@ -128,6 +128,15 @@
     .floatBounce, .sticky-actions .fab{animation:none !important;}
   }
 
+  /* ===== LANGUAGE SWITCH ===== */
+  /* The blog's language button replaces #page-content in place rather than
+     reloading, so the old text fades while the new language is fetched. */
+  #page-content{transition:opacity .2s ease;}
+  #page-content.is-swapping{opacity:.4;}
+  @media (prefers-reduced-motion: reduce){
+    #page-content{transition:none;}
+  }
+
   /* ===== LAZY-LOAD IMAGE SKELETON (blur-up placeholder) ===== */
   .lazy-media{position:relative; overflow:hidden; background:#dfe3e8;}
   .lazy-media::before{

@@ -131,7 +131,12 @@ const finalJsonLd = jsonLd ?? defaultJsonLd;
 <IconSprite />
 <Header current={current} langToggle={langToggle} showBlogLanguageToggle={showBlogLanguageToggle} currentBlogLanguage={currentBlogLanguage} />
 
-<slot />
+<!-- Wraps every page's content for two reasons: it is the <main> landmark the
+     public pages never had, and it gives the language switch a single element
+     to replace so switching can happen in place instead of reloading. -->
+<main id="page-content">
+  <slot />
+</main>
 
 <Footer />
 

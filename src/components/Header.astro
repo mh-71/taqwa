@@ -141,54 +141,123 @@ const isActive = (id: string) => (current === id ? 'active' : '');
   // so it works on every page that renders one - the blog listing as well as a
   // post - instead of only where a page happened to duplicate the handler.
   //
-  // Switching reloads the page, which would drop a reader who is halfway down
-  // an article back at the top. The reading position is carried across as a
-  // fraction of the page rather than a pixel offset, because the same article
-  // is a different height in each language - a saved scrollY would land in the
-  // wrong place, and further off the longer the post.
+  // It swaps #page-content in place rather than reloading: a reload threw a
+  // reader halfway down an article back to the top, and flashed a blank page on
+  // the way. Reloading is still the fallback for anything unexpected, and it
+  // carries the reading position across as a fraction of the page - the same
+  // article is a different height in each language, so a pixel offset lands in
+  // the wrong paragraph and drifts further the longer the post.
   (function () {
     var SCROLL_KEY = 'taqwa:lang-switch-scroll';
+    var LABEL = { en: '[ বাংলা ]', bn: '[ English ]' };
+    var BUSY_LABEL = { bn: 'অনুবাদ হচ্ছে…', en: 'Translating…' };
 
     function maxScroll() {
       return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     }
 
-    // Restore first, and only once: the key is cleared as it is read, so a
-    // later ordinary visit to the same page still starts at the top.
+    // Restore after a fallback reload, and only once: the key is cleared as it
+    // is read, so an ordinary visit to the same page still starts at the top.
     try {
       var saved = sessionStorage.getItem(SCROLL_KEY);
       if (saved !== null) {
         sessionStorage.removeItem(SCROLL_KEY);
         var ratio = parseFloat(saved);
         if (ratio > 0) {
-          // Wait for load, not DOMContentLoaded: images above the reader still
-          // have no height until then, so the page is not yet as tall as it
-          // will be and the fraction would resolve too far down.
+          // Wait for load, not DOMContentLoaded: images above the reader have
+          // no height until then, so the page is not yet as tall as it will be
+          // and the fraction would resolve too far down.
           window.addEventListener('load', function () {
             window.scrollTo(0, Math.round(ratio * maxScroll()));
           });
         }
       }
     } catch (e) {
-      // sessionStorage can throw in private mode - the switch still works,
-      // it just starts at the top.
+      // sessionStorage throws in private mode - the switch still works, it
+      // just starts at the top.
     }
 
     var btn = document.getElementById('blogLangToggle');
     if (!btn) return;
-    btn.addEventListener('click', function () {
-      var next = btn.getAttribute('data-current-lang') === 'en' ? 'bn' : 'en';
-      var max = maxScroll();
+
+    function reloadInstead(url) {
       try {
+        var max = maxScroll();
         sessionStorage.setItem(SCROLL_KEY, String(max > 0 ? window.scrollY / max : 0));
       } catch (e) {
         /* nothing to do - the page just opens at the top */
       }
+      window.location.href = url;
+    }
+
+    var busy = false;
+    btn.addEventListener('click', function () {
+      if (busy) return;
+      var next = btn.getAttribute('data-current-lang') === 'en' ? 'bn' : 'en';
       // Rewrite only ?lang= so a search or category filter on the listing
       // survives the switch.
       var url = new URL(window.location.href);
       url.searchParams.set('lang', next);
-      window.location.href = url.toString();
+      var href = url.toString();
+
+      var content = document.getElementById('page-content');
+      if (!content || !window.fetch || !window.DOMParser || !window.history.pushState) {
+        reloadInstead(href);
+        return;
+      }
+
+      // A post with no stored translation is translated on this request, which
+      // takes a few seconds the first time - say so rather than looking stuck.
+      busy = true;
+      btn.disabled = true;
+      btn.textContent = BUSY_LABEL[next];
+      content.classList.add('is-swapping');
+
+      fetch(href, { credentials: 'same-origin' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var fresh = doc.getElementById('page-content');
+          if (!fresh) throw new Error('no #page-content in response');
+
+          content.innerHTML = fresh.innerHTML;
+          // The scroll-reveal observer and the lazy-load fade both run once, at
+          // first load, so anything swapped in would sit at opacity 0 forever.
+          // It is already on screen, so show it outright.
+          content.querySelectorAll('.reveal').forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+          content.querySelectorAll('img.lazy-fade').forEach(function (el) {
+            el.classList.add('is-loaded');
+          });
+
+          if (doc.title) document.title = doc.title;
+          document.documentElement.setAttribute('lang', next);
+          window.history.pushState({ lang: next }, '', href);
+
+          btn.setAttribute('data-current-lang', next);
+          var freshBtn = doc.getElementById('blogLangToggle');
+          btn.textContent = freshBtn ? freshBtn.textContent : LABEL[next];
+        })
+        .catch(function () {
+          // Anything unexpected - offline, a slow Worker, markup we did not
+          // expect - falls back to the plain navigation, which always works.
+          reloadInstead(href);
+        })
+        .then(function () {
+          busy = false;
+          btn.disabled = false;
+          content.classList.remove('is-swapping');
+        });
+    });
+
+    // Back/forward across a switch: the content came from fetch, so the browser
+    // has nothing to restore - let it re-render the URL it just moved to.
+    window.addEventListener('popstate', function () {
+      window.location.reload();
     });
   })();
 </script>
