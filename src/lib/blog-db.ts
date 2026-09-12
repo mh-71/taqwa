@@ -306,6 +306,10 @@ export async function getPostBySlugWithTranslations(
 // ---------- Translation writes ----------
 
 export interface TranslationInput {
+  /** Which language this translation IS - set from the admin form's dropdown.
+   *  Callers used to read `translation.language` off a shape that never had it,
+   *  so the dropdown was silently ignored and the language was always guessed. */
+  language?: PostLanguage;
   title?: string;
   excerpt?: string;
   content?: string;

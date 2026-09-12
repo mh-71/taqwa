@@ -50,7 +50,11 @@ const LABELS = {
     translationContent: 'Full Content (Translation)',
     translationSeoTitle: 'SEO Title (Translation)',
     translationSeoDescription: 'SEO Description (Translation)',
-    translationHint: 'Leave empty to skip translation for now.',
+    translationHint:
+      'Leave this empty and the other language is translated automatically the '
+      + 'first time a reader asks for it. Fill it in to write that translation '
+      + 'yourself, or to replace one that was translated automatically. All three '
+      + 'of title, excerpt and content are needed.',
     cancel: 'Cancel',
   },
 };
@@ -170,9 +174,9 @@ const LABELS = {
     <div class="field">
       <label for="translation_language">{LABELS.en.translationLanguage}</label>
       <select id="translation_language" name="translation_language">
-        <option value="">{LABELS.en.noTranslation}</option>
-        <option value="en">English</option>
-        <option value="bn">বাংলা (Bengali)</option>
+        <option value="" selected={!translation}>{LABELS.en.noTranslation}</option>
+        <option value="en" selected={translation?.language === 'en'}>English</option>
+        <option value="bn" selected={translation?.language === 'bn'}>বাংলা (Bengali)</option>
       </select>
     </div>
 
