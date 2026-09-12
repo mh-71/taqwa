@@ -42,19 +42,18 @@ const LABELS = {
     seoTitleHint: '(optional — falls back to Post Title)',
     seoDescription: 'SEO Description',
     seoDescriptionHint: '(optional — falls back to Short Excerpt)',
-    translationSection: 'Add Translation (Optional)',
+    translationSection: 'Translation',
     translationLanguage: 'Translation Language',
-    noTranslation: 'No translation',
+    noTranslation: 'Leave as is',
     translationTitle: 'Title (Translation)',
     translationExcerpt: 'Short Excerpt (Translation)',
     translationContent: 'Full Content (Translation)',
     translationSeoTitle: 'SEO Title (Translation)',
     translationSeoDescription: 'SEO Description (Translation)',
     translationHint:
-      'Leave this empty and the other language is translated automatically the '
-      + 'first time a reader asks for it. Fill it in to write that translation '
-      + 'yourself, or to replace one that was translated automatically. All three '
-      + 'of title, excerpt and content are needed.',
+      'This post is translated automatically the first time a reader asks for it '
+      + 'in the other language. Use this only to rewrite that translation by hand - '
+      + 'title, excerpt and content are all needed.',
     cancel: 'Cancel',
     savePost: 'Save Post',
     saveChanges: 'Save Changes',
@@ -85,18 +84,18 @@ const LABELS = {
     seoTitleHint: '(ঐচ্ছিক — না দিলে পোস্টের শিরোনাম ব্যবহার হবে)',
     seoDescription: 'SEO বিবরণ',
     seoDescriptionHint: '(ঐচ্ছিক — না দিলে সংক্ষিপ্ত সারাংশ ব্যবহার হবে)',
-    translationSection: 'অনুবাদ যোগ করুন (ঐচ্ছিক)',
+    translationSection: 'অনুবাদ',
     translationLanguage: 'অনুবাদের ভাষা',
-    noTranslation: 'কোনো অনুবাদ নয়',
+    noTranslation: 'অপরিবর্তিত রাখুন',
     translationTitle: 'শিরোনাম (অনুবাদ)',
     translationExcerpt: 'সংক্ষিপ্ত সারাংশ (অনুবাদ)',
     translationContent: 'পূর্ণ লেখা (অনুবাদ)',
     translationSeoTitle: 'SEO শিরোনাম (অনুবাদ)',
     translationSeoDescription: 'SEO বিবরণ (অনুবাদ)',
     translationHint:
-      'ফাঁকা রাখলে পাঠক প্রথমবার চাইলেই অন্য ভাষায় আপনাআপনি অনুবাদ হয়ে যাবে। '
-      + 'নিজে লিখতে চাইলে, বা স্বয়ংক্রিয় অনুবাদ বদলাতে চাইলে পূরণ করুন। '
-      + 'শিরোনাম, সারাংশ ও পূর্ণ লেখা — তিনটিই লাগবে।',
+      'পাঠক প্রথমবার অন্য ভাষায় চাইলেই এই পোস্ট আপনাআপনি অনুবাদ হয়ে যায়। '
+      + 'সেই অনুবাদ নিজের হাতে বদলাতে চাইলেই কেবল এটি ব্যবহার করুন — '
+      + 'শিরোনাম, সারাংশ ও পূর্ণ লেখা, তিনটিই লাগবে।',
     cancel: 'বাতিল',
     savePost: 'পোস্ট সংরক্ষণ করুন',
     saveChanges: 'পরিবর্তন সংরক্ষণ করুন',
@@ -215,59 +214,65 @@ const L = LABELS[originalLanguage];
     <textarea id="seoDescription" name="seoDescription" rows="2">{post?.seo_description ?? ''}</textarea>
   </div>
 
-  <!-- Optional Translation Section -->
-  <fieldset>
-    <legend data-i18n="translationSection">{L.translationSection}</legend>
-    <p class="hint" data-i18n="translationHint">{L.translationHint}</p>
-
-    <div class="field">
-      <label for="translation_language" data-i18n="translationLanguage">{L.translationLanguage}</label>
-      <select id="translation_language" name="translation_language">
-        <option value="" selected={!translation} data-i18n="noTranslation">{L.noTranslation}</option>
-        <option value="en" selected={translation?.language === 'en'}>English</option>
-        <option value="bn" selected={translation?.language === 'bn'}>বাংলা (Bengali)</option>
-      </select>
-    </div>
-
-    <div id="translation-fields" style="display:none;">
-      <div class="field">
-        <label for="translation_title" data-i18n="translationTitle">{L.translationTitle}</label>
-        <input type="text" id="translation_title" name="translation_title" value={translation?.title ?? ''}>
-      </div>
+  <!-- Editing an existing post only. On a new post there is nothing useful to
+       do here: the other language is translated automatically the first time a
+       reader asks for it, so the section would just be clutter above the Save
+       button. It earns its place on the edit form, where it is the only way to
+       rewrite a translation that came out badly. -->
+  {post && (
+    <fieldset>
+      <legend data-i18n="translationSection">{L.translationSection}</legend>
+      <p class="hint" data-i18n="translationHint">{L.translationHint}</p>
 
       <div class="field">
-        <label for="translation_excerpt" data-i18n="translationExcerpt">{L.translationExcerpt}</label>
-        <textarea id="translation_excerpt" name="translation_excerpt" rows="2">{translation?.excerpt ?? ''}</textarea>
+        <label for="translation_language" data-i18n="translationLanguage">{L.translationLanguage}</label>
+        <select id="translation_language" name="translation_language">
+          <option value="" selected={!translation} data-i18n="noTranslation">{L.noTranslation}</option>
+          <option value="en" selected={translation?.language === 'en'}>English</option>
+          <option value="bn" selected={translation?.language === 'bn'}>বাংলা (Bengali)</option>
+        </select>
       </div>
 
-      <div class="field">
-        <label data-i18n="translationContent">{L.translationContent}</label>
-        <div class="editor-toolbar" id="translationToolbar">
-          <button type="button" data-cmd="bold"><b>B</b></button>
-          <button type="button" data-cmd="italic"><i>I</i></button>
-          <button type="button" data-cmd="formatBlock" data-value="H2">H2</button>
-          <button type="button" data-cmd="formatBlock" data-value="H3">H3</button>
-          <button type="button" data-cmd="insertUnorderedList">• List</button>
-          <button type="button" data-cmd="insertOrderedList">1. List</button>
-          <button type="button" id="translationLinkBtn">Link</button>
-          <button type="button" data-cmd="formatBlock" data-value="P">¶ Text</button>
-        </div>
-        <div class="editor-body" id="translationEditorBody" contenteditable="true" set:html={translation?.content || '<p></p>'} />
-        <input type="hidden" name="translation_content" id="translationContentInput">
-      </div>
-
-      <div class="form-grid">
+      <div id="translation-fields" style="display:none;">
         <div class="field">
-          <label for="translation_seoTitle" data-i18n="translationSeoTitle">{L.translationSeoTitle}</label>
-          <input type="text" id="translation_seoTitle" name="translation_seoTitle" value={translation?.seo_title ?? ''}>
+          <label for="translation_title" data-i18n="translationTitle">{L.translationTitle}</label>
+          <input type="text" id="translation_title" name="translation_title" value={translation?.title ?? ''}>
         </div>
+
         <div class="field">
-          <label for="translation_seoDescription" data-i18n="translationSeoDescription">{L.translationSeoDescription}</label>
-          <input type="text" id="translation_seoDescription" name="translation_seoDescription" value={translation?.seo_description ?? ''}>
+          <label for="translation_excerpt" data-i18n="translationExcerpt">{L.translationExcerpt}</label>
+          <textarea id="translation_excerpt" name="translation_excerpt" rows="2">{translation?.excerpt ?? ''}</textarea>
+        </div>
+
+        <div class="field">
+          <label data-i18n="translationContent">{L.translationContent}</label>
+          <div class="editor-toolbar" id="translationToolbar">
+            <button type="button" data-cmd="bold"><b>B</b></button>
+            <button type="button" data-cmd="italic"><i>I</i></button>
+            <button type="button" data-cmd="formatBlock" data-value="H2">H2</button>
+            <button type="button" data-cmd="formatBlock" data-value="H3">H3</button>
+            <button type="button" data-cmd="insertUnorderedList">• List</button>
+            <button type="button" data-cmd="insertOrderedList">1. List</button>
+            <button type="button" id="translationLinkBtn">Link</button>
+            <button type="button" data-cmd="formatBlock" data-value="P">¶ Text</button>
+          </div>
+          <div class="editor-body" id="translationEditorBody" contenteditable="true" set:html={translation?.content || '<p></p>'} />
+          <input type="hidden" name="translation_content" id="translationContentInput">
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="translation_seoTitle" data-i18n="translationSeoTitle">{L.translationSeoTitle}</label>
+            <input type="text" id="translation_seoTitle" name="translation_seoTitle" value={translation?.seo_title ?? ''}>
+          </div>
+          <div class="field">
+            <label for="translation_seoDescription" data-i18n="translationSeoDescription">{L.translationSeoDescription}</label>
+            <input type="text" id="translation_seoDescription" name="translation_seoDescription" value={translation?.seo_description ?? ''}>
+          </div>
         </div>
       </div>
-    </div>
-  </fieldset>
+    </fieldset>
+  )}
 
   <div class="form-actions">
     <button type="submit" class="btn btn-primary" data-i18n={post ? 'saveChanges' : 'savePost'}>{submitLabel}</button>
