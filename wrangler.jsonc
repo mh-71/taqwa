@@ -24,6 +24,12 @@
   //   npx wrangler d1 create taqwa-blog
   // then replace database_id below with the id that command prints, and
   // apply migrations/0001_init.sql (see ADMIN.md for exact commands).
+  // Workers AI: the free translation backend for the bilingual blog. Needs no
+  // key and no billing account; src/lib/translate.ts uses it whenever the
+  // optional ANTHROPIC_API_KEY secret is not set.
+  "ai": {
+    "binding": "AI"
+  },
   "d1_databases": [
     {
       "binding": "DB",

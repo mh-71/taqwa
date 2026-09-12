@@ -65,21 +65,33 @@ npx wrangler secret put ADMIN_SESSION_SECRET
 Neither of these is ever written to source code — see `src/lib/auth.ts` and
 `src/pages/api/admin/login.ts`.
 
-### 1.4b Optional: automatic blog translation
+### 1.4b Automatic blog translation
 
-```bash
-npx wrangler secret put ANTHROPIC_API_KEY
-```
+Every post is readable in both English and বাংলা from a button on the post and
+on the blog listing. A post with no stored translation is translated the first
+time someone asks for it in the other language, written into the
+`post_translations` table, and read from there forever after — so each post
+costs one translation, once, and anything it produced can be rewritten by hand
+in the admin panel.
 
-Set this and every blog post becomes readable in both English and বাংলা from a
-button on the post itself. The first reader who asks for a post in the other
-language triggers one Claude API call; the result is written straight into the
-`post_translations` table, so that post is never translated again and the
-translation can be edited by hand in the admin panel afterwards. Get a key at
-<https://console.anthropic.com> → API Keys.
+Two backends; the best available one is used:
 
-Leave it unset and nothing breaks — the language button simply doesn't appear
-and posts stay in the language they were written in. See `src/lib/translate.ts`.
+| Backend | Setup | Cost | Bangla quality |
+|---|---|---|---|
+| **Workers AI** | nothing — the `ai` binding in `wrangler.jsonc` | free | usable |
+| **Claude** | `npx wrangler secret put ANTHROPIC_API_KEY` | a few US cents per post | noticeably better |
+
+Workers AI is what runs by default. Its model translates plain text only, so
+`src/lib/translate.ts` splits the HTML body on tags and sends only the text
+between them — markup comes back byte-identical.
+
+To upgrade, get a key at <https://console.anthropic.com> → API Keys and set the
+secret; translations made from then on use Claude, and anything already stored
+stays until you delete or edit it.
+
+Neither configured means posts just stay in the language they were written in.
+A failed call is caught and does the same — translation must never take a post
+down. See `src/lib/translate.ts`.
 
 ### 1.5 Deploy
 

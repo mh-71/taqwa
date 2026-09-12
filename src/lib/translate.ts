@@ -5,13 +5,18 @@
 // admin panel writes to. Every later request reads that stored row, so a post
 // is never translated twice and the admin can hand-edit the result afterwards.
 //
-// Deliberately dependency-free: one POST to the Messages API over `fetch`,
-// which is all a Worker needs, and keeps this project on its single runtime
+// Deliberately dependency-free: plain `fetch` / the Workers AI binding, which
+// is all a Worker needs, and keeps this project on its single runtime
 // dependency (@astrojs/cloudflare) as the rest of src/lib does.
 //
-// Requires the ANTHROPIC_API_KEY Worker secret (see ADMIN.md). Without it
-// nothing here runs and the post simply stays in its original language - a
-// missing key must never take the blog down.
+// Two backends, best one wins:
+//   1. Claude, when the ANTHROPIC_API_KEY secret is set - better Bangla, and it
+//      rewrites the HTML body in one pass.
+//   2. Workers AI (the `AI` binding) - free, no key, no billing account. Its
+//      translation model takes plain text only, so the HTML body is split on
+//      tags and only the text between them is sent.
+// Neither configured means posts simply stay in the language they were written
+// in. A missing backend or a failed call must never take the blog down.
 import type { D1Database, PostLanguage } from './blog-db';
 import { getPostTranslation, upsertPostTranslation } from './blog-db';
 import type { PublicPost } from './blog-data';
@@ -25,8 +30,19 @@ const LANGUAGE_NAMES: Record<PostLanguage, string> = {
   bn: 'Bangla (Bengali)',
 };
 
-export function canTranslate(apiKey: string | undefined | null): apiKey is string {
-  return typeof apiKey === 'string' && apiKey.trim().length > 0;
+/** What translate.ts needs out of the Worker env - both halves optional. */
+export interface TranslateEnv {
+  ANTHROPIC_API_KEY?: string;
+  AI?: { run(model: string, inputs: Record<string, unknown>): Promise<unknown> };
+}
+
+function hasClaude(env: TranslateEnv | null | undefined): boolean {
+  return typeof env?.ANTHROPIC_API_KEY === 'string' && env.ANTHROPIC_API_KEY.trim().length > 0;
+}
+
+/** Whether a translation could be produced for a post that has none stored. */
+export function canTranslate(env: TranslateEnv | null | undefined): boolean {
+  return hasClaude(env) || !!env?.AI;
 }
 
 /** The language a post is NOT written in - the one the toggle offers. */
@@ -139,6 +155,74 @@ async function requestTranslation(
   return fields;
 }
 
+// ---------- Workers AI backend (free, no key) ----------
+// m2m100 translates plain text, so HTML has to be handled by us: split the body
+// on tags, translate only what sits between them, and glue it back together.
+// That keeps every tag, attribute and nesting byte-identical - the model never
+// sees markup it could mangle.
+const WORKERS_AI_MODEL = '@cf/meta/m2m100-1.2b';
+const AI_LANG_NAMES: Record<PostLanguage, string> = { en: 'english', bn: 'bengali' };
+
+async function aiTranslateText(
+  ai: NonNullable<TranslateEnv['AI']>,
+  text: string,
+  from: PostLanguage,
+  to: PostLanguage
+): Promise<string> {
+  if (!text.trim()) return text;
+  const out = (await ai.run(WORKERS_AI_MODEL, {
+    text,
+    source_lang: AI_LANG_NAMES[from],
+    target_lang: AI_LANG_NAMES[to],
+  })) as { translated_text?: string } | string;
+  const translated = typeof out === 'string' ? out : out?.translated_text;
+  if (typeof translated !== 'string' || !translated.trim()) {
+    throw new Error('Workers AI returned no translation');
+  }
+  return translated;
+}
+
+async function aiTranslateHtml(
+  ai: NonNullable<TranslateEnv['AI']>,
+  html: string,
+  from: PostLanguage,
+  to: PostLanguage
+): Promise<string> {
+  // The capture group keeps the tags in the result, at odd indexes.
+  const parts = html.split(/(<[^>]+>)/);
+  const out: string[] = [];
+  for (const part of parts) {
+    if (part.startsWith('<') || !part.trim()) {
+      out.push(part);
+      continue;
+    }
+    out.push(await aiTranslateText(ai, part, from, to));
+  }
+  return out.join('');
+}
+
+async function translateWithWorkersAI(
+  ai: NonNullable<TranslateEnv['AI']>,
+  post: PublicPost,
+  to: PostLanguage
+): Promise<TranslatedFields> {
+  const from = post.original_language;
+  const [title, excerpt, content] = [
+    await aiTranslateText(ai, post.title, from, to),
+    await aiTranslateText(ai, post.excerpt, from, to),
+    await aiTranslateHtml(ai, post.content, from, to),
+  ];
+  return {
+    title: title.trim(),
+    excerpt: excerpt.trim(),
+    content: content.trim(),
+    // Left empty on purpose: the SEO fields fall back to the post's own when
+    // blank, and a machine-translated meta description is worse than none.
+    seo_title: '',
+    seo_description: '',
+  };
+}
+
 /**
  * The translation of `post` into `to`: the stored one if there is one, otherwise
  * translated once now and stored. Returns null when there is no translation and
@@ -147,7 +231,7 @@ async function requestTranslation(
  */
 export async function ensureTranslation(
   db: D1Database,
-  apiKey: string | undefined | null,
+  env: TranslateEnv | null | undefined,
   post: PublicPost,
   to: PostLanguage
 ): Promise<PublicPost | null> {
@@ -156,9 +240,21 @@ export async function ensureTranslation(
   const stored = await getPostTranslation(db, post.id, to);
   if (stored) return applyTranslation(post, stored);
 
-  if (!canTranslate(apiKey)) return null;
+  // Claude first when it is configured - better Bangla than the free model -
+  // then Workers AI, which needs no key and no billing account.
+  let fields: TranslatedFields;
+  if (hasClaude(env)) {
+    fields = await requestTranslation(env!.ANTHROPIC_API_KEY as string, post, to);
+  } else if (env?.AI) {
+    fields = await translateWithWorkersAI(env.AI, post, to);
+  } else {
+    return null;
+  }
 
-  const fields = await requestTranslation(apiKey, post, to);
+  if (!fields.title || !fields.excerpt || !fields.content) {
+    throw new Error('translation came back missing title, excerpt or content');
+  }
+
   await upsertPostTranslation(db, post.id, to, fields);
   return applyTranslation(post, fields);
 }

@@ -50,7 +50,7 @@ if (!post) {
 // had no way to reach the translation at all. It is now offered in both
 // directions, whenever a translation exists or can be made.
 const otherLang = otherLanguage(post.original_language);
-const apiKey = Astro.locals.runtime?.env.ANTHROPIC_API_KEY;
+const translateEnv = Astro.locals.runtime?.env;
 const wantsOtherLanguage = Astro.url.searchParams.get('lang') === otherLang;
 
 let displayPost = post;
@@ -60,7 +60,7 @@ let showLanguageToggle = false;
 if (post.id && runtimeDb) {
   try {
     if (wantsOtherLanguage) {
-      const translated = await ensureTranslation(runtimeDb, apiKey, post, otherLang);
+      const translated = await ensureTranslation(runtimeDb, translateEnv, post, otherLang);
       if (translated) {
         displayPost = translated;
         currentBlogLanguage = otherLang;
@@ -70,7 +70,7 @@ if (post.id && runtimeDb) {
       // Reading the original: offer the toggle if the other language is already
       // stored, or if we could produce it on demand when the reader asks.
       const stored = await ensureTranslation(runtimeDb, null, post, otherLang);
-      showLanguageToggle = !!stored || canTranslate(apiKey);
+      showLanguageToggle = !!stored || canTranslate(translateEnv);
     }
   } catch (err) {
     // A failed or unconfigured translation must never break the post - the
