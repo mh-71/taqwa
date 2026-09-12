@@ -5,6 +5,7 @@ import { postUrl } from '../lib/post-url';
 import { listTranslationsForPosts } from '../lib/blog-db';
 import type { PostLanguage } from '../lib/blog-db';
 import { readingLanguage, withLanguage } from '../lib/reading-language';
+import { blogText } from '../lib/blog-ui-text';
 
 // Cloudflare deployment only: server-render this page per request so
 // publish/edit/draft/search/category-filter all reflect the latest D1 data
@@ -65,6 +66,8 @@ function inLang<T extends { id: number | null; original_language: PostLanguage; 
 }
 
 const withLang = (href: string) => withLanguage(href, lang);
+// The blog's own wording, in the language being read (see blog-ui-text.ts).
+const T = blogText(lang);
 
 const mainCards = mainPosts.map(inLang);
 const extraCards = extraPosts.map(inLang);
@@ -72,8 +75,8 @@ const recentCards = recentPosts.map(inLang);
 ---
 
 <Layout
-  title="Blog - Taqwa Automobile Service Center"
-  description="Car care tips, LPG & CNG conversion advice, hybrid maintenance guides and news from Taqwa Automobile Service Center in Uttara, Dhaka."
+  title={T.pageTitle}
+  description={T.pageDescription}
   path="blog.html"
   current="blog"
   isBlog={true}
@@ -638,13 +641,13 @@ const recentCards = recentPosts.map(inLang);
 
 <section class="page-banner">
   <div class="page-banner-inner">
-    <div class="eyebrow reveal">TIPS &amp; UPDATES</div>
-    <h1 class="display reveal">OUR <span class="accent">BLOG</span></h1>
-    <p class="reveal">Practical advice on LPG &amp; CNG conversion, hybrid care, maintenance and more — written by the technicians who service your car.</p>
+    <div class="eyebrow reveal">{T.eyebrow}</div>
+    <h1 class="display reveal">{T.headingLead} <span class="accent">{T.headingAccent}</span></h1>
+    <p class="reveal">{T.intro}</p>
     <div class="breadcrumb reveal">
-      <a href="index.html">Home</a>
+      <a href="index.html">{T.home}</a>
       <span class="sep">»</span>
-      <span class="current">Blog</span>
+      <span class="current">{T.blog}</span>
     </div>
   </div>
 </section>
@@ -657,7 +660,7 @@ const recentCards = recentPosts.map(inLang);
 
         {mainCards.length === 0 && (
           <p style="color:var(--text-muted); padding:20px 0;">
-            {q || categorySlug ? 'No posts match this search/category yet.' : 'No posts published yet — check back soon.'}
+            {q || categorySlug ? T.emptyFiltered : T.emptyNone}
           </p>
         )}
 
@@ -670,11 +673,11 @@ const recentCards = recentPosts.map(inLang);
             <div class="blog-card-body">
               <div class="blog-card-date">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                {formatDisplayDate(post.publishDate)}
+                {formatDisplayDate(post.publishDate, lang)}
               </div>
               <h3>{post.title}</h3>
               <p>{post.excerpt}</p>
-              <a class="blog-read-more" href={withLang(postUrl(post.slug))}>Read More
+              <a class="blog-read-more" href={withLang(postUrl(post.slug))}>{T.readMore}
                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
             </div>
@@ -692,11 +695,11 @@ const recentCards = recentPosts.map(inLang);
               <div class="blog-card-body">
                 <div class="blog-card-date">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#9A9AA0" stroke-width="1.6"/><line x1="3" y1="9" x2="21" y2="9" stroke="#9A9AA0" stroke-width="1.4"/><line x1="8" y1="3" x2="8" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/><line x1="16" y1="3" x2="16" y2="7" stroke="#9A9AA0" stroke-width="1.4" stroke-linecap="round"/></svg>
-                  {formatDisplayDate(post.publishDate)}
+                  {formatDisplayDate(post.publishDate, lang)}
                 </div>
                 <h3>{post.title}</h3>
                 <p>{post.excerpt}</p>
-                <a class="blog-read-more" href={withLang(postUrl(post.slug))}>Read More
+                <a class="blog-read-more" href={withLang(postUrl(post.slug))}>{T.readMore}
                   <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
               </div>
@@ -709,8 +712,8 @@ const recentCards = recentPosts.map(inLang);
 
       {extraCards.length > 0 && (
         <div class="blog-loadmore-wrap">
-          <button class="load-more-btn" id="loadMoreBtn">
-            <span id="loadMoreLabel">Load More Articles</span>
+          <button class="load-more-btn" id="loadMoreBtn" data-label-more={T.loadMore} data-label-less={T.showLess}>
+            <span id="loadMoreLabel">{T.loadMore}</span>
             <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
@@ -720,19 +723,19 @@ const recentCards = recentPosts.map(inLang);
     <aside class="blog-sidebar">
 
       <div class="sidebar-widget">
-        <h4>Search</h4>
+        <h4>{T.search}</h4>
         <form class="search-box" method="get" action="blog.html">
           {lang === 'bn' && <input type="hidden" name="lang" value="bn">}
           {categorySlug && <input type="hidden" name="category" value={categorySlug}>}
-          <input type="text" name="q" placeholder="Search articles..." value={q}>
-          <button type="submit" aria-label="Search">
+          <input type="text" name="q" placeholder={T.searchPlaceholder} value={q}>
+          <button type="submit" aria-label={T.search}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="1.8"/><line x1="21" y1="21" x2="16.5" y2="16.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
           </button>
         </form>
       </div>
 
       <div class="sidebar-widget">
-        <h4>Categories</h4>
+        <h4>{T.categories}</h4>
         <ul class="cat-list">
           {categories.map((c) => (
             <li><a href={withLang(`blog.html?category=${c.slug}`)}>{c.name}</a><span>{c.count}</span></li>
@@ -741,14 +744,14 @@ const recentCards = recentPosts.map(inLang);
       </div>
 
       <div class="sidebar-widget">
-        <h4>Recent Posts</h4>
+        <h4>{T.recentPosts}</h4>
 
         {recentCards.map((post) => (
           <div class="recent-post">
             <img src={base + post.featuredImage} alt={post.title}>
             <div class="recent-post-info">
               <h5>{post.title}</h5>
-              <span>{formatDisplayDate(post.publishDate)}</span>
+              <span>{formatDisplayDate(post.publishDate, lang)}</span>
             </div>
           </div>
         ))}
@@ -757,7 +760,7 @@ const recentCards = recentPosts.map(inLang);
 
       {tagCloud.length > 0 && (
         <div class="sidebar-widget">
-          <h4>Popular Tags</h4>
+          <h4>{T.popularTags}</h4>
           <div class="tag-list">
             {tagCloud.map((tag) => (
               <a href={withLang(`blog.html?q=${encodeURIComponent(tag)}`)}>{tag}</a>
@@ -767,20 +770,20 @@ const recentCards = recentPosts.map(inLang);
       )}
 
       <div class="sidebar-widget">
-        <h4>Newsletter</h4>
-        <p style="color:#666; font-size:16px; line-height:1.65; margin-bottom:16px;">Get new car care tips and LPG/CNG conversion advice sent straight to your inbox.</p>
+        <h4>{T.newsletter}</h4>
+        <p style="color:#666; font-size:16px; line-height:1.65; margin-bottom:16px;">{T.newsletterText}</p>
         <div class="search-box">
-          <input type="email" placeholder="Your email address">
-          <button aria-label="Subscribe">
+          <input type="email" placeholder={T.emailPlaceholder}>
+          <button aria-label={T.subscribe}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
       </div>
 
       <div class="sidebar-cta">
-        <h4>Need Expert Advice?</h4>
-        <p>Have a question about your car? Our team is one call away.</p>
-        <a href="tel:+8801854226757">Call 01854226757</a>
+        <h4>{T.ctaTitle}</h4>
+        <p>{T.ctaText}</p>
+        <a href="tel:+8801854226757">{T.ctaButton}</a>
       </div>
 
     </aside>
@@ -799,7 +802,13 @@ const recentCards = recentPosts.map(inLang);
     loadMoreBtn.addEventListener('click', function(){
       var isShown = extraPosts.classList.toggle('show');
       loadMoreBtn.classList.toggle('expanded', isShown);
-      if (loadMoreLabel) loadMoreLabel.textContent = isShown ? 'Show Less' : 'Load More Articles';
+      // Both wordings come off the button so this reads in whichever language
+      // the page was rendered in, rather than switching back to English.
+      if (loadMoreLabel) {
+        loadMoreLabel.textContent = isShown
+          ? (loadMoreBtn.getAttribute('data-label-less') || 'Show Less')
+          : (loadMoreBtn.getAttribute('data-label-more') || 'Load More Articles');
+      }
       if(!isShown){
         loadMoreBtn.scrollIntoView({behavior:'smooth', block:'center'});
       }

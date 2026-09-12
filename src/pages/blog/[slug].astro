@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
 import { ensureTranslation, otherLanguage, canTranslate } from '../../lib/translate';
 import { readingLanguage, withLanguage } from '../../lib/reading-language';
+import { blogText } from '../../lib/blog-ui-text';
 import { listTranslationsForPosts } from '../../lib/blog-db';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
@@ -59,6 +60,8 @@ const readingLang = readingLanguage(Astro, post.original_language);
 const wantsOtherLanguage = readingLang === otherLang;
 /** Carries the reading language on the links out of this page. */
 const withLang = (href: string) => withLanguage(href, readingLang);
+// The blog's own wording, in the language being read (see blog-ui-text.ts).
+const T = blogText(readingLang);
 
 let displayPost = post;
 let currentBlogLanguage = post.original_language;
@@ -207,14 +210,14 @@ const description = displayPost.seoDescription || displayPost.excerpt;
     <span class="post-cat">{displayPost.categoryName}</span>
     <h1 class="display">{displayPost.title}</h1>
     <div class="post-meta">
-      <span>{formatDisplayDate(displayPost.publishDate)}</span>
+      <span>{formatDisplayDate(displayPost.publishDate, readingLang)}</span>
       <span>&middot;</span>
-      <span>By {displayPost.author}</span>
+      <span>{T.byAuthor} {displayPost.author}</span>
     </div>
     <div class="breadcrumb">
-      <a href={base + "index.html"}>Home</a>
+      <a href={base + "index.html"}>{T.home}</a>
       <span class="sep">&raquo;</span>
-      <a href={withLang(base + "blog.html")}>Blog</a>
+      <a href={withLang(base + "blog.html")}>{T.blog}</a>
       <span class="sep">&raquo;</span>
       <span class="current">{post.title}</span>
     </div>
@@ -233,14 +236,14 @@ const description = displayPost.seoDescription || displayPost.excerpt;
 {related.length > 0 && (
   <section class="related-section">
     <div class="related-inner">
-      <h2 class="display">More From The <span style="color:var(--red);">Blog</span></h2>
+      <h2 class="display">{T.relatedLead} <span style="color:var(--red);">{T.relatedAccent}</span></h2>
       <div class="related-grid">
         {relatedCards.map((r) => (
           <a class="related-card" href={withLang(base + postUrl(r.slug))}>
             <img src={base + r.featuredImage} alt={r.title} loading="lazy">
             <div class="rc-body">
               <h4>{r.title}</h4>
-              <div class="rc-date">{formatDisplayDate(r.publishDate)}</div>
+              <div class="rc-date">{formatDisplayDate(r.publishDate, readingLang)}</div>
             </div>
           </a>
         ))}
