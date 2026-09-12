@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
 import { ensureTranslation, otherLanguage, canTranslate } from '../../lib/translate';
 import { readingLanguage, withLanguage } from '../../lib/reading-language';
+import { listTranslationsForPosts } from '../../lib/blog-db';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
@@ -99,6 +100,25 @@ const alternates = showLanguageToggle
 const related = (await getRecentPosts(runtimeDb, 5))
   .filter((p) => p.slug !== post.slug)
   .slice(0, 4);
+
+// The cards below carried each post's own title regardless of the language
+// being read, so a reader in Bangla got a row of half-translated cards. One
+// query covers all four rather than one lookup per card.
+const relatedIds = related
+  .map((r) => r.id)
+  .filter((id): id is number => typeof id === 'number');
+const relatedTranslations = runtimeDb
+  ? new Map(
+      (await listTranslationsForPosts(runtimeDb, relatedIds))
+        .filter((t) => t.language === readingLang)
+        .map((t) => [t.post_id, t])
+    )
+  : new Map();
+const relatedCards = related.map((r) => {
+  if (r.original_language === readingLang || r.id === null) return r;
+  const t = relatedTranslations.get(r.id);
+  return t ? { ...r, title: t.title } : r;
+});
 
 const description = displayPost.seoDescription || displayPost.excerpt;
 ---
@@ -215,7 +235,7 @@ const description = displayPost.seoDescription || displayPost.excerpt;
     <div class="related-inner">
       <h2 class="display">More From The <span style="color:var(--red);">Blog</span></h2>
       <div class="related-grid">
-        {related.map((r) => (
+        {relatedCards.map((r) => (
           <a class="related-card" href={withLang(base + postUrl(r.slug))}>
             <img src={base + r.featuredImage} alt={r.title} loading="lazy">
             <div class="rc-body">
