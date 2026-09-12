@@ -140,11 +140,50 @@ const isActive = (id: string) => (current === id ? 'active' : '');
   // Language switch for the bilingual blog. It lives here, next to the button,
   // so it works on every page that renders one - the blog listing as well as a
   // post - instead of only where a page happened to duplicate the handler.
+  //
+  // Switching reloads the page, which would drop a reader who is halfway down
+  // an article back at the top. The reading position is carried across as a
+  // fraction of the page rather than a pixel offset, because the same article
+  // is a different height in each language - a saved scrollY would land in the
+  // wrong place, and further off the longer the post.
   (function () {
+    var SCROLL_KEY = 'taqwa:lang-switch-scroll';
+
+    function maxScroll() {
+      return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    }
+
+    // Restore first, and only once: the key is cleared as it is read, so a
+    // later ordinary visit to the same page still starts at the top.
+    try {
+      var saved = sessionStorage.getItem(SCROLL_KEY);
+      if (saved !== null) {
+        sessionStorage.removeItem(SCROLL_KEY);
+        var ratio = parseFloat(saved);
+        if (ratio > 0) {
+          // Wait for load, not DOMContentLoaded: images above the reader still
+          // have no height until then, so the page is not yet as tall as it
+          // will be and the fraction would resolve too far down.
+          window.addEventListener('load', function () {
+            window.scrollTo(0, Math.round(ratio * maxScroll()));
+          });
+        }
+      }
+    } catch (e) {
+      // sessionStorage can throw in private mode - the switch still works,
+      // it just starts at the top.
+    }
+
     var btn = document.getElementById('blogLangToggle');
     if (!btn) return;
     btn.addEventListener('click', function () {
       var next = btn.getAttribute('data-current-lang') === 'en' ? 'bn' : 'en';
+      var max = maxScroll();
+      try {
+        sessionStorage.setItem(SCROLL_KEY, String(max > 0 ? window.scrollY / max : 0));
+      } catch (e) {
+        /* nothing to do - the page just opens at the top */
+      }
       // Rewrite only ?lang= so a search or category filter on the listing
       // survives the switch.
       var url = new URL(window.location.href);
