@@ -223,30 +223,6 @@ const description = displayPost.seoDescription || displayPost.excerpt;
   </section>
 )}
 
-<div id="blogTranslationData" hidden data-post-id={post.id} data-slug={slug} data-current-lang={currentBlogLanguage}></div>
-
-<script>
-  (function() {
-    const blogData = document.getElementById('blogTranslationData');
-    if (!blogData) return;
-
-    const postId = blogData.getAttribute('data-post-id');
-    const slug = blogData.getAttribute('data-slug');
-    const currentLang = blogData.getAttribute('data-current-lang');
-
-    const toggleBtn = document.getElementById('blogLangToggle');
-    if (!toggleBtn) return;
-
-    toggleBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
-
-      const nextLang = currentLang === 'en' ? 'bn' : 'en';
-      const newUrl = window.location.pathname + `?lang=${nextLang}`;
-
-      // Simple page reload with new lang parameter
-      window.location.href = newUrl;
-    });
-  })();
-</script>
+<!-- The language button and its handler both live in Header.astro. -->
 
 </Layout>

@@ -69,7 +69,7 @@ const isActive = (id: string) => (current === id ? 'active' : '');
     </nav>
 
     {showBlogLanguageToggle ? (
-      <button id="blogLangToggle" class="blog-lang-toggle-btn" data-current-lang={currentBlogLanguage} data-debug-toggle="true">
+      <button id="blogLangToggle" class="blog-lang-toggle-btn" data-current-lang={currentBlogLanguage}>
         {currentBlogLanguage === 'en' ? '[ বাংলা ]' : '[ English ]'}
       </button>
     ) : langToggle ? (
@@ -135,3 +135,21 @@ const isActive = (id: string) => (current === id ? 'active' : '');
     </ul>
   </div>
 </header>
+
+<script>
+  // Language switch for the bilingual blog. It lives here, next to the button,
+  // so it works on every page that renders one - the blog listing as well as a
+  // post - instead of only where a page happened to duplicate the handler.
+  (function () {
+    var btn = document.getElementById('blogLangToggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var next = btn.getAttribute('data-current-lang') === 'en' ? 'bn' : 'en';
+      // Rewrite only ?lang= so a search or category filter on the listing
+      // survives the switch.
+      var url = new URL(window.location.href);
+      url.searchParams.set('lang', next);
+      window.location.href = url.toString();
+    });
+  })();
+</script>

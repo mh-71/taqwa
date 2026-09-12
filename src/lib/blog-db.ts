@@ -275,6 +275,24 @@ export async function getPostTranslations(db: D1Database, postId: number): Promi
   return results;
 }
 
+/** Every stored translation for a set of posts, in one query. The blog listing
+ *  renders up to ~20 cards plus a sidebar, so fetching these per post would be
+ *  a query each; callers pick the language they need out of the result. */
+export async function listTranslationsForPosts(
+  db: D1Database,
+  postIds: number[]
+): Promise<PostTranslation[]> {
+  if (postIds.length === 0) return [];
+  const placeholders = postIds.map(() => '?').join(', ');
+  const sql = `
+    SELECT id, post_id, language, title, excerpt, content, seo_title, seo_description, created_at, updated_at
+    FROM post_translations
+    WHERE post_id IN (${placeholders})
+  `;
+  const { results } = await db.prepare(sql).bind(...postIds).all<PostTranslation>();
+  return results;
+}
+
 export async function getPostBySlugWithTranslations(
   db: D1Database,
   slug: string

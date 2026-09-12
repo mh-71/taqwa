@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, getCategories, formatDisplayDate } from '../lib/blog-data';
 import { postUrl } from '../lib/post-url';
+import { listTranslationsForPosts } from '../lib/blog-db';
+import type { PostLanguage } from '../lib/blog-db';
 
 // Cloudflare deployment only: server-render this page per request so
 // publish/edit/draft/search/category-filter all reflect the latest D1 data
@@ -29,6 +31,43 @@ const [allPosts, recentPosts, categories] = await Promise.all([
 const mainPosts = allPosts.slice(0, 6);
 const extraPosts = allPosts.slice(6);
 const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 10);
+
+// ===== Bilingual listing =====
+// The language button used to exist only on a post's own page, so a reader
+// browsing /blog had no way to see the listing in their language - every card
+// stayed in whatever language its post was written in. `?lang=` now applies to
+// the whole listing: each card shows its translation when one is stored, and
+// the language carries into the links so a post opens in the same language it
+// was read as in the list.
+const lang: PostLanguage = Astro.url.searchParams.get('lang') === 'bn' ? 'bn' : 'en';
+const otherLang: PostLanguage = lang === 'bn' ? 'en' : 'bn';
+
+const listedIds = Array.from(
+  new Set([...allPosts, ...recentPosts].map((p) => p.id))
+).filter((id): id is number => typeof id === 'number');
+
+// One query for every card on the page rather than one per card.
+const storedTranslations = runtimeDb ? await listTranslationsForPosts(runtimeDb, listedIds) : [];
+const shownLanguage = new Map(
+  storedTranslations.filter((t) => t.language === lang).map((t) => [t.post_id, t])
+);
+// Only offer the button when switching would actually change something.
+const showLanguageToggle = storedTranslations.some((t) => t.language === otherLang);
+
+/** A post's card text in the language being browsed, falling back to how it was written. */
+function inLang<T extends { id: number | null; original_language: PostLanguage; title: string; excerpt: string }>(post: T): T {
+  if (post.original_language === lang || post.id === null) return post;
+  const t = shownLanguage.get(post.id);
+  return t ? { ...post, title: t.title, excerpt: t.excerpt } : post;
+}
+
+/** Keeps ?lang= on a link so the reader stays in the language they chose. */
+const withLang = (href: string) =>
+  lang === 'bn' ? `${href}${href.includes('?') ? '&' : '?'}lang=bn` : href;
+
+const mainCards = mainPosts.map(inLang);
+const extraCards = extraPosts.map(inLang);
+const recentCards = recentPosts.map(inLang);
 ---
 
 <Layout
@@ -37,6 +76,9 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
   path="blog.html"
   current="blog"
   isBlog={true}
+  htmlLang={lang}
+  showBlogLanguageToggle={showLanguageToggle}
+  currentBlogLanguage={lang}
 >
 
 <style>
@@ -612,13 +654,13 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
     <div class="blog-main">
       <div class="blog-grid" id="blogGrid">
 
-        {mainPosts.length === 0 && (
+        {mainCards.length === 0 && (
           <p style="color:var(--text-muted); padding:20px 0;">
             {q || categorySlug ? 'No posts match this search/category yet.' : 'No posts published yet — check back soon.'}
           </p>
         )}
 
-        {mainPosts.map((post) => (
+        {mainCards.map((post) => (
           <div class="blog-card">
             <div class="blog-card-image">
               <span class="blog-card-cat">{post.categoryName}</span>
@@ -631,7 +673,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
               </div>
               <h3>{post.title}</h3>
               <p>{post.excerpt}</p>
-              <a class="blog-read-more" href={postUrl(post.slug)}>Read More
+              <a class="blog-read-more" href={withLang(postUrl(post.slug))}>Read More
                 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
             </div>
@@ -640,7 +682,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
 
         <div class="extra-posts" id="extraPosts">
 
-          {extraPosts.map((post) => (
+          {extraCards.map((post) => (
             <div class="blog-card">
               <div class="blog-card-image">
                 <span class="blog-card-cat">{post.categoryName}</span>
@@ -653,7 +695,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
                 </div>
                 <h3>{post.title}</h3>
                 <p>{post.excerpt}</p>
-                <a class="blog-read-more" href={postUrl(post.slug)}>Read More
+                <a class="blog-read-more" href={withLang(postUrl(post.slug))}>Read More
                   <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
               </div>
@@ -664,7 +706,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
 
       </div>
 
-      {extraPosts.length > 0 && (
+      {extraCards.length > 0 && (
         <div class="blog-loadmore-wrap">
           <button class="load-more-btn" id="loadMoreBtn">
             <span id="loadMoreLabel">Load More Articles</span>
@@ -679,6 +721,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
       <div class="sidebar-widget">
         <h4>Search</h4>
         <form class="search-box" method="get" action="blog.html">
+          {lang === 'bn' && <input type="hidden" name="lang" value="bn">}
           {categorySlug && <input type="hidden" name="category" value={categorySlug}>}
           <input type="text" name="q" placeholder="Search articles..." value={q}>
           <button type="submit" aria-label="Search">
@@ -691,7 +734,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
         <h4>Categories</h4>
         <ul class="cat-list">
           {categories.map((c) => (
-            <li><a href={`blog.html?category=${c.slug}`}>{c.name}</a><span>{c.count}</span></li>
+            <li><a href={withLang(`blog.html?category=${c.slug}`)}>{c.name}</a><span>{c.count}</span></li>
           ))}
         </ul>
       </div>
@@ -699,7 +742,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
       <div class="sidebar-widget">
         <h4>Recent Posts</h4>
 
-        {recentPosts.map((post) => (
+        {recentCards.map((post) => (
           <div class="recent-post">
             <img src={base + post.featuredImage} alt={post.title}>
             <div class="recent-post-info">
@@ -716,7 +759,7 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
           <h4>Popular Tags</h4>
           <div class="tag-list">
             {tagCloud.map((tag) => (
-              <a href={`blog.html?q=${encodeURIComponent(tag)}`}>{tag}</a>
+              <a href={withLang(`blog.html?q=${encodeURIComponent(tag)}`)}>{tag}</a>
             ))}
           </div>
         </div>
