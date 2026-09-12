@@ -56,8 +56,57 @@ const LABELS = {
       + 'yourself, or to replace one that was translated automatically. All three '
       + 'of title, excerpt and content are needed.',
     cancel: 'Cancel',
+    savePost: 'Save Post',
+    saveChanges: 'Save Changes',
+  },
+  bn: {
+    originalLanguage: 'মূল ভাষা',
+    english: 'English',
+    bengali: 'বাংলা (Bengali)',
+    title: 'পোস্টের শিরোনাম',
+    slug: 'স্লাগ (URL)',
+    slugHint: '(শিরোনাম থেকে স্বয়ংক্রিয়, সম্পাদনাযোগ্য — ইংরেজিতে রাখাই ভালো)',
+    slugPlaceholder: 'ইংরেজিতে, যেমন car-ac-service',
+    category: 'বিভাগ',
+    selectCategory: 'একটি বিভাগ বাছুন',
+    featuredImage: 'ফিচার্ড ছবি',
+    selectImage: 'একটি ছবি বাছুন',
+    excerpt: 'সংক্ষিপ্ত সারাংশ',
+    excerptHint: '(ব্লগ কার্ডে ও হোমপেজের "Latest News" অংশে দেখাবে)',
+    content: 'পূর্ণ লেখা (মূল ভাষায়)',
+    author: 'লেখক',
+    publishDate: 'প্রকাশের তারিখ',
+    status: 'অবস্থা',
+    statusDraft: 'খসড়া',
+    statusPublished: 'প্রকাশিত',
+    tags: 'ট্যাগ',
+    tagsHint: '(কমা দিয়ে আলাদা করুন, ঐচ্ছিক)',
+    seoTitle: 'SEO শিরোনাম',
+    seoTitleHint: '(ঐচ্ছিক — না দিলে পোস্টের শিরোনাম ব্যবহার হবে)',
+    seoDescription: 'SEO বিবরণ',
+    seoDescriptionHint: '(ঐচ্ছিক — না দিলে সংক্ষিপ্ত সারাংশ ব্যবহার হবে)',
+    translationSection: 'অনুবাদ যোগ করুন (ঐচ্ছিক)',
+    translationLanguage: 'অনুবাদের ভাষা',
+    noTranslation: 'কোনো অনুবাদ নয়',
+    translationTitle: 'শিরোনাম (অনুবাদ)',
+    translationExcerpt: 'সংক্ষিপ্ত সারাংশ (অনুবাদ)',
+    translationContent: 'পূর্ণ লেখা (অনুবাদ)',
+    translationSeoTitle: 'SEO শিরোনাম (অনুবাদ)',
+    translationSeoDescription: 'SEO বিবরণ (অনুবাদ)',
+    translationHint:
+      'ফাঁকা রাখলে পাঠক প্রথমবার চাইলেই অন্য ভাষায় আপনাআপনি অনুবাদ হয়ে যাবে। '
+      + 'নিজে লিখতে চাইলে, বা স্বয়ংক্রিয় অনুবাদ বদলাতে চাইলে পূরণ করুন। '
+      + 'শিরোনাম, সারাংশ ও পূর্ণ লেখা — তিনটিই লাগবে।',
+    cancel: 'বাতিল',
+    savePost: 'পোস্ট সংরক্ষণ করুন',
+    saveChanges: 'পরিবর্তন সংরক্ষণ করুন',
   },
 };
+
+// The set this render starts with. The radio at the top of the form switches
+// it live in the browser (see the script at the end) so the panel is in the
+// language being written in, without a round-trip.
+const L = LABELS[originalLanguage];
 ---
 
 <form method="post" action={formAction} id="postForm">
@@ -65,15 +114,15 @@ const LABELS = {
 
   <!-- Original Language Selection -->
   <fieldset>
-    <legend>{LABELS.en.originalLanguage}</legend>
+    <legend data-i18n="originalLanguage">{L.originalLanguage}</legend>
     <div style="display: flex; gap: 20px;">
       <label>
         <input type="radio" name="original_language" value="en" checked={originalLanguage === 'en' || !post} required>
-        {LABELS.en.english}
+        {L.english}
       </label>
       <label>
         <input type="radio" name="original_language" value="bn" checked={originalLanguage === 'bn'} required>
-        {LABELS.en.bengali}
+        {L.bengali}
       </label>
     </div>
   </fieldset>
@@ -81,29 +130,29 @@ const LABELS = {
   <!-- Original Post Content -->
   <div class="form-grid">
     <div class="field">
-      <label for="title">{LABELS.en.title}</label>
+      <label for="title" data-i18n="title">{L.title}</label>
       <input type="text" id="title" name="title" required value={post?.title ?? ''}>
     </div>
     <div class="field">
-      <label for="slug">{LABELS.en.slug} <span class="hint">{LABELS.en.slugHint}</span></label>
-      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder={LABELS.en.slugPlaceholder}>
+      <label for="slug"><span data-i18n="slug">{L.slug}</span> <span class="hint" data-i18n="slugHint">{L.slugHint}</span></label>
+      <input type="text" id="slug" name="slug" value={post?.slug ?? ''} placeholder={L.slugPlaceholder} data-i18n-placeholder="slugPlaceholder">
     </div>
   </div>
 
   <div class="form-grid">
     <div class="field">
-      <label for="categoryId">{LABELS.en.category}</label>
+      <label for="categoryId" data-i18n="category">{L.category}</label>
       <select id="categoryId" name="categoryId" required>
-        <option value="">{LABELS.en.selectCategory}</option>
+        <option value="" data-i18n="selectCategory">{L.selectCategory}</option>
         {categories.map((c) => (
           <option value={c.id} selected={post?.category_id === c.id}>{c.name}</option>
         ))}
       </select>
     </div>
     <div class="field">
-      <label for="featuredImage">{LABELS.en.featuredImage}</label>
+      <label for="featuredImage" data-i18n="featuredImage">{L.featuredImage}</label>
       <select id="featuredImage" name="featuredImage" required>
-        <option value="">{LABELS.en.selectImage}</option>
+        <option value="" data-i18n="selectImage">{L.selectImage}</option>
         {availableImages.map((img) => (
           <option value={img} selected={post?.featured_image === img}>{img.replace('img/', '')}</option>
         ))}
@@ -112,12 +161,12 @@ const LABELS = {
   </div>
 
   <div class="field">
-    <label for="excerpt">{LABELS.en.excerpt} <span class="hint">{LABELS.en.excerptHint}</span></label>
+    <label for="excerpt"><span data-i18n="excerpt">{L.excerpt}</span> <span class="hint" data-i18n="excerptHint">{L.excerptHint}</span></label>
     <textarea id="excerpt" name="excerpt" required rows="2">{post?.excerpt ?? ''}</textarea>
   </div>
 
   <div class="field">
-    <label>{LABELS.en.content}</label>
+    <label data-i18n="content">{L.content}</label>
     <div class="editor-toolbar">
       <button type="button" data-cmd="bold"><b>B</b></button>
       <button type="button" data-cmd="italic"><i>I</i></button>
@@ -134,47 +183,47 @@ const LABELS = {
 
   <div class="form-grid">
     <div class="field">
-      <label for="author">{LABELS.en.author}</label>
+      <label for="author" data-i18n="author">{L.author}</label>
       <input type="text" id="author" name="author" value={post?.author ?? 'Taqwa Automobile Team'}>
     </div>
     <div class="field">
-      <label for="publishDate">{LABELS.en.publishDate}</label>
+      <label for="publishDate" data-i18n="publishDate">{L.publishDate}</label>
       <input type="date" id="publishDate" name="publishDate" required value={post?.publish_date ?? today}>
     </div>
   </div>
 
   <div class="form-grid">
     <div class="field">
-      <label for="status">{LABELS.en.status}</label>
+      <label for="status" data-i18n="status">{L.status}</label>
       <select id="status" name="status">
-        <option value="draft" selected={!post || post.status === 'draft'}>{LABELS.en.statusDraft}</option>
-        <option value="published" selected={post?.status === 'published'}>{LABELS.en.statusPublished}</option>
+        <option value="draft" selected={!post || post.status === 'draft'} data-i18n="statusDraft">{L.statusDraft}</option>
+        <option value="published" selected={post?.status === 'published'} data-i18n="statusPublished">{L.statusPublished}</option>
       </select>
     </div>
     <div class="field">
-      <label for="tags">{LABELS.en.tags} <span class="hint">{LABELS.en.tagsHint}</span></label>
+      <label for="tags"><span data-i18n="tags">{L.tags}</span> <span class="hint" data-i18n="tagsHint">{L.tagsHint}</span></label>
       <input type="text" id="tags" name="tags" value={post?.tags ?? ''}>
     </div>
   </div>
 
   <div class="field">
-    <label for="seoTitle">{LABELS.en.seoTitle} <span class="hint">{LABELS.en.seoTitleHint}</span></label>
+    <label for="seoTitle"><span data-i18n="seoTitle">{L.seoTitle}</span> <span class="hint" data-i18n="seoTitleHint">{L.seoTitleHint}</span></label>
     <input type="text" id="seoTitle" name="seoTitle" value={post?.seo_title ?? ''}>
   </div>
   <div class="field">
-    <label for="seoDescription">{LABELS.en.seoDescription} <span class="hint">{LABELS.en.seoDescriptionHint}</span></label>
+    <label for="seoDescription"><span data-i18n="seoDescription">{L.seoDescription}</span> <span class="hint" data-i18n="seoDescriptionHint">{L.seoDescriptionHint}</span></label>
     <textarea id="seoDescription" name="seoDescription" rows="2">{post?.seo_description ?? ''}</textarea>
   </div>
 
   <!-- Optional Translation Section -->
   <fieldset>
-    <legend>{LABELS.en.translationSection}</legend>
-    <p class="hint">{LABELS.en.translationHint}</p>
+    <legend data-i18n="translationSection">{L.translationSection}</legend>
+    <p class="hint" data-i18n="translationHint">{L.translationHint}</p>
 
     <div class="field">
-      <label for="translation_language">{LABELS.en.translationLanguage}</label>
+      <label for="translation_language" data-i18n="translationLanguage">{L.translationLanguage}</label>
       <select id="translation_language" name="translation_language">
-        <option value="" selected={!translation}>{LABELS.en.noTranslation}</option>
+        <option value="" selected={!translation} data-i18n="noTranslation">{L.noTranslation}</option>
         <option value="en" selected={translation?.language === 'en'}>English</option>
         <option value="bn" selected={translation?.language === 'bn'}>বাংলা (Bengali)</option>
       </select>
@@ -182,17 +231,17 @@ const LABELS = {
 
     <div id="translation-fields" style="display:none;">
       <div class="field">
-        <label for="translation_title">{LABELS.en.translationTitle}</label>
+        <label for="translation_title" data-i18n="translationTitle">{L.translationTitle}</label>
         <input type="text" id="translation_title" name="translation_title" value={translation?.title ?? ''}>
       </div>
 
       <div class="field">
-        <label for="translation_excerpt">{LABELS.en.translationExcerpt}</label>
+        <label for="translation_excerpt" data-i18n="translationExcerpt">{L.translationExcerpt}</label>
         <textarea id="translation_excerpt" name="translation_excerpt" rows="2">{translation?.excerpt ?? ''}</textarea>
       </div>
 
       <div class="field">
-        <label>{LABELS.en.translationContent}</label>
+        <label data-i18n="translationContent">{L.translationContent}</label>
         <div class="editor-toolbar" id="translationToolbar">
           <button type="button" data-cmd="bold"><b>B</b></button>
           <button type="button" data-cmd="italic"><i>I</i></button>
@@ -209,11 +258,11 @@ const LABELS = {
 
       <div class="form-grid">
         <div class="field">
-          <label for="translation_seoTitle">{LABELS.en.translationSeoTitle}</label>
+          <label for="translation_seoTitle" data-i18n="translationSeoTitle">{L.translationSeoTitle}</label>
           <input type="text" id="translation_seoTitle" name="translation_seoTitle" value={translation?.seo_title ?? ''}>
         </div>
         <div class="field">
-          <label for="translation_seoDescription">{LABELS.en.translationSeoDescription}</label>
+          <label for="translation_seoDescription" data-i18n="translationSeoDescription">{L.translationSeoDescription}</label>
           <input type="text" id="translation_seoDescription" name="translation_seoDescription" value={translation?.seo_description ?? ''}>
         </div>
       </div>
@@ -221,10 +270,41 @@ const LABELS = {
   </fieldset>
 
   <div class="form-actions">
-    <button type="submit" class="btn btn-primary">{submitLabel}</button>
-    <a href="/admin" class="btn btn-ghost">{LABELS.en.cancel}</a>
+    <button type="submit" class="btn btn-primary" data-i18n={post ? 'saveChanges' : 'savePost'}>{submitLabel}</button>
+    <a href="/admin" class="btn btn-ghost" data-i18n="cancel">{L.cancel}</a>
   </div>
 </form>
+
+<script define:vars={{ LABELS }}>
+  // Switch the panel's own labels when the author changes the post's language,
+  // so writing a Bangla post happens in a Bangla panel. Every translatable bit
+  // of chrome carries data-i18n (or data-i18n-placeholder) naming its key, and
+  // both label sets are inlined above - no round-trip, no second request.
+  (function () {
+    var radios = document.querySelectorAll('input[name="original_language"]');
+    if (!radios.length) return;
+
+    function apply(lang) {
+      var set = LABELS[lang];
+      if (!set) return;
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var text = set[el.getAttribute('data-i18n')];
+        if (typeof text === 'string') el.textContent = text;
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        var text = set[el.getAttribute('data-i18n-placeholder')];
+        if (typeof text === 'string') el.setAttribute('placeholder', text);
+      });
+      document.documentElement.setAttribute('lang', lang);
+    }
+
+    radios.forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        if (radio.checked) apply(radio.value);
+      });
+    });
+  })();
+</script>
 
 <script>
   // Show/hide translation fields based on language selection
