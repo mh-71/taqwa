@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
 import { ensureTranslation, otherLanguage, canTranslate } from '../../lib/translate';
+import { readingLanguage, withLanguage } from '../../lib/reading-language';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
@@ -51,7 +52,12 @@ if (!post) {
 // directions, whenever a translation exists or can be made.
 const otherLang = otherLanguage(post.original_language);
 const translateEnv = Astro.locals.runtime?.env;
-const wantsOtherLanguage = Astro.url.searchParams.get('lang') === otherLang;
+// An explicit ?lang= is remembered for the visit, so switching here carries to
+// the next post the reader opens instead of dropping back to the original.
+const readingLang = readingLanguage(Astro, post.original_language);
+const wantsOtherLanguage = readingLang === otherLang;
+/** Carries the reading language on the links out of this page. */
+const withLang = (href: string) => withLanguage(href, readingLang);
 
 let displayPost = post;
 let currentBlogLanguage = post.original_language;
@@ -188,7 +194,7 @@ const description = displayPost.seoDescription || displayPost.excerpt;
     <div class="breadcrumb">
       <a href={base + "index.html"}>Home</a>
       <span class="sep">&raquo;</span>
-      <a href={base + "blog.html"}>Blog</a>
+      <a href={withLang(base + "blog.html")}>Blog</a>
       <span class="sep">&raquo;</span>
       <span class="current">{post.title}</span>
     </div>
@@ -210,7 +216,7 @@ const description = displayPost.seoDescription || displayPost.excerpt;
       <h2 class="display">More From The <span style="color:var(--red);">Blog</span></h2>
       <div class="related-grid">
         {related.map((r) => (
-          <a class="related-card" href={base + postUrl(r.slug)}>
+          <a class="related-card" href={withLang(base + postUrl(r.slug))}>
             <img src={base + r.featuredImage} alt={r.title} loading="lazy">
             <div class="rc-body">
               <h4>{r.title}</h4>

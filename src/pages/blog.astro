@@ -4,6 +4,7 @@ import { getPublishedPosts, getRecentPosts, getCategories, formatDisplayDate } f
 import { postUrl } from '../lib/post-url';
 import { listTranslationsForPosts } from '../lib/blog-db';
 import type { PostLanguage } from '../lib/blog-db';
+import { readingLanguage, withLanguage } from '../lib/reading-language';
 
 // Cloudflare deployment only: server-render this page per request so
 // publish/edit/draft/search/category-filter all reflect the latest D1 data
@@ -39,7 +40,9 @@ const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 1
 // the whole listing: each card shows its translation when one is stored, and
 // the language carries into the links so a post opens in the same language it
 // was read as in the list.
-const lang: PostLanguage = Astro.url.searchParams.get('lang') === 'bn' ? 'bn' : 'en';
+// Remembers an explicit ?lang= for the visit, so the choice made on one post
+// still applies here and on every other blog page.
+const lang: PostLanguage = readingLanguage(Astro, 'en');
 const otherLang: PostLanguage = lang === 'bn' ? 'en' : 'bn';
 
 const listedIds = Array.from(
@@ -61,9 +64,7 @@ function inLang<T extends { id: number | null; original_language: PostLanguage; 
   return t ? { ...post, title: t.title, excerpt: t.excerpt } : post;
 }
 
-/** Keeps ?lang= on a link so the reader stays in the language they chose. */
-const withLang = (href: string) =>
-  lang === 'bn' ? `${href}${href.includes('?') ? '&' : '?'}lang=bn` : href;
+const withLang = (href: string) => withLanguage(href, lang);
 
 const mainCards = mainPosts.map(inLang);
 const extraCards = extraPosts.map(inLang);
