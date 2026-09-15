@@ -1,0 +1,367 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getAllTestimonials } from '../../lib/testimonial-db';
+
+export const prerender = false;
+
+const runtime = Astro.locals.runtime;
+const statusFilter = Astro.url.searchParams.get('status') ?? '';
+
+let testimonials: Awaited<ReturnType<typeof getAllTestimonials>> = [];
+
+if (runtime) {
+  const db = runtime.env.DB;
+  testimonials = await getAllTestimonials(db, {
+    status: statusFilter || undefined
+  });
+}
+
+const statusCounts = {
+  pending: testimonials.filter(t => t.status === 'pending').length,
+  approved: testimonials.filter(t => t.status === 'approved').length,
+  rejected: testimonials.filter(t => t.status === 'rejected').length,
+};
+---
+
+<AdminLayout title="Reviews" active="reviews">
+  <div class="page-head">
+    <div>
+      <h1>Customer Reviews</h1>
+      <p>{testimonials.length} review{testimonials.length === 1 ? '' : 's'} total</p>
+    </div>
+  </div>
+
+  <div class="status-tabs">
+    <a href="/admin/reviews" class:list={['btn', 'btn-ghost', statusFilter === '' && 'active']}>
+      All ({statusCounts.pending + statusCounts.approved + statusCounts.rejected})
+    </a>
+    <a href="/admin/reviews?status=pending" class:list={['btn', 'btn-ghost', statusFilter === 'pending' && 'active']}>
+      Pending ({statusCounts.pending})
+    </a>
+    <a href="/admin/reviews?status=approved" class:list={['btn', 'btn-ghost', statusFilter === 'approved' && 'active']}>
+      Approved ({statusCounts.approved})
+    </a>
+    <a href="/admin/reviews?status=rejected" class:list={['btn', 'btn-ghost', statusFilter === 'rejected' && 'active']}>
+      Rejected ({statusCounts.rejected})
+    </a>
+  </div>
+
+  {testimonials.length === 0 ? (
+    <div class="empty-state">
+      <p>No reviews found{statusFilter ? ` with status "${statusFilter}"` : ''}.</p>
+      <p class="text-muted">Customer reviews will appear here once submitted.</p>
+    </div>
+  ) : (
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Rating</th>
+            <th>Review</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {testimonials.map((review) => (
+            <tr>
+              <td class="name">{review.name}</td>
+              <td class="location">{review.location || '-'}</td>
+              <td class="rating">
+                <div class="stars">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <span class={i <= review.rating ? 'star filled' : 'star'}>★</span>
+                  ))}
+                </div>
+              </td>
+              <td class="review-text">{review.review.substring(0, 100)}{review.review.length > 100 ? '...' : ''}</td>
+              <td>
+                <span class={`badge badge-${review.status}`}>{review.status}</span>
+              </td>
+              <td class="date">{new Date(review.created_at).toLocaleDateString()}</td>
+              <td class="actions">
+                {review.status === 'pending' && (
+                  <>
+                    <button
+                      class="btn-approve"
+                      onclick={`approveReview(${review.id})`}
+                      title="Approve this review"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      class="btn-reject"
+                      onclick={`rejectReview(${review.id})`}
+                      title="Reject this review"
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
+                {review.status === 'rejected' && (
+                  <button
+                    class="btn-approve"
+                    onclick={`approveReview(${review.id})`}
+                    title="Approve this review"
+                  >
+                    Approve
+                  </button>
+                )}
+                <button
+                  class="btn-delete"
+                  onclick={`deleteReview(${review.id})`}
+                  title="Delete this review"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</AdminLayout>
+
+<style>
+  .page-head {
+    margin-bottom: var(--space-6);
+  }
+
+  .status-tabs {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .status-tabs .btn {
+    &.active {
+      background: var(--red);
+      color: white;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-8) var(--space-4);
+    background: var(--surface-2);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+
+    p {
+      margin: 0;
+
+      &:first-child {
+        font-weight: 500;
+        color: var(--text-strong);
+        margin-bottom: var(--space-2);
+      }
+    }
+
+    .text-muted {
+      font-size: var(--text-sm);
+    }
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      padding: var(--space-3);
+      text-align: left;
+      font-weight: 600;
+      font-size: var(--text-sm);
+      background: var(--surface-3);
+      border-bottom: 2px solid var(--surface-border);
+    }
+
+    td {
+      padding: var(--space-3);
+      border-bottom: 1px solid var(--surface-border);
+      font-size: var(--text-sm);
+    }
+
+    tr:hover {
+      background: var(--surface-2);
+    }
+  }
+
+  .name {
+    font-weight: 500;
+    min-width: 120px;
+  }
+
+  .location {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .rating {
+    min-width: 120px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 2px;
+    color: var(--red);
+    font-size: 14px;
+  }
+
+  .star.filled {
+    color: var(--red);
+  }
+
+  .star {
+    color: var(--muted);
+  }
+
+  .review-text {
+    max-width: 300px;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+
+    &.badge-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &.badge-approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    &.badge-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
+
+  .date {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    min-width: 100px;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--space-2);
+    min-width: 200px;
+
+    button {
+      padding: 4px 8px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      cursor: pointer;
+      font-weight: 500;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-approve {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .btn-reject {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
+</style>
+
+<script>
+  async function approveReview(id: number) {
+    if (!confirm('Approve this review?')) return;
+
+    try {
+      const response = await fetch(`/api/admin/reviews/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'approved' })
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert('Failed to approve review');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error approving review');
+    }
+  }
+
+  async function rejectReview(id: number) {
+    if (!confirm('Reject this review?')) return;
+
+    try {
+      const response = await fetch(`/api/admin/reviews/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'rejected' })
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert('Failed to reject review');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error rejecting review');
+    }
+  }
+
+  async function deleteReview(id: number) {
+    if (!confirm('Delete this review? This cannot be undone.')) return;
+
+    try {
+      const response = await fetch(`/api/admin/reviews/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert('Failed to delete review');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error deleting review');
+    }
+  }
+</script>

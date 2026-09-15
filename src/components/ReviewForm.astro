@@ -1,0 +1,357 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="review-form-wrapper">
+  <div class="review-form-container">
+    <h3 class="review-form-title">Share Your Experience</h3>
+    <p class="review-form-subtitle">Help other car owners by sharing your honest review</p>
+
+    <form id="reviewForm" class="review-form" method="POST" action="/api/reviews">
+      <!-- Honeypot spam protection (hidden field) -->
+      <input type="hidden" name="website" value="" style="display: none;">
+
+      <!-- Success/Error message -->
+      <div id="formMessage" class="form-message" style="display: none;"></div>
+
+      <!-- Name field -->
+      <div class="review-form-field">
+        <label for="reviewName">Your Name <span class="required">*</span></label>
+        <input
+          type="text"
+          id="reviewName"
+          name="name"
+          required
+          minlength="2"
+          maxlength="100"
+          placeholder="Your name"
+          aria-required="true"
+        />
+      </div>
+
+      <!-- Location field -->
+      <div class="review-form-field">
+        <label for="reviewLocation">Location <span class="optional">(optional)</span></label>
+        <input
+          type="text"
+          id="reviewLocation"
+          name="location"
+          maxlength="100"
+          placeholder="City, area (e.g., Uttara, Dhaka)"
+        />
+      </div>
+
+      <!-- Rating field -->
+      <div class="review-form-field">
+        <label>Your Rating <span class="required">*</span></label>
+        <div class="rating-stars" role="group" aria-label="Rate your experience">
+          <label class="rating-label">
+            <input type="radio" name="rating" value="1" required aria-label="1 star" />
+            <span class="star">★</span>
+          </label>
+          <label class="rating-label">
+            <input type="radio" name="rating" value="2" aria-label="2 stars" />
+            <span class="star">★</span>
+          </label>
+          <label class="rating-label">
+            <input type="radio" name="rating" value="3" aria-label="3 stars" />
+            <span class="star">★</span>
+          </label>
+          <label class="rating-label">
+            <input type="radio" name="rating" value="4" aria-label="4 stars" />
+            <span class="star">★</span>
+          </label>
+          <label class="rating-label">
+            <input type="radio" name="rating" value="5" aria-label="5 stars" />
+            <span class="star">★</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Review text -->
+      <div class="review-form-field">
+        <label for="reviewText">Your Review <span class="required">*</span></label>
+        <textarea
+          id="reviewText"
+          name="review"
+          required
+          minlength="10"
+          maxlength="1000"
+          placeholder="Share your experience with Taqwa Automobile (10-1000 characters)"
+          aria-required="true"
+        ></textarea>
+        <div class="char-count">
+          <span id="charCount">0</span>/1000
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="review-form-submit">
+        Submit Your Review
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Character counter
+  const reviewText = document.getElementById('reviewText') as HTMLTextAreaElement;
+  const charCount = document.getElementById('charCount') as HTMLSpanElement;
+
+  if (reviewText) {
+    reviewText.addEventListener('input', () => {
+      charCount.textContent = reviewText.value.length.toString();
+    });
+  }
+
+  // Star rating interaction
+  const ratingInputs = document.querySelectorAll('input[name="rating"]');
+  const ratingLabels = document.querySelectorAll('.rating-label');
+
+  ratingInputs.forEach((input, index) => {
+    input.addEventListener('change', () => {
+      ratingLabels.forEach((label, i) => {
+        label.classList.toggle('selected', i <= index);
+      });
+    });
+  });
+
+  // Form submission
+  const form = document.getElementById('reviewForm') as HTMLFormElement;
+  const formMessage = document.getElementById('formMessage') as HTMLDivElement;
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('/api/reviews', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json() as { success?: boolean; error?: string; message?: string };
+
+        if (response.ok && data.success) {
+          formMessage.className = 'form-message success';
+          formMessage.textContent = data.message || 'Thank you for your feedback!';
+          formMessage.style.display = 'block';
+          form.reset();
+          charCount.textContent = '0';
+          ratingLabels.forEach(l => l.classList.remove('selected'));
+
+          // Scroll to message
+          formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          formMessage.className = 'form-message error';
+          formMessage.textContent = data.error || 'Failed to submit review. Please try again.';
+          formMessage.style.display = 'block';
+        }
+      } catch (error) {
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'An error occurred. Please try again later.';
+        formMessage.style.display = 'block';
+        console.error('Form submission error:', error);
+      }
+    });
+  }
+</script>
+
+<style>
+  .review-form-wrapper {
+    background: var(--surface-0);
+    padding: var(--space-7) var(--space-4);
+    margin-top: var(--space-7);
+    border-top: 1px solid var(--surface-border);
+  }
+
+  .review-form-container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .review-form-title {
+    color: var(--text-strong);
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-2);
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .review-form-subtitle {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    text-align: center;
+    margin-bottom: var(--space-6);
+  }
+
+  .review-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .form-message {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+
+    &.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    &.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+  }
+
+  .review-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .review-form-field label {
+    color: var(--text-strong);
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .required {
+    color: var(--red);
+  }
+
+  .optional {
+    color: var(--muted);
+    font-size: var(--text-xs);
+  }
+
+  .review-form-field input[type="text"],
+  .review-form-field textarea {
+    padding: var(--space-3);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--text-strong);
+    background: white;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    &::placeholder {
+      color: var(--muted);
+    }
+  }
+
+  .review-form-field textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .char-count {
+    font-size: var(--text-xs);
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .rating-stars {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .rating-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 0;
+
+    input {
+      display: none;
+
+      &:checked ~ .star {
+        color: var(--red);
+      }
+    }
+  }
+
+  .star {
+    font-size: 24px;
+    color: var(--muted);
+    transition: color 0.2s;
+    user-select: none;
+
+    .rating-label:hover & {
+      color: var(--red);
+    }
+
+    .rating-label.selected & {
+      color: var(--red);
+    }
+  }
+
+  .review-form-submit {
+    padding: var(--space-4);
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    font-family: var(--font-body);
+
+    &:hover:not(:disabled) {
+      background: var(--red-dark);
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus {
+      outline: 2px solid var(--red);
+      outline-offset: 2px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .review-form-wrapper {
+      padding: var(--space-5) var(--space-3);
+      margin-top: var(--space-5);
+    }
+
+    .review-form-title {
+      font-size: var(--text-2xl);
+    }
+
+    .rating-stars {
+      gap: var(--space-2);
+    }
+
+    .star {
+      font-size: 20px;
+    }
+  }
+</style>

@@ -1515,3 +1515,11 @@
   @media (min-width:1024px){
     .news-nav{display:none;}
   }
+
+  /* ===== REVIEW FORM & TESTIMONIALS EMPTY STATE ===== */
+  .testimonials-empty{text-align:center; padding:var(--space-6) var(--space-4); color:var(--text-muted); font-size:var(--text-sm);}
+
+  .admin-tabs{display:flex; gap:var(--space-2); margin-bottom:var(--space-6); flex-wrap:wrap;}
+  .admin-tabs .tab-link{padding:var(--space-3) var(--space-4); background:var(--surface-2); color:var(--text-strong); border-radius:var(--radius-md); text-decoration:none; font-size:var(--text-sm); font-weight:500; transition:background 0.2s;}
+  .admin-tabs .tab-link:hover{background:var(--surface-3);}
+  .admin-tabs .tab-link.active{background:var(--red); color:white;}

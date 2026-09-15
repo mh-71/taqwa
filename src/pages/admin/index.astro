@@ -48,6 +48,12 @@ const base = import.meta.env.BASE_URL;
     <a href="/admin/posts/new" class="btn btn-primary">+ Add New Post</a>
   </div>
 
+  <div class="admin-tabs">
+    <a href="/admin" class="tab-link active">Blog Posts</a>
+    <a href="/admin/reviews" class="tab-link">Customer Reviews</a>
+    <a href="/admin/categories" class="tab-link">Categories</a>
+  </div>
+
   {flashMessage && <div class="alert alert-success">{flashMessage}</div>}
   {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
 

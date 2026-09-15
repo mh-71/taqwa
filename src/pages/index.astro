@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import { getLatestNews, formatDisplayDate } from '../lib/blog-data';
 import { postUrl } from '../lib/post-url';
+import ReviewForm from '../components/ReviewForm.astro';
+import { getApprovedTestimonials } from '../lib/testimonial-db';
 
 // Cloudflare deployment only: server-render this page per request so a
 // newly published post appears in "Our Latest News" immediately, instead of
@@ -16,6 +18,12 @@ const base = import.meta.env.BASE_URL;
 // hard-coded cards — see src/lib/blog-data.ts. Nothing else on this page
 // (or its markup/CSS below) changed for the Blog Admin Panel work.
 const latestNews = await getLatestNews(Astro.locals.runtime?.env.DB ?? null, 3);
+
+// Dynamic testimonials from database (approved reviews only)
+const runtimeDb = Astro.locals.runtime?.env.DB ?? null;
+const approvedTestimonials = runtimeDb
+  ? await getApprovedTestimonials(runtimeDb)
+  : [];
 
 const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG & CNG conversion, engine repair, hybrid vehicle service, car AC service, and car wash & detailing — trusted technicians, genuine parts, quality service.";
 ---
@@ -986,107 +994,31 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
     <div class="testimonials-grid">
 
-<div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
-
-
-<img
-  src={base + "icon/quote.svg"}
-  alt=""
-  class="icon review-icon"
-  aria-hidden="true"
-/>
-
-
-  <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
-    <meta itemprop="ratingValue" content="5">
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-  </div>
-
-  <p class="quote" itemprop="reviewBody">
-    "Got my car converted to CNG here. The technicians explained every step and the price was fair. Six months on, everything still runs perfectly."
-  </p>
-
-  <div class="person">
-    <div class="avatar">RH</div>
-    <div class="person-meta">
-      <h4 itemprop="author">Rafiqul Haque</h4>
-      <span>Uttara, Dhaka</span>
-    </div>
-  </div>
-
-</div>
-
-
-
-<div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
-
-<img
-  src={base + "icon/quote.svg"}
-  alt=""
-  class="icon review-icon"
-  aria-hidden="true"
-/>
-
-  <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
-    <meta itemprop="ratingValue" content="5">
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-  </div>
-
-  <p class="quote" itemprop="reviewBody">
-    "Very honest workshop. They diagnosed an engine issue two other garages missed, fixed it same day, and the 2-year warranty gives real peace of mind."
-  </p>
-
-  <div class="person">
-    <div class="avatar">SA</div>
-    <div class="person-meta">
-      <h4 itemprop="author">Shirin Akter</h4>
-      <span>Mirpur, Dhaka</span>
-    </div>
-  </div>
-
-</div>
-
-
-
-<div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
-
-<img
-  src={base + "icon/quote.svg"}
-  alt=""
-  class="icon review-icon"
-  aria-hidden="true"
-/>
-
-  <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
-    <meta itemprop="ratingValue" content="5">
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-    <svg class="icon"><use href="#icon-star"/></svg>
-  </div>
-
-  <p class="quote" itemprop="reviewBody">
-    "Excellent service and very professional technicians. They explained the problem clearly, completed the work on time, and the car is running smoothly again."
-  </p>
-
-  <div class="person">
-    <div class="avatar">MH</div>
-    <div class="person-meta">
-      <h4 itemprop="author">Mahmud Hasan</h4>
-      <span>Dhanmondi, Dhaka</span>
-    </div>
-  </div>
-
-</div>
+{approvedTestimonials.length > 0 ? (
+        approvedTestimonials.map((review) => (
+          <div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
+            <img src={base + "icon/quote.svg"} alt="" class="icon review-icon" aria-hidden="true" />
+            <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+              <meta itemprop="ratingValue" content={String(review.rating)} />
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg class={`icon ${i <= review.rating ? 'filled' : ''}`}><use href="#icon-star"/></svg>
+              ))}
+            </div>
+            <p class="quote" itemprop="reviewBody">"{review.review}"</p>
+            <div class="person">
+              <div class="avatar">{review.name.split(' ').map(n => n[0]).join('')}</div>
+              <div class="person-meta">
+                <h4 itemprop="author">{review.name}</h4>
+                {review.location && <span>{review.location}</span>}
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div class="testimonials-empty">
+          <p>No reviews yet. Be the first to share your experience!</p>
+        </div>
+      )}
 
 
 
@@ -1097,6 +1029,9 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
     </div>
   </div>
 </section>
+
+<!-- Write a Review Section -->
+<ReviewForm />
 
 <section class="faq-section">
   <div class="faq-inner">
