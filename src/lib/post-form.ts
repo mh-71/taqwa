@@ -47,9 +47,18 @@ export function parsePostForm(form: FormData): PostFormResult {
     const translationExcerpt = String(form.get('translation_excerpt') ?? '').trim();
     const translationContentRaw = String(form.get('translation_content') ?? '');
 
+    // Translating a post into the language it is already written in would
+    // overwrite it with itself - catch it here rather than storing nonsense.
+    if (translationLanguage === original_language) {
+      errors.push(
+        'The translation language must be different from the post\'s own language.'
+      );
+    }
+
     // Only create translation if at least title is provided
     if (translationTitle || translationExcerpt || translationContentRaw) {
       translation = {
+        language: translationLanguage,
         title: translationTitle || undefined,
         excerpt: translationExcerpt || undefined,
         content: translationContentRaw ? sanitizeHtml(translationContentRaw) : undefined,

@@ -42,10 +42,19 @@ export const POST: APIRoute = async ({ params, request, locals, redirect, url })
   // Update or add translation if provided
   if (translation && (translation.title || translation.excerpt || translation.content)) {
     try {
-      await upsertPostTranslation(db, id, translation.language || (input.original_language === 'en' ? 'bn' : 'en'), translation);
+      await upsertPostTranslation(
+        db,
+        id,
+        translation.language ?? (input.original_language === 'en' ? 'bn' : 'en'),
+        translation
+      );
     } catch (err) {
-      console.error('Failed to update translation:', err);
-      // Continue - post was updated successfully even if translation failed
+      // Same as the create route: the post saved, the translation didn't, and
+      // the author needs to know rather than seeing "Updated" and losing it.
+      const reason = err instanceof Error ? err.message : String(err);
+      return redirect(
+        `/admin/posts/${id}/edit?error=${encodeURIComponent(`Post saved, but its translation was not: ${reason}`)}`
+      );
     }
   }
 

@@ -220,10 +220,24 @@ export async function getPostTranslation(
   return null;
 }
 
-/** "2026-08-15" -> "15 Aug 2026", matching the date style the site already used on Home's news cards. */
-export function formatDisplayDate(isoDate: string): string {
+// Bangla dates are spelled out rather than left to toLocaleDateString: the
+// month names and digits are then the same everywhere regardless of which ICU
+// data the runtime happens to ship, and there is no locale to get wrong.
+const BN_MONTHS = ['জানু', 'ফেব্রু', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টে', 'অক্টো', 'নভে', 'ডিসে'];
+const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+function toBanglaDigits(value: number | string): string {
+  return String(value).replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
+}
+
+/** "2026-08-15" -> "15 Aug 2026", or "১৫ আগস্ট ২০২৬" when read in Bangla.
+ *  The English form matches the date style the site already used on Home's news cards. */
+export function formatDisplayDate(isoDate: string, language: PostLanguage = 'en'): string {
   const d = new Date(isoDate + 'T00:00:00Z');
   if (Number.isNaN(d.getTime())) return isoDate;
+  if (language === 'bn') {
+    return `${toBanglaDigits(d.getUTCDate())} ${BN_MONTHS[d.getUTCMonth()]} ${toBanglaDigits(d.getUTCFullYear())}`;
+  }
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 

@@ -25,10 +25,20 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   // Add translation if provided
   if (translation && (translation.title || translation.excerpt || translation.content)) {
     try {
-      await upsertPostTranslation(db, id, translation.language || (input.original_language === 'en' ? 'bn' : 'en'), translation);
+      await upsertPostTranslation(
+        db,
+        id,
+        translation.language ?? (input.original_language === 'en' ? 'bn' : 'en'),
+        translation
+      );
     } catch (err) {
-      console.error('Failed to create translation:', err);
-      // Continue - post was created successfully even if translation failed
+      // The post itself saved, so don't throw that away - send the author to
+      // its edit page with the reason. This used to be swallowed into the
+      // console, so a translation that never saved still reported success.
+      const reason = err instanceof Error ? err.message : String(err);
+      return redirect(
+        `/admin/posts/${id}/edit?error=${encodeURIComponent(`Post saved, but its translation was not: ${reason}`)}`
+      );
     }
   }
 

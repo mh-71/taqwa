@@ -15,10 +15,12 @@ type AdminEnv = {
   DB: import('./lib/blog-db').D1Database;
   ADMIN_PASSWORD: string;
   ADMIN_SESSION_SECRET: string;
-  /** Optional. Set it and every blog post becomes readable in both languages
-   *  (see src/lib/translate.ts); leave it unset and posts simply stay in the
-   *  language they were written in. */
+  /** Optional, and preferred when present: Claude writes better Bangla than the
+   *  free model and rewrites the HTML body in one pass. See src/lib/translate.ts. */
   ANTHROPIC_API_KEY?: string;
+  /** Workers AI (wrangler.jsonc `ai` binding). The free translation backend,
+   *  used when no ANTHROPIC_API_KEY is set. */
+  AI?: { run(model: string, inputs: Record<string, unknown>): Promise<unknown> };
 };
 
 declare namespace App {

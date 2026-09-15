@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
 import { ensureTranslation, otherLanguage, canTranslate } from '../../lib/translate';
+import { readingLanguage, withLanguage } from '../../lib/reading-language';
+import { blogText } from '../../lib/blog-ui-text';
+import { listTranslationsForPosts } from '../../lib/blog-db';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
@@ -50,8 +53,15 @@ if (!post) {
 // had no way to reach the translation at all. It is now offered in both
 // directions, whenever a translation exists or can be made.
 const otherLang = otherLanguage(post.original_language);
-const apiKey = Astro.locals.runtime?.env.ANTHROPIC_API_KEY;
-const wantsOtherLanguage = Astro.url.searchParams.get('lang') === otherLang;
+const translateEnv = Astro.locals.runtime?.env;
+// An explicit ?lang= is remembered for the visit, so switching here carries to
+// the next post the reader opens instead of dropping back to the original.
+const readingLang = readingLanguage(Astro, post.original_language);
+const wantsOtherLanguage = readingLang === otherLang;
+/** Carries the reading language on the links out of this page. */
+const withLang = (href: string) => withLanguage(href, readingLang);
+// The blog's own wording, in the language being read (see blog-ui-text.ts).
+const T = blogText(readingLang);
 
 let displayPost = post;
 let currentBlogLanguage = post.original_language;
@@ -60,7 +70,7 @@ let showLanguageToggle = false;
 if (post.id && runtimeDb) {
   try {
     if (wantsOtherLanguage) {
-      const translated = await ensureTranslation(runtimeDb, apiKey, post, otherLang);
+      const translated = await ensureTranslation(runtimeDb, translateEnv, post, otherLang);
       if (translated) {
         displayPost = translated;
         currentBlogLanguage = otherLang;
@@ -70,7 +80,7 @@ if (post.id && runtimeDb) {
       // Reading the original: offer the toggle if the other language is already
       // stored, or if we could produce it on demand when the reader asks.
       const stored = await ensureTranslation(runtimeDb, null, post, otherLang);
-      showLanguageToggle = !!stored || canTranslate(apiKey);
+      showLanguageToggle = !!stored || canTranslate(translateEnv);
     }
   } catch (err) {
     // A failed or unconfigured translation must never break the post - the
@@ -93,6 +103,25 @@ const alternates = showLanguageToggle
 const related = (await getRecentPosts(runtimeDb, 5))
   .filter((p) => p.slug !== post.slug)
   .slice(0, 4);
+
+// The cards below carried each post's own title regardless of the language
+// being read, so a reader in Bangla got a row of half-translated cards. One
+// query covers all four rather than one lookup per card.
+const relatedIds = related
+  .map((r) => r.id)
+  .filter((id): id is number => typeof id === 'number');
+const relatedTranslations = runtimeDb
+  ? new Map(
+      (await listTranslationsForPosts(runtimeDb, relatedIds))
+        .filter((t) => t.language === readingLang)
+        .map((t) => [t.post_id, t])
+    )
+  : new Map();
+const relatedCards = related.map((r) => {
+  if (r.original_language === readingLang || r.id === null) return r;
+  const t = relatedTranslations.get(r.id);
+  return t ? { ...r, title: t.title } : r;
+});
 
 const description = displayPost.seoDescription || displayPost.excerpt;
 ---
@@ -181,14 +210,14 @@ const description = displayPost.seoDescription || displayPost.excerpt;
     <span class="post-cat">{displayPost.categoryName}</span>
     <h1 class="display">{displayPost.title}</h1>
     <div class="post-meta">
-      <span>{formatDisplayDate(displayPost.publishDate)}</span>
+      <span>{formatDisplayDate(displayPost.publishDate, readingLang)}</span>
       <span>&middot;</span>
-      <span>By {displayPost.author}</span>
+      <span>{T.byAuthor} {displayPost.author}</span>
     </div>
     <div class="breadcrumb">
-      <a href={base + "index.html"}>Home</a>
+      <a href={base + "index.html"}>{T.home}</a>
       <span class="sep">&raquo;</span>
-      <a href={base + "blog.html"}>Blog</a>
+      <a href={withLang(base + "blog.html")}>{T.blog}</a>
       <span class="sep">&raquo;</span>
       <span class="current">{post.title}</span>
     </div>
@@ -207,14 +236,14 @@ const description = displayPost.seoDescription || displayPost.excerpt;
 {related.length > 0 && (
   <section class="related-section">
     <div class="related-inner">
-      <h2 class="display">More From The <span style="color:var(--red);">Blog</span></h2>
+      <h2 class="display">{T.relatedLead} <span style="color:var(--red);">{T.relatedAccent}</span></h2>
       <div class="related-grid">
-        {related.map((r) => (
-          <a class="related-card" href={base + postUrl(r.slug)}>
+        {relatedCards.map((r) => (
+          <a class="related-card" href={withLang(base + postUrl(r.slug))}>
             <img src={base + r.featuredImage} alt={r.title} loading="lazy">
             <div class="rc-body">
               <h4>{r.title}</h4>
-              <div class="rc-date">{formatDisplayDate(r.publishDate)}</div>
+              <div class="rc-date">{formatDisplayDate(r.publishDate, readingLang)}</div>
             </div>
           </a>
         ))}
@@ -223,30 +252,6 @@ const description = displayPost.seoDescription || displayPost.excerpt;
   </section>
 )}
 
-<div id="blogTranslationData" hidden data-post-id={post.id} data-slug={slug} data-current-lang={currentBlogLanguage}></div>
-
-<script>
-  (function() {
-    const blogData = document.getElementById('blogTranslationData');
-    if (!blogData) return;
-
-    const postId = blogData.getAttribute('data-post-id');
-    const slug = blogData.getAttribute('data-slug');
-    const currentLang = blogData.getAttribute('data-current-lang');
-
-    const toggleBtn = document.getElementById('blogLangToggle');
-    if (!toggleBtn) return;
-
-    toggleBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
-
-      const nextLang = currentLang === 'en' ? 'bn' : 'en';
-      const newUrl = window.location.pathname + `?lang=${nextLang}`;
-
-      // Simple page reload with new lang parameter
-      window.location.href = newUrl;
-    });
-  })();
-</script>
+<!-- The language button and its handler both live in Header.astro. -->
 
 </Layout>
