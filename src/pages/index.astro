@@ -992,11 +992,14 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
       </div>
     </div>
 
-    <div class="testimonials-grid">
-
+    <div class="testimonials-carousel-container">
+      <button class="carousel-nav carousel-prev" aria-label="Previous testimonials" style="display: none;">
+        <img src={base + "icon/arrow-left-svgrepo-com.svg"} alt="" class="carousel-arrow" />
+      </button>
+      <div class="testimonials-grid" id="testimonialsCarousel">
 {approvedTestimonials.length > 0 ? (
         approvedTestimonials.map((review) => (
-          <div class="testimonial-card reveal" itemprop="review" itemscope itemtype="https://schema.org/Review">
+          <div class="testimonial-card" itemprop="review" itemscope itemtype="https://schema.org/Review">
             <img src={base + "icon/quote.svg"} alt="" class="icon review-icon" aria-hidden="true" />
             <div class="stars" aria-hidden="true" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
               <meta itemprop="ratingValue" content={String(review.rating)} />
@@ -1019,9 +1022,11 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
           <p>No reviews yet. Be the first to share your experience!</p>
         </div>
       )}
-
-
-
+      </div>
+      <button class="carousel-nav carousel-next" aria-label="Next testimonials" style="display: none;">
+        <img src={base + "icon/arrow-right-svgrepo-com.svg"} alt="" class="carousel-arrow" />
+      </button>
+    </div>
 
 
 
@@ -1032,6 +1037,97 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
 <!-- Write a Review Section -->
 <ReviewForm />
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('testimonialsCarousel');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+
+    if (!carousel || !prevBtn || !nextBtn) return;
+
+    // Show navigation buttons only on desktop
+    const showNavButtons = () => {
+      const isDesktop = window.innerWidth >= 1024;
+      prevBtn.style.display = isDesktop ? 'flex' : 'none';
+      nextBtn.style.display = isDesktop ? 'flex' : 'none';
+    };
+
+    const updateButtonStates = () => {
+      const isAtStart = carousel.scrollLeft === 0;
+      const isAtEnd = carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 10;
+
+      prevBtn.disabled = isAtStart;
+      nextBtn.disabled = isAtEnd;
+    };
+
+    const scrollToCard = (direction) => {
+      const cardWidth = carousel.querySelector('.testimonial-card')?.clientWidth || 0;
+      const gap = parseInt(window.getComputedStyle(carousel).gap);
+      const scrollAmount = cardWidth + gap;
+
+      carousel.scrollBy({
+        left: direction === 'next' ? scrollAmount : -scrollAmount,
+        behavior: 'smooth'
+      });
+    };
+
+    // Navigation button listeners
+    prevBtn.addEventListener('click', () => scrollToCard('prev'));
+    nextBtn.addEventListener('click', () => scrollToCard('next'));
+
+    // Update button states on scroll
+    carousel.addEventListener('scroll', updateButtonStates);
+    carousel.addEventListener('scrollend', updateButtonStates);
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    carousel.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+
+    const handleSwipe = () => {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          scrollToCard('next');
+        } else {
+          scrollToCard('prev');
+        }
+      }
+    };
+
+    // Keyboard support
+    carousel.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        scrollToCard('next');
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        scrollToCard('prev');
+      }
+    });
+
+    // Initial setup
+    showNavButtons();
+    updateButtonStates();
+
+    // Update on window resize
+    window.addEventListener('resize', () => {
+      showNavButtons();
+      updateButtonStates();
+    });
+  });
+</script>
 
 <section class="faq-section">
   <div class="faq-inner">
