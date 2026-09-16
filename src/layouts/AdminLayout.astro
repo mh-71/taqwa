@@ -19,25 +19,101 @@ const isLive = !!Astro.locals.runtime;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>{title} · Taqwa Admin</title>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.getElementById('hamburger');
+      const sidebar = document.getElementById('sidebar');
+      if (hamburger && sidebar) {
+        hamburger.addEventListener('click', function() {
+          sidebar.classList.toggle('open');
+        });
+        document.addEventListener('click', function(e) {
+          if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+            sidebar.classList.remove('open');
+          }
+        });
+      }
+    });
+  </script>
 </head>
 <body>
 {isLive ? (
   <div class="shell">
-    <header class="topbar">
-      <div class="brand">Taqwa <span>Admin</span></div>
-      <nav>
-        <a href="/admin" class={active === 'dashboard' ? 'active' : ''}>Dashboard</a>
-        <a href="/admin/posts/new" class={active === 'new' ? 'active' : ''}>New Post</a>
-        <a href="/admin/categories" class={active === 'categories' ? 'active' : ''}>Categories</a>
-        <a href="/" target="_blank" rel="noopener">View Site ↗</a>
-        <form method="post" action="/api/admin/logout" class="logout-form">
-          <button type="submit">Log Out</button>
-        </form>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <span class="brand-icon">🚗</span>
+          <div>
+            <div class="brand-name">Taqwa</div>
+            <div class="brand-sub">Admin</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin" class={`nav-link ${active === 'dashboard' ? 'active' : ''}`}>
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/admin/posts/new" class={`nav-link ${active === 'new' ? 'active' : ''}`}>
+          <span class="nav-icon">✍️</span>
+          <span>New Post</span>
+        </a>
       </nav>
-    </header>
-    <main class="content">
-      <slot />
-    </main>
+
+      <nav class="sidebar-nav">
+        <a href="/admin" class={`nav-link ${active === 'dashboard' ? 'active' : ''}`}>
+          <span class="nav-icon">📝</span>
+          <span>Blog Posts</span>
+        </a>
+        <a href="/admin/reviews" class="nav-link">
+          <span class="nav-icon">⭐</span>
+          <span>Customer Reviews</span>
+        </a>
+        <a href="/admin/categories" class={`nav-link ${active === 'categories' ? 'active' : ''}`}>
+          <span class="nav-icon">🏷️</span>
+          <span>Categories</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+
+      <nav class="sidebar-nav">
+        <a href="/" target="_blank" rel="noopener" class="nav-link">
+          <span class="nav-icon">👁️</span>
+          <span>View Website</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <form method="post" action="/api/admin/logout" class="logout-form">
+          <button type="submit" class="btn-logout">
+            <span class="nav-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <h1 class="page-title">{title}</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="admin-badge">Admin</div>
+        </div>
+      </header>
+
+      <main class="content">
+        <slot />
+      </main>
+    </div>
   </div>
 ) : (
   <div class="notice">
