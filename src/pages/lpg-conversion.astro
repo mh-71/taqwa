@@ -11,67 +11,6 @@ const base = import.meta.env.BASE_URL;
 >
 
 <style define:vars={{ heroBg: `url(${base}img/hero-background.jpg)` }}>
-  :root{
-    --red:#F97316;
-    --red-dark:#CE5805;
-    --green:#16A34A;
-    --ink:#101318;
-    --charcoal:#162336;
-    --charcoal-2:#1E304A;
-    --line:#293C58;
-    --paper:#F8FAFC;
-    --muted:#9A9AA0;
-    --off:#E9E9EC;
-
-    /* ===== Surface tokens (matches homepage design system) ===== */
-    --surface-0:#F8FAFC;
-    --surface-1:#F1F3F7;
-    --surface-2:#EEF1F6;
-    --surface-3:#EBEEF3;
-    --text-strong:#101318;
-    --text-muted:#5a5a5e;
-    --card-bg:#EFF2F6;
-    --surface-border:#EAEDF2;
-
-    /* ===== Typography scale (matches homepage design system) ===== */
-    --font-display:'Poppins', "Arial Narrow", Arial, sans-serif;
-    --font-body:'Inter', "Segoe UI", Arial, sans-serif;
-    --text-xs:16px;
-    --text-sm:16px;
-    --text-base:16px;
-    --text-md:16px;
-    --text-lg:clamp(16px, 15.7px + 0.3vw, 18px);
-    --text-xl:clamp(16px, 15.3px + 0.28vw, 18px);
-    --text-2xl:clamp(18px, 16.5px + 0.6vw, 21px);
-    --text-3xl:clamp(20px, 17.7px + 0.9vw, 24px);
-    --text-4xl:clamp(24px, 20.2px + 1.5vw, 30px);
-    --text-5xl:clamp(28px, 21.9px + 2.5vw, 40px);
-    --text-6xl:clamp(32px, 23.4px + 3.4vw, 52px);
-
-    /* ===== Spacing scale (matches homepage design system) ===== */
-    --space-1:4px;
-    --space-2:8px;
-    --space-3:12px;
-    --space-4:clamp(14px, 13.4px + 0.24vw, 16px);
-    --space-5:clamp(18px, 16.5px + 0.6vw, 24px);
-    --space-6:clamp(22px, 19.7px + 0.9vw, 32px);
-    --space-7:clamp(32px, 28.1px + 1.5vw, 48px);
-    --space-8:clamp(40px, 33.8px + 2.4vw, 64px);
-
-    /* ===== Radius scale (matches homepage design system) ===== */
-    --radius-sm:3px;
-    --radius-md:4px;
-    --radius-lg:6px;
-    --radius-xl:10px;
-    --radius-full:50%;
-
-    /* ===== Elevation / shadow scale (matches homepage design system) ===== */
-    --shadow-1:0 2px 6px rgba(0,0,0,0.08);
-    --shadow-2:0 8px 20px -8px rgba(0,0,0,0.18);
-    --shadow-3:0 14px 34px -18px rgba(0,0,0,0.3);
-    --shadow-4:0 20px 50px -20px rgba(0,0,0,0.25);
-    --shadow-5:0 30px 60px -20px rgba(0,0,0,0.6);
-  }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     font-family: 'Inter', "Segoe UI", Arial, sans-serif;
@@ -87,7 +26,7 @@ const base = import.meta.env.BASE_URL;
   }
   a{color:inherit; text-decoration:none;}
   ul{list-style:none;}
-  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  button{font-family:inherit; cursor:pointer; border:none;}
   img{max-width:100%; display:block;}
 
   /* ===== HEADER (shared with site) ===== */
@@ -111,6 +50,7 @@ const base = import.meta.env.BASE_URL;
     display:flex; align-items:center; gap:4px;
   }
   nav.main-nav li.active > a{color:var(--red);}
+  nav.main-nav a.accent{color:var(--red);}
   nav.main-nav a:hover{color:var(--red);}
   .caret{width:11px; height:11px; flex-shrink:0; margin-top:1px; transition:transform .2s ease;}
 
@@ -184,7 +124,6 @@ const base = import.meta.env.BASE_URL;
     display:block; padding:11px 2px; font-size:16px; font-weight:600;
     text-transform:none; color:#555;
   }
-  .mobile-submenu li.current a{color:var(--red);}
   .mobile-submenu a:hover{color:var(--red);}
 
   @media (max-width:980px){
@@ -205,16 +144,6 @@ const base = import.meta.env.BASE_URL;
 
   a:focus-visible, button:focus-visible{outline:2px solid var(--red); outline-offset:2px;}
 
-  /* ===== BREADCRUMB ===== */
-  .breadcrumb{background:#EFF2F6; border-bottom:1px solid #E2E7ED; padding:14px 32px;}
-  .breadcrumb-inner{
-    max-width:1280px; margin:0 auto; display:flex; align-items:center; gap:8px;
-    font-size:16px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase; color:#5a5a5e;
-  }
-  .breadcrumb-inner a:hover{color:var(--red);}
-  .breadcrumb-inner .sep{color:#9A9AA0;}
-  .breadcrumb-inner .current{color:var(--red);}
-
   /* ===== SERVICE HERO ===== */
   .svc-hero{
     position:relative;
@@ -222,7 +151,7 @@ const base = import.meta.env.BASE_URL;
       linear-gradient(rgba(16,19,24,0.72), rgba(16,19,24,0.82)),
       var(--heroBg) center/cover no-repeat;
     overflow:hidden;
-    padding:56px 32px 48px;
+    padding:64px 32px 48px;
   }
   .svc-hero::before{
     content:""; position:absolute; inset:0;
@@ -238,7 +167,7 @@ const base = import.meta.env.BASE_URL;
     display:grid; grid-template-columns:1.15fr 0.85fr; gap:48px; align-items:start;
   }
   .eyebrow{color:var(--red); font-size:16px; font-weight:800; letter-spacing:3px; margin-bottom:16px;}
-  .svc-hero h1{font-size:46px; line-height:1.1; color:#fff; margin-bottom:16px;}
+  .svc-hero h1{font-size:52px; line-height:1.06; color:#fff; margin-bottom:18px;}
   .svc-hero h1 .accent{color:var(--red);}
   .svc-hero-sub{
     font-family:'Poppins', "Arial Narrow", Arial, sans-serif; font-weight:700;
@@ -275,11 +204,11 @@ const base = import.meta.env.BASE_URL;
     padding:30px 28px 28px;
   }
   .specialist-title{
-    text-align:center; font-size:18px; font-weight:800; letter-spacing:0.5px; color:#fff;
+    text-align:center; font-size:19px; font-weight:800; letter-spacing:0.5px; color:#fff;
     margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:10px;
   }
   .specialist-sub{
-    text-align:center; font-size:16px; font-weight:800; letter-spacing:0.6px;
+    text-align:center; font-size:16.5px; font-weight:800; letter-spacing:0.6px;
     color:var(--red); text-transform:uppercase; margin-bottom:22px;
   }
   .specialist-list{margin-bottom:22px;}
@@ -298,14 +227,38 @@ const base = import.meta.env.BASE_URL;
 
   @media (max-width:980px){
     .svc-hero-inner{grid-template-columns:1fr;}
-    .svc-hero h1{font-size:36px;}
+    .svc-hero h1{font-size:40px;}
     .svc-feature-strip{grid-template-columns:repeat(2, 1fr);}
+  }
+  @media (max-width:760px){
+    .header-inner{padding:12px 20px;}
+    .logo-img{height:38px;}
+    .call-btn span.txt{display:none;}
+    .call-btn{padding:11px 14px;}
+    .svc-hero{padding:40px 20px 36px;}
+    .svc-hero h1{font-size:32px;}
+    .svc-hero-actions{gap:10px;}
+    .svc-hero-actions .btn{padding:12px 18px; font-size:16px;}
+    .specialist-card{padding:24px 20px 22px;}
+    .specialist-actions{flex-direction:column;}
   }
   @media (max-width:600px){
     .svc-hero{padding:36px 20px 32px;}
     .svc-hero h1{font-size:28px;}
     .svc-hero-actions .btn{padding:12px 18px; font-size:16px;}
     .svc-feature-strip{grid-template-columns:1fr; gap:14px;}
+  }
+  @media (max-width:420px){
+    .header-inner{padding:10px 16px;}
+    .logo-img{height:32px;}
+    .svc-hero{padding:32px 16px 28px;}
+    .svc-hero h1{font-size:27px;}
+    .svc-hero-sub{font-size:16px;}
+    .eyebrow{font-size:16px; letter-spacing:2px;}
+    .svc-feature-strip{grid-template-columns:1fr; gap:16px;}
+    .specialist-title{font-size:16px;}
+    .specialist-sub{font-size:16px;}
+    .mobile-nav ul{padding:6px 16px 16px;}
   }
 
   /* ===== SECTION HEADER (shared pattern) ===== */
@@ -528,16 +481,6 @@ const base = import.meta.env.BASE_URL;
   @media (max-width:420px){footer{padding:40px 16px 0;} .footer-logo-img{height:32px;} .fhead{font-size:16px;}}
 </style>
 
-
-<div class="breadcrumb">
-  <div class="breadcrumb-inner">
-    <a href="index.html">Home</a>
-    <span class="sep">/</span>
-    <a href="index.html#services">Services</a>
-    <span class="sep">/</span>
-    <span class="current">LPG Conversion</span>
-  </div>
-</div>
 
 <!-- ===== HERO ===== -->
 <section class="svc-hero">

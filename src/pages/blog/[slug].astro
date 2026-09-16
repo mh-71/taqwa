@@ -165,14 +165,6 @@ const description = displayPost.seoDescription || displayPost.excerpt;
     display:flex; justify-content:center; align-items:center; gap:18px; flex-wrap:wrap;
     color:var(--muted); font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;
   }
-  .breadcrumb{
-    display:flex; justify-content:center; align-items:center; gap:10px; margin-top:20px;
-    font-size:16px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; font-weight:700;
-  }
-  .breadcrumb a{color:var(--off);}
-  .breadcrumb a:hover{color:var(--red);}
-  .breadcrumb .sep{color:var(--red);}
-  .breadcrumb .current{color:var(--red);}
 
   .article-section{background:var(--surface-1); padding:var(--space-8) var(--space-6);}
   .article-inner{max-width:820px; margin:0 auto;}
@@ -213,13 +205,6 @@ const description = displayPost.seoDescription || displayPost.excerpt;
       <span>{formatDisplayDate(displayPost.publishDate, readingLang)}</span>
       <span>&middot;</span>
       <span>{T.byAuthor} {displayPost.author}</span>
-    </div>
-    <div class="breadcrumb">
-      <a href={base + "index.html"}>{T.home}</a>
-      <span class="sep">&raquo;</span>
-      <a href={withLang(base + "blog.html")}>{T.blog}</a>
-      <span class="sep">&raquo;</span>
-      <span class="current">{post.title}</span>
     </div>
   </div>
 </section>
