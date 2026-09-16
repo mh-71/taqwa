@@ -4,6 +4,10 @@ import { slugify } from '../../../../lib/slug';
 
 export const prerender = false;
 
+export function getStaticPaths() {
+  return [];
+}
+
 export const POST: APIRoute = async ({ params, request, locals, redirect, url }) => {
   const runtime = (locals as any).runtime;
   if (!runtime) return new Response('Admin API is only available on the Cloudflare deployment.', { status: 501 });

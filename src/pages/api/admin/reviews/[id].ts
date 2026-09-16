@@ -4,6 +4,10 @@ import { verifySessionToken } from '../../../../lib/auth';
 
 export const prerender = false;
 
+export function getStaticPaths() {
+  return [];
+}
+
 async function verifyAdmin(request: Request, runtime: any): Promise<boolean> {
   const cookieHeader = request.headers.get('cookie') || '';
   const sessionCookie = cookieHeader
