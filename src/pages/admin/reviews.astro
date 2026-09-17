@@ -573,7 +573,7 @@ const statusCounts = {
 
   .btn-cancel {
     background: var(--admin-accent);
-    color: white;
+    color: white !important;
     border: none;
     padding: 11px 24px;
     border-radius: 8px;
@@ -586,11 +586,13 @@ const statusCounts = {
 
   .btn-cancel:hover {
     background: var(--admin-accent-hover);
+    color: white !important;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
   }
 
   .btn-cancel:active {
+    color: white !important;
     transform: translateY(0);
   }
 
