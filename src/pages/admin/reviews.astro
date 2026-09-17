@@ -765,52 +765,50 @@ const statusCounts = {
       const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
       const statusClass = `badge-${review.status}`;
       const html = `
-        <div class="view-body">
-          <div class="view-grid">
-            <div class="view-card">
-              <div class="view-card-icon">👤</div>
-              <div class="view-card-content">
-                <div class="view-field-label">Customer Name</div>
-                <div class="view-field-value">${escapeHtml(review.name)}</div>
+        <div style="padding: 32px; overflow-y: auto; flex: 1;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
+            <div style="display: flex; gap: 12px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+              <div style="font-size: 24px; flex-shrink: 0;">👤</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #6b7280; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Customer Name</div>
+                <div style="color: #162336; font-size: 14px; font-weight: 500;">${escapeHtml(review.name)}</div>
               </div>
             </div>
-            <div class="view-card">
-              <div class="view-card-icon">📍</div>
-              <div class="view-card-content">
-                <div class="view-field-label">Location</div>
-                <div class="view-field-value">${review.location ? escapeHtml(review.location) : '–'}</div>
+            <div style="display: flex; gap: 12px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+              <div style="font-size: 24px; flex-shrink: 0;">📍</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #6b7280; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Location</div>
+                <div style="color: #162336; font-size: 14px; font-weight: 500;">${review.location ? escapeHtml(review.location) : '–'}</div>
               </div>
             </div>
-            <div class="view-card">
-              <div class="view-card-icon">⭐</div>
-              <div class="view-card-content">
-                <div class="view-field-label">Rating</div>
-                <div class="view-rating">
-                  <span class="stars-display">${stars}</span>
-                  <span class="rating-text">(${review.rating}/5)</span>
+            <div style="display: flex; gap: 12px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+              <div style="font-size: 24px; flex-shrink: 0;">⭐</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #6b7280; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Rating</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="display: flex; gap: 2px; color: #f59e0b; font-size: 16px;">${stars}</span>
+                  <span style="color: #6b7280; font-size: 13px;">(${review.rating}/5)</span>
                 </div>
               </div>
             </div>
-            <div class="view-card">
-              <div class="view-card-icon">✓</div>
-              <div class="view-card-content">
-                <div class="view-field-label">Status</div>
-                <div class="view-status">
-                  <span class="badge ${statusClass}">${review.status}</span>
-                </div>
+            <div style="display: flex; gap: 12px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+              <div style="font-size: 24px; flex-shrink: 0;">✓</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #6b7280; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Status</div>
+                <span class="badge badge-${review.status}" style="display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: capitalize;">${review.status}</span>
               </div>
             </div>
-            <div class="view-card">
-              <div class="view-card-icon">📅</div>
-              <div class="view-card-content">
-                <div class="view-field-label">Date</div>
-                <div class="view-field-value">${new Date(review.created_at).toLocaleDateString()}</div>
+            <div style="display: flex; gap: 12px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+              <div style="font-size: 24px; flex-shrink: 0;">📅</div>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #6b7280; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Date</div>
+                <div style="color: #162336; font-size: 14px; font-weight: 500;">${new Date(review.created_at).toLocaleDateString()}</div>
               </div>
             </div>
           </div>
-          <div class="view-review-section">
-            <div class="view-field-label">Customer Review</div>
-            <div class="view-review-content">${escapeHtml(review.review)}</div>
+          <div style="padding-top: 24px; border-top: 1px solid #e5e7eb;">
+            <div style="font-weight: 500; color: #6b7280; margin-bottom: 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Customer Review</div>
+            <div style="color: #162336; font-size: 14px; line-height: 1.7; white-space: pre-wrap; word-break: break-word;">${escapeHtml(review.review)}</div>
           </div>
         </div>
       `;
