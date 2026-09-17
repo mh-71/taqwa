@@ -425,33 +425,36 @@ h3 { font-size: 1.25rem; }
 .admin-tabs, .status-tabs {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
-  border-bottom: 2px solid var(--admin-border);
+  border-bottom: 2px solid #e5e7eb;
   padding-bottom: 0;
 }
 
 .tab-link {
-  padding: 12px 16px;
+  padding: 12px 18px;
   border: none;
   border-bottom: 3px solid transparent;
   background: none;
-  color: var(--admin-text-muted);
+  color: #6b7280;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  position: relative;
+  margin-bottom: -2px;
 }
 
 .tab-link:hover {
-  color: var(--admin-text-strong);
-  background: var(--admin-bg);
+  color: #111827;
+  background: transparent;
 }
 
 .tab-link.active {
   color: var(--admin-accent);
   border-bottom-color: var(--admin-accent);
+  margin-bottom: -2px;
 }
 
 /* ========== FILTER BAR ========== */
@@ -460,20 +463,29 @@ h3 { font-size: 1.25rem; }
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   align-items: flex-end;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .filter-bar input[type="text"],
 .filter-bar select {
   padding: 10px 12px;
-  border: 1px solid var(--admin-border);
-  border-radius: var(--admin-radius-sm);
-  background: var(--admin-surface);
-  color: var(--admin-text-strong);
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #111827;
   font-family: inherit;
   font-size: 14px;
   transition: all 0.2s ease;
+}
+
+.filter-bar input[type="text"]:hover,
+.filter-bar select:hover {
+  border-color: #9ca3af;
 }
 
 .filter-bar input[type="text"]:focus,
@@ -613,22 +625,34 @@ table.admin-table img.thumb {
 
 .alert {
   padding: 14px 16px;
-  border-radius: var(--admin-radius-sm);
+  border-radius: 8px;
   font-size: 14px;
   margin-bottom: 20px;
   border-left: 4px solid;
+  animation: slideDown 0.3s ease;
 }
 
 .alert-success {
-  background: var(--admin-success-bg);
-  color: var(--admin-success);
-  border-left-color: var(--admin-success);
+  background: #f0fdf4;
+  color: #166534;
+  border-left-color: #16a34a;
 }
 
 .alert-error {
-  background: var(--admin-danger-bg);
-  color: var(--admin-danger);
-  border-left-color: var(--admin-danger);
+  background: #fef2f2;
+  color: #b91c1c;
+  border-left-color: #dc2626;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ========== FORMS ========== */
