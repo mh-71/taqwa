@@ -29,7 +29,7 @@ const base = import.meta.env.BASE_URL;
   <Layout title="Preview not found" description="" current="blog">
     <div style="max-width:640px; margin:80px auto; padding:0 24px; text-align:center;">
       <h1>Post not found</h1>
-      <p><a href="/admin">Back to Dashboard</a></p>
+      <p><a href="/admin/posts">Back to Blog Posts</a></p>
     </div>
   </Layout>
 ) : (
@@ -97,7 +97,7 @@ const base = import.meta.env.BASE_URL;
   <span class={`status ${post.status}`}>{post.status}</span>
   <span>({post.language === 'bn' ? 'বাংলা' : 'English'})</span>
   <a href={`/admin/posts/${post.id}/edit`}>Edit this post</a>
-  <a href="/admin">Back to Dashboard</a>
+  <a href="/admin/posts">Back to Blog Posts</a>
 </div>
 
 <section class="page-banner">

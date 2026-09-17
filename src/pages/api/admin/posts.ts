@@ -42,5 +42,5 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
     }
   }
 
-  return redirect(`/admin?created=${id}`);
+  return redirect(`/admin/posts?created=${id}`);
 };

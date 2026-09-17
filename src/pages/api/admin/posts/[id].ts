@@ -19,15 +19,15 @@ export const POST: APIRoute = async ({ params, request, locals, redirect, url })
 
   if (action === 'delete') {
     await deletePost(db, id);
-    return redirect('/admin?deleted=1');
+    return redirect('/admin/posts?deleted=1');
   }
   if (action === 'publish') {
     await setPostStatus(db, id, 'published');
-    return redirect('/admin?published=1');
+    return redirect('/admin/posts?published=1');
   }
   if (action === 'unpublish') {
     await setPostStatus(db, id, 'draft');
-    return redirect('/admin?unpublished=1');
+    return redirect('/admin/posts?unpublished=1');
   }
 
   // action === 'update'
@@ -62,5 +62,5 @@ export const POST: APIRoute = async ({ params, request, locals, redirect, url })
     }
   }
 
-  return redirect('/admin?updated=1');
+  return redirect('/admin/posts?updated=1');
 };
