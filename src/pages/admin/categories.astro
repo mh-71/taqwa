@@ -38,14 +38,14 @@ for (const key of Object.keys(flash)) {
   {flashMessage && <div class="alert alert-success">{flashMessage}</div>}
   {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
 
-  <div class="card" style="margin-bottom:22px;">
-    <h2 style="font-size:1rem; margin-bottom:14px;">Add Category</h2>
-    <form method="post" action="/api/admin/categories" style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
-      <div class="field" style="flex:1; min-width:200px; margin-bottom:0;">
+  <div class="add-category-card">
+    <h2>Add Category</h2>
+    <form method="post" action="/api/admin/categories" class="add-category-form">
+      <div class="form-field">
         <label for="name">Category Name</label>
-        <input type="text" id="name" name="name" required placeholder="e.g. Seasonal Tips">
+        <input type="text" id="name" name="name" required placeholder="e.g. Seasonal Tips" class="category-input">
       </div>
-      <button type="submit" class="btn btn-primary">Add</button>
+      <button type="submit" class="btn btn-primary">Add Category</button>
     </form>
   </div>
 
@@ -61,13 +61,13 @@ for (const key of Object.keys(flash)) {
         {categories.map((c) => (
           <tr>
             <td>
-              <form method="post" action={`/api/admin/categories/${c.id}?_action=update`} style="display:flex; gap:8px;">
-                <input type="text" name="name" value={c.name} class="rename-input">
+              <form method="post" action={`/api/admin/categories/${c.id}?_action=update`} class="edit-category-form">
+                <input type="text" name="name" value={c.name} class="category-edit-input">
                 <button type="submit" class="btn btn-ghost btn-sm">Save</button>
               </form>
             </td>
-            <td><code>{c.slug}</code></td>
-            <td>{postsByCategory.get(c.id) ?? 0}</td>
+            <td><code class="slug-code">{c.slug}</code></td>
+            <td><span class="post-count">{postsByCategory.get(c.id) ?? 0}</span></td>
             <td>
               <form method="post" action={`/api/admin/categories/${c.id}?_action=delete`} onsubmit="return confirm('Delete this category? Posts using it must be reassigned first.');">
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -81,5 +81,105 @@ for (const key of Object.keys(flash)) {
 </AdminLayout>
 
 <style>
-  .rename-input{border:1px solid var(--admin-border); border-radius:6px; padding:6px 10px; font:inherit; font-size:.88rem; width:160px;}
+  .add-category-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .add-category-card h2 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .add-category-form {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .form-field {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 0;
+  }
+
+  .form-field label {
+    display: block;
+    font-weight: 500;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .category-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #111827;
+    background: white;
+    transition: all 0.2s;
+  }
+
+  .category-input:hover {
+    border-color: #9ca3af;
+  }
+
+  .category-input:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  }
+
+  .edit-category-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .category-edit-input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #111827;
+    width: 180px;
+    transition: all 0.2s;
+  }
+
+  .category-edit-input:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+  }
+
+  .slug-code {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 12px;
+    color: #6b7280;
+    background: #f9fafb;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .post-count {
+    font-weight: 600;
+    color: #111827;
+    background: #f3f4f6;
+    padding: 4px 12px;
+    border-radius: 6px;
+    display: inline-block;
+  }
 </style>
