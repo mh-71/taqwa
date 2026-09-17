@@ -548,27 +548,12 @@ const statusCounts = {
     font-size: 14px;
     flex: 1;
     transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-save::after {
-    content: '→';
-    position: absolute;
-    right: -20px;
-    transition: right 0.2s ease;
-    margin-left: 8px;
   }
 
   .btn-save:hover {
     background: var(--admin-accent-hover);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-    padding-right: 40px;
-  }
-
-  .btn-save:hover::after {
-    right: 10px;
   }
 
   .btn-cancel {
