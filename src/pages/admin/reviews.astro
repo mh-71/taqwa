@@ -447,29 +447,86 @@ const statusCounts = {
     color: #374151;
   }
 
-  .view-field {
-    margin-bottom: var(--space-4);
+  .view-body {
+    padding: 32px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .view-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .view-card {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+  }
+
+  .view-card-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .view-card-content {
+    flex: 1;
   }
 
   .view-field-label {
-    font-weight: 600;
-    color: var(--text-strong);
-    margin-bottom: 4px;
-    font-size: var(--text-sm);
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .view-field-value {
     color: var(--text-strong);
-    font-size: var(--text-base);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .view-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rating-text {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .view-status {
+    display: flex;
+    align-items: center;
   }
 
   .stars-display {
     display: flex;
     gap: 2px;
-    color: var(--red);
-    font-size: 18px;
+    color: #f59e0b;
+    font-size: 16px;
+  }
+
+  .view-review-section {
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .view-review-content {
+    color: var(--text-strong);
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .modal-content > form {
@@ -706,30 +763,55 @@ const statusCounts = {
       }
 
       const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+      const statusClass = `badge-${review.status}`;
       const html = `
-        <div class="view-field">
-          <div class="view-field-label">Customer Name</div>
-          <div class="view-field-value">${escapeHtml(review.name)}</div>
-        </div>
-        <div class="view-field">
-          <div class="view-field-label">Location</div>
-          <div class="view-field-value">${review.location ? escapeHtml(review.location) : '-'}</div>
-        </div>
-        <div class="view-field">
-          <div class="view-field-label">Rating</div>
-          <div class="stars-display">${stars}</div>
-        </div>
-        <div class="view-field">
-          <div class="view-field-label">Status</div>
-          <div class="view-field-value"><strong>${review.status}</strong></div>
-        </div>
-        <div class="view-field">
-          <div class="view-field-label">Date</div>
-          <div class="view-field-value">${new Date(review.created_at).toLocaleDateString()}</div>
-        </div>
-        <div class="view-field">
-          <div class="view-field-label">Review</div>
-          <div class="view-field-value" style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(review.review)}</div>
+        <div class="view-body">
+          <div class="view-grid">
+            <div class="view-card">
+              <div class="view-card-icon">👤</div>
+              <div class="view-card-content">
+                <div class="view-field-label">Customer Name</div>
+                <div class="view-field-value">${escapeHtml(review.name)}</div>
+              </div>
+            </div>
+            <div class="view-card">
+              <div class="view-card-icon">📍</div>
+              <div class="view-card-content">
+                <div class="view-field-label">Location</div>
+                <div class="view-field-value">${review.location ? escapeHtml(review.location) : '–'}</div>
+              </div>
+            </div>
+            <div class="view-card">
+              <div class="view-card-icon">⭐</div>
+              <div class="view-card-content">
+                <div class="view-field-label">Rating</div>
+                <div class="view-rating">
+                  <span class="stars-display">${stars}</span>
+                  <span class="rating-text">(${review.rating}/5)</span>
+                </div>
+              </div>
+            </div>
+            <div class="view-card">
+              <div class="view-card-icon">✓</div>
+              <div class="view-card-content">
+                <div class="view-field-label">Status</div>
+                <div class="view-status">
+                  <span class="badge ${statusClass}">${review.status}</span>
+                </div>
+              </div>
+            </div>
+            <div class="view-card">
+              <div class="view-card-icon">📅</div>
+              <div class="view-card-content">
+                <div class="view-field-label">Date</div>
+                <div class="view-field-value">${new Date(review.created_at).toLocaleDateString()}</div>
+              </div>
+            </div>
+          </div>
+          <div class="view-review-section">
+            <div class="view-field-label">Customer Review</div>
+            <div class="view-review-content">${escapeHtml(review.review)}</div>
+          </div>
         </div>
       `;
 
