@@ -598,54 +598,67 @@ const L = LABELS[originalLanguage];
 
 <style>
   fieldset {
-    border: 1px solid var(--surface-border, #ddd);
-    border-radius: 4px;
-    padding: 16px;
-    margin: 16px 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+    background: #f9fafb;
   }
 
   legend {
-    padding: 0 8px;
-    font-weight: 600;
+    padding: 0 12px;
+    font-weight: 700;
+    font-size: 15px;
+    color: #111827;
+    letter-spacing: -0.3px;
   }
 
   .editor-toolbar {
     display: flex;
-    gap: 4px;
-    padding: 8px;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px 4px 0 0;
+    gap: 8px;
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px 8px 0 0;
     flex-wrap: wrap;
   }
 
   .editor-toolbar button {
-    padding: 6px 10px;
+    padding: 8px 12px;
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
   }
 
   .editor-toolbar button:hover {
-    background: #f0f0f0;
+    background: #f3f4f6;
+    border-color: #9ca3af;
+  }
+
+  .editor-toolbar button:active {
+    background: #e5e7eb;
   }
 
   .editor-body {
-    min-height: 200px;
-    padding: 12px;
-    border: 1px solid #ddd;
+    min-height: 250px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
     border-top: none;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 8px 8px;
     background: white;
-    line-height: 1.6;
+    line-height: 1.7;
     font-family: inherit;
+    font-size: 15px;
+    color: #111827;
   }
 
   .editor-body:focus {
-    outline: 2px solid #007bff;
-    outline-offset: -1px;
+    outline: 2px solid var(--admin-accent, #007bff);
+    outline-offset: -2px;
   }
 
   .hint {
@@ -657,42 +670,72 @@ const L = LABELS[originalLanguage];
 
   .form-actions {
     display: flex;
-    gap: 8px;
-    margin-top: 24px;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
   }
 
   .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin: 16px 0;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin: 20px 0;
   }
 
   .field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   .field label {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 13px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .field input,
   .field textarea,
   .field select {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
     font-family: inherit;
-    font-size: inherit;
+    font-size: 14px;
+    color: #111827;
+    background: white;
+    transition: all 0.2s;
+  }
+
+  .field input:hover,
+  .field textarea:hover,
+  .field select:hover {
+    border-color: #9ca3af;
   }
 
   .field input:focus,
   .field textarea:focus,
   .field select:focus {
-    outline: 2px solid #007bff;
-    outline-offset: -1px;
+    outline: none;
+    border-color: var(--admin-accent, #007bff);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
   }
 
   .alert {
