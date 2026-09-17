@@ -103,7 +103,10 @@ const isLive = !!Astro.locals.runtime;
         </div>
         <div class="topbar-right">
           <div class="admin-profile">
-            <img src="/img/admin-profile.jpg" alt="Admin" class="admin-avatar" />
+            <div class="admin-avatar-wrapper">
+              <img src="/img/admin-profile.jpg" alt="Admin" class="admin-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+              <div class="admin-avatar-placeholder">MH</div>
+            </div>
             <div class="admin-info">
               <div class="admin-name">Mosharraf Hossen</div>
               <div class="admin-role">Administrator</div>
