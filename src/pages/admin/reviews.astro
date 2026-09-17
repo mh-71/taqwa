@@ -780,8 +780,12 @@ const statusCounts = {
 
       showEditSuccess('Review saved successfully!');
       setTimeout(() => {
-        location.reload();
-      }, 1500);
+        window.closeEditModal();
+        // Reload page to refresh the table with updated data
+        setTimeout(() => {
+          location.reload();
+        }, 300);
+      }, 800);
     } catch (error) {
       console.error('Error:', error);
       showEditError('Error saving review');
