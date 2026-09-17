@@ -102,7 +102,16 @@ const isLive = !!Astro.locals.runtime;
           <h1 class="page-title">{title}</h1>
         </div>
         <div class="topbar-right">
-          <div class="admin-badge">Admin</div>
+          <div class="admin-profile">
+            <img src="/img/admin-profile.jpg" alt="Admin" class="admin-avatar" />
+            <div class="admin-info">
+              <div class="admin-name">Mosharraf Hossen</div>
+              <div class="admin-role">Administrator</div>
+            </div>
+            <form method="post" action="/api/admin/logout" class="logout-btn-topbar">
+              <button type="submit" title="Logout">🚪</button>
+            </form>
+          </div>
         </div>
       </header>
 
