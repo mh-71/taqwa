@@ -212,7 +212,62 @@ const L = LABELS[originalLanguage];
   <div class="field">
     <label for="seoDescription"><span data-i18n="seoDescription">{L.seoDescription}</span> <span class="hint" data-i18n="seoDescriptionHint">{L.seoDescriptionHint}</span></label>
     <textarea id="seoDescription" name="seoDescription" rows="2">{post?.seo_description ?? ''}</textarea>
+    <div class="char-counter">
+      <span id="descCharCount">0</span>/160 characters
+      <span id="descLengthStatus"></span>
+    </div>
   </div>
+
+  <!-- SEO Section -->
+  <fieldset class="seo-fieldset">
+    <legend>🔍 SEO Optimization (PHASE 1)</legend>
+
+    <div class="field">
+      <label for="focusKeyword">Focus Keyword / Primary Keyword</label>
+      <input type="text" id="focusKeyword" name="focusKeyword" placeholder="e.g., car maintenance tips" value={post?.focusKeyword ?? ''}>
+      <div class="hint">The main keyword you want to rank for. Keep it 1-3 words.</div>
+    </div>
+
+    <div class="seo-metrics">
+      <div class="metric-box">
+        <div class="metric-label">📊 SEO Score</div>
+        <div class="metric-value">
+          <div id="seoScore" class="score-badge">0/100</div>
+        </div>
+      </div>
+
+      <div class="metric-box">
+        <div class="metric-label">📝 Word Count</div>
+        <div class="metric-value">
+          <span id="wordCount">0</span> words
+          <span id="wordStatus" class="status-indicator"></span>
+        </div>
+      </div>
+
+      <div class="metric-box">
+        <div class="metric-label">⏱️ Reading Time</div>
+        <div class="metric-value">
+          <span id="readingTime">0</span> min read
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Content Preview (in Google)</label>
+      <div class="google-preview">
+        <div class="preview-title" id="previewTitle">Your Page Title</div>
+        <div class="preview-url">https://taqwa.autos/blog/post-slug</div>
+        <div class="preview-description" id="previewDescription">Your meta description will appear here...</div>
+      </div>
+    </div>
+
+    <div class="keyword-density">
+      <label>Focus Keyword Usage</label>
+      <div id="keywordInfo">
+        Keyword density will appear here after you type in content
+      </div>
+    </div>
+  </fieldset>
 
   <!-- Editing an existing post only. On a new post there is nothing useful to
        do here: the other language is translated automatically the first time a
@@ -327,6 +382,182 @@ const L = LABELS[originalLanguage];
   if (translationLangSelect && translationFields) {
     translationFields.style.display = (translationLangSelect as HTMLSelectElement).value ? 'block' : 'none';
   }
+
+  // ===== SEO OPTIMIZATION FEATURES =====
+
+  // Character Counter for Meta Description
+  const seoDescription = document.getElementById('seoDescription') as HTMLTextAreaElement;
+  const descCharCount = document.getElementById('descCharCount');
+  const descLengthStatus = document.getElementById('descLengthStatus');
+
+  if (seoDescription && descCharCount) {
+    function updateDescCharCount() {
+      const length = seoDescription.value.length;
+      descCharCount.textContent = length.toString();
+
+      // Color coding
+      if (length < 50) {
+        descLengthStatus!.textContent = '⚠️ Too Short';
+        descLengthStatus!.style.background = '#fff3cd';
+      } else if (length > 160) {
+        descLengthStatus!.textContent = '⚠️ Too Long';
+        descLengthStatus!.style.background = '#fff3cd';
+      } else {
+        descLengthStatus!.textContent = '✅ Perfect';
+        descLengthStatus!.style.background = '#d4edda';
+      }
+    }
+    seoDescription.addEventListener('input', updateDescCharCount);
+    updateDescCharCount();
+  }
+
+  // Word Count & Reading Time Calculator
+  const editorBody = document.getElementById('editorBody') as HTMLElement;
+  const wordCountEl = document.getElementById('wordCount');
+  const readingTimeEl = document.getElementById('readingTime');
+  const focusKeywordInput = document.getElementById('focusKeyword') as HTMLInputElement;
+  const seoScoreBadge = document.getElementById('seoScore');
+
+  function calculateStats() {
+    if (!editorBody || !wordCountEl || !readingTimeEl) return;
+
+    // Get text content
+    const text = editorBody.innerText || editorBody.textContent || '';
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+
+    // Update word count
+    wordCountEl.textContent = words.toString();
+
+    // Word count status
+    const wordStatus = document.getElementById('wordStatus');
+    if (wordStatus) {
+      if (words < 300) {
+        wordStatus.textContent = '⚠️ Too Short';
+        wordStatus.className = 'status-indicator warning';
+      } else if (words < 500) {
+        wordStatus.textContent = '✅ Good';
+        wordStatus.className = 'status-indicator good';
+      } else {
+        wordStatus.textContent = '✅ Excellent';
+        wordStatus.className = 'status-indicator good';
+      }
+    }
+
+    // Calculate reading time (avg 200 words per minute)
+    const readingTime = Math.max(1, Math.ceil(words / 200));
+    readingTimeEl.textContent = readingTime.toString();
+
+    // Update live preview
+    updateLivePreview();
+
+    // Calculate keyword density
+    calculateKeywordDensity(text);
+
+    // Calculate SEO Score
+    calculateSEOScore(words, text);
+  }
+
+  function updateLivePreview() {
+    const titleInput = document.getElementById('title') as HTMLInputElement;
+    const previewTitle = document.getElementById('previewTitle');
+    const previewDescription = document.getElementById('previewDescription');
+
+    if (previewTitle && titleInput) {
+      previewTitle.textContent = titleInput.value || 'Your Page Title';
+    }
+
+    if (previewDescription && seoDescription) {
+      previewDescription.textContent = seoDescription.value || 'Your meta description will appear here...';
+    }
+  }
+
+  function calculateKeywordDensity(text: string) {
+    const keywordInfo = document.getElementById('keywordInfo');
+    if (!keywordInfo || !focusKeywordInput.value) {
+      keywordInfo!.textContent = 'Enter a focus keyword above to see density';
+      return;
+    }
+
+    const keyword = focusKeywordInput.value.toLowerCase();
+    const words = text.toLowerCase().split(/\s+/);
+    const keywordCount = words.filter(w => w === keyword).length;
+    const totalWords = words.length;
+    const density = totalWords > 0 ? ((keywordCount / totalWords) * 100).toFixed(2) : '0';
+
+    keywordInfo.innerHTML = `
+      <strong>"${keyword}"</strong> appears <strong>${keywordCount}</strong> times<br>
+      Density: <strong>${density}%</strong> ${
+        parseFloat(density) >= 1 && parseFloat(density) <= 3 ? '✅ Optimal' : '⚠️ Not Optimal (1-3% ideal)'
+      }
+    `;
+  }
+
+  function calculateSEOScore(wordCount: number, text: string): number {
+    let score = 0;
+    let maxScore = 100;
+
+    // Word count (20 points)
+    if (wordCount >= 300 && wordCount <= 600) score += 20;
+    else if (wordCount > 600) score += 15;
+    else if (wordCount > 200) score += 10;
+
+    // SEO Title (15 points)
+    const seoTitleInput = document.getElementById('seoTitle') as HTMLInputElement;
+    if (seoTitleInput && seoTitleInput.value.length >= 40 && seoTitleInput.value.length <= 60) score += 15;
+    else if (seoTitleInput && seoTitleInput.value.length > 0) score += 8;
+
+    // Meta Description (15 points)
+    if (seoDescription && seoDescription.value.length >= 120 && seoDescription.value.length <= 160) score += 15;
+    else if (seoDescription && seoDescription.value.length > 0) score += 8;
+
+    // Focus Keyword (15 points)
+    if (focusKeywordInput && focusKeywordInput.value) {
+      const keyword = focusKeywordInput.value.toLowerCase();
+      if (text.toLowerCase().includes(keyword)) score += 15;
+      else score += 5;
+    }
+
+    // Readability (10 points)
+    const avgWordLength = text.split(/\s+/).reduce((sum, word) => sum + word.length, 0) / text.split(/\s+/).length;
+    if (avgWordLength < 6) score += 10;
+
+    // Image Alt Text (10 points)
+    const imageInput = document.getElementById('featuredImage') as HTMLSelectElement;
+    if (imageInput && imageInput.value) score += 10;
+
+    // Update badge color
+    if (seoScoreBadge) {
+      seoScoreBadge.textContent = `${score}/100`;
+      seoScoreBadge.className = 'score-badge';
+      if (score >= 70) seoScoreBadge.classList.add('excellent');
+      else if (score >= 50) seoScoreBadge.classList.add('good');
+    }
+
+    return score;
+  }
+
+  // Event listeners
+  if (editorBody) {
+    editorBody.addEventListener('input', calculateStats);
+    editorBody.addEventListener('change', calculateStats);
+  }
+
+  if (focusKeywordInput) {
+    focusKeywordInput.addEventListener('input', calculateStats);
+  }
+
+  if (seoDescription) {
+    seoDescription.addEventListener('input', updateLivePreview);
+  }
+
+  const titleInput = document.getElementById('title') as HTMLInputElement;
+  if (titleInput) {
+    titleInput.addEventListener('input', updateLivePreview);
+  }
+
+  // Initialize on page load
+  calculateStats();
+  updateLivePreview();
 
   // Rich text editor setup function
   function setupEditor(toolbarSelector: string, bodySelector: string, hiddenInputSelector: string) {
@@ -503,5 +734,158 @@ const L = LABELS[originalLanguage];
 
   .btn-ghost:hover {
     background: #f0f0f0;
+  }
+
+  /* SEO Section Styling */
+  .seo-fieldset {
+    border: 2px solid #e0f4ff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 24px 0;
+    background: #f8fbff;
+  }
+
+  .seo-fieldset legend {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0066cc;
+    padding: 0 12px;
+  }
+
+  .char-counter {
+    font-size: 12px;
+    color: #666;
+    margin-top: 6px;
+    display: flex;
+    gap: 8px;
+  }
+
+  #descCharCount {
+    font-weight: 600;
+    color: #333;
+  }
+
+  #descLengthStatus {
+    padding: 0 8px;
+    border-radius: 4px;
+  }
+
+  .seo-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .metric-box {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .metric-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .score-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #fff3cd;
+    color: #856404;
+    font-weight: 700;
+  }
+
+  .score-badge.good {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .score-badge.excellent {
+    background: #cfe2ff;
+    color: #084298;
+  }
+
+  .status-indicator {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .status-indicator.good {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .status-indicator.warning {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .google-preview {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px;
+    background: white;
+    margin: 16px 0;
+  }
+
+  .preview-title {
+    color: #1a0dab;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 600px;
+  }
+
+  .preview-url {
+    color: #006621;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .preview-description {
+    color: #545454;
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .keyword-density {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    background: white;
+    margin-top: 12px;
+  }
+
+  .keyword-density label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  #keywordInfo {
+    font-size: 13px;
+    color: #666;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 4px;
   }
 </style>
