@@ -124,6 +124,30 @@ export async function updateTestimonialStatus(
   return result.success && result.meta.changes > 0;
 }
 
+export async function updateTestimonial(
+  db: D1Database,
+  id: number,
+  data: {
+    name: string;
+    location?: string;
+    rating: number;
+    review: string;
+  }
+): Promise<boolean> {
+  if (!db) throw new Error('Database not available');
+
+  const result = await db
+    .prepare(`
+      UPDATE testimonials
+      SET name = ?, location = ?, rating = ?, review = ?, updated_at = datetime('now')
+      WHERE id = ?
+    `)
+    .bind(data.name, data.location || null, data.rating, data.review, id)
+    .run();
+
+  return result.success && result.meta.changes > 0;
+}
+
 export async function deleteTestimonial(db: D1Database, id: number): Promise<boolean> {
   if (!db) throw new Error('Database not available');
 

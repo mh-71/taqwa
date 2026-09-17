@@ -84,6 +84,20 @@ const statusCounts = {
               </td>
               <td class="date">{new Date(review.created_at).toLocaleDateString()}</td>
               <td class="actions">
+                <button
+                  class="btn-view"
+                  onclick={`viewReview(${review.id})`}
+                  title="View this review"
+                >
+                  View
+                </button>
+                <button
+                  class="btn-edit"
+                  onclick={`editReview(${review.id})`}
+                  title="Edit this review"
+                >
+                  Edit
+                </button>
                 {review.status === 'pending' && (
                   <>
                     <button
@@ -125,6 +139,58 @@ const statusCounts = {
       </table>
     </div>
   )}
+
+  <!-- View Review Modal -->
+  <div id="viewModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>View Review</h2>
+        <button class="modal-close" onclick="closeViewModal()">×</button>
+      </div>
+      <div id="viewContent"></div>
+    </div>
+  </div>
+
+  <!-- Edit Review Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Review</h2>
+        <button class="modal-close" onclick="closeEditModal()">×</button>
+      </div>
+      <div id="editError" class="modal-error" style="display: none;"></div>
+      <div id="editSuccess" class="modal-success" style="display: none;"></div>
+      <form id="editForm" onsubmit="saveReview(event)">
+        <div class="form-group">
+          <label for="editName">Name *</label>
+          <input type="text" id="editName" name="name" required />
+        </div>
+        <div class="form-group">
+          <label for="editLocation">Location</label>
+          <input type="text" id="editLocation" name="location" />
+        </div>
+        <div class="form-group">
+          <label for="editRating">Rating (1-5) *</label>
+          <select id="editRating" name="rating" required>
+            <option value="">Select rating...</option>
+            <option value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editReview">Review Text *</label>
+          <textarea id="editReview" name="review" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-save">Save Changes</button>
+          <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </AdminLayout>
 
 <style>
@@ -287,6 +353,16 @@ const statusCounts = {
       }
     }
 
+    .btn-view {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .btn-edit {
+      background: #f3e8ff;
+      color: #6b21a8;
+    }
+
     .btn-approve {
       background: #d1fae5;
       color: #065f46;
@@ -301,6 +377,189 @@ const statusCounts = {
       background: #fee2e2;
       color: #991b1b;
     }
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal.open {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-4);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--surface-border);
+    padding-bottom: var(--space-3);
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-close:hover {
+    color: var(--text-strong);
+  }
+
+  .view-field {
+    margin-bottom: var(--space-4);
+  }
+
+  .view-field-label {
+    font-weight: 600;
+    color: var(--text-strong);
+    margin-bottom: 4px;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .view-field-value {
+    color: var(--text-strong);
+    font-size: var(--text-base);
+  }
+
+  .stars-display {
+    display: flex;
+    gap: 2px;
+    color: var(--red);
+    font-size: 18px;
+  }
+
+  .form-group {
+    margin-bottom: var(--space-4);
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-strong);
+    font-size: var(--text-sm);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: var(--text-base);
+    color: var(--text-strong);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    border-top: 1px solid var(--surface-border);
+    padding-top: var(--space-4);
+  }
+
+  .btn-save {
+    background: var(--admin-accent);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    flex: 1;
+    transition: background 0.2s ease;
+  }
+
+  .btn-save:hover {
+    background: var(--admin-accent-hover);
+  }
+
+  .btn-cancel {
+    background: var(--surface-3);
+    color: var(--text-strong);
+    border: 1px solid var(--surface-border);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    flex: 1;
+    transition: all 0.2s ease;
+  }
+
+  .btn-cancel:hover {
+    background: var(--admin-bg);
+    border-color: var(--text-muted);
+  }
+
+  .modal-error {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .modal-success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-sm);
   }
 </style>
 
@@ -369,5 +628,188 @@ const statusCounts = {
       console.error('Error:', error);
       alert('Error deleting review');
     }
+  }
+
+  let currentReviewId = null;
+
+  window.viewReview = async function(id: number) {
+    try {
+      const response = await fetch(`${base}api/admin/reviews`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        alert('Failed to load review');
+        return;
+      }
+
+      const reviews = await response.json();
+      const review = reviews.find((r: any) => r.id === id);
+
+      if (!review) {
+        alert('Review not found');
+        return;
+      }
+
+      const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+      const html = `
+        <div class="view-field">
+          <div class="view-field-label">Customer Name</div>
+          <div class="view-field-value">${escapeHtml(review.name)}</div>
+        </div>
+        <div class="view-field">
+          <div class="view-field-label">Location</div>
+          <div class="view-field-value">${review.location ? escapeHtml(review.location) : '-'}</div>
+        </div>
+        <div class="view-field">
+          <div class="view-field-label">Rating</div>
+          <div class="stars-display">${stars}</div>
+        </div>
+        <div class="view-field">
+          <div class="view-field-label">Status</div>
+          <div class="view-field-value"><strong>${review.status}</strong></div>
+        </div>
+        <div class="view-field">
+          <div class="view-field-label">Date</div>
+          <div class="view-field-value">${new Date(review.created_at).toLocaleDateString()}</div>
+        </div>
+        <div class="view-field">
+          <div class="view-field-label">Review</div>
+          <div class="view-field-value" style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(review.review)}</div>
+        </div>
+      `;
+
+      document.getElementById('viewContent').innerHTML = html;
+      document.getElementById('viewModal').classList.add('open');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error loading review');
+    }
+  }
+
+  window.closeViewModal = function() {
+    document.getElementById('viewModal').classList.remove('open');
+  }
+
+  window.editReview = async function(id: number) {
+    try {
+      const response = await fetch(`${base}api/admin/reviews`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        alert('Failed to load review');
+        return;
+      }
+
+      const reviews = await response.json();
+      const review = reviews.find((r: any) => r.id === id);
+
+      if (!review) {
+        alert('Review not found');
+        return;
+      }
+
+      currentReviewId = id;
+      document.getElementById('editName').value = review.name;
+      document.getElementById('editLocation').value = review.location || '';
+      document.getElementById('editRating').value = String(review.rating);
+      document.getElementById('editReview').value = review.review;
+      document.getElementById('editError').style.display = 'none';
+      document.getElementById('editSuccess').style.display = 'none';
+      document.getElementById('editModal').classList.add('open');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error loading review');
+    }
+  }
+
+  window.closeEditModal = function() {
+    document.getElementById('editModal').classList.remove('open');
+    currentReviewId = null;
+  }
+
+  window.saveReview = async function(e: Event) {
+    e.preventDefault();
+
+    if (!currentReviewId) {
+      alert('Error: No review selected');
+      return;
+    }
+
+    const name = document.getElementById('editName').value.trim();
+    const location = document.getElementById('editLocation').value.trim();
+    const rating = document.getElementById('editRating').value;
+    const review = document.getElementById('editReview').value.trim();
+
+    if (!name) {
+      showEditError('Name is required');
+      return;
+    }
+
+    if (!rating) {
+      showEditError('Rating is required');
+      return;
+    }
+
+    if (!review) {
+      showEditError('Review text is required');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${base}api/admin/reviews/${currentReviewId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          location: location || undefined,
+          rating: Number(rating),
+          review
+        }),
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        showEditError(data.error || 'Failed to save review');
+        return;
+      }
+
+      showEditSuccess('Review saved successfully!');
+      setTimeout(() => {
+        location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error('Error:', error);
+      showEditError('Error saving review');
+    }
+  }
+
+  function showEditError(message: string) {
+    const errorEl = document.getElementById('editError');
+    errorEl.textContent = message;
+    errorEl.style.display = 'block';
+    document.getElementById('editSuccess').style.display = 'none';
+  }
+
+  function showEditSuccess(message: string) {
+    const successEl = document.getElementById('editSuccess');
+    successEl.textContent = message;
+    successEl.style.display = 'block';
+    document.getElementById('editError').style.display = 'none';
+  }
+
+  function escapeHtml(text: string): string {
+    const map: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, (m) => map[m]);
   }
 </script>
