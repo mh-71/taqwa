@@ -30,9 +30,6 @@ const [allPosts, recentPosts, categories] = await Promise.all([
   getRecentPosts(runtimeDb, 4),
   getCategories(runtimeDb),
 ]);
-const mainPosts = allPosts.slice(0, 6);
-const extraPosts = allPosts.slice(6);
-const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 10);
 
 // ===== Bilingual listing =====
 // The language button used to exist only on a post's own page, so a reader
@@ -55,8 +52,25 @@ const storedTranslations = runtimeDb ? await listTranslationsForPosts(runtimeDb,
 const shownLanguage = new Map(
   storedTranslations.filter((t) => t.language === lang).map((t) => [t.post_id, t])
 );
-// Only offer the button when switching would actually change something.
-const showLanguageToggle = storedTranslations.some((t) => t.language === otherLang);
+// Always show language toggle on blog listing page - users should be able to
+// explore content in both languages even if not every post is fully translated
+const showLanguageToggle = true;
+
+// Filter posts to show only those available in the selected language:
+// - Posts whose original language matches the selected language, OR
+// - Posts that have a translation in the selected language
+const availableInLang = new Set(
+  storedTranslations
+    .filter(t => t.language === lang)
+    .map(t => t.post_id)
+);
+const filteredPosts = allPosts.filter(p =>
+  p.original_language === lang || availableInLang.has(p.id)
+);
+
+const mainPosts = filteredPosts.slice(0, 6);
+const extraPosts = filteredPosts.slice(6);
+const tagCloud = Array.from(new Set(allPosts.flatMap((p) => p.tags))).slice(0, 10);
 
 /** A post's card text in the language being browsed, falling back to how it was written. */
 function inLang<T extends { id: number | null; original_language: PostLanguage; title: string; excerpt: string }>(post: T): T {
