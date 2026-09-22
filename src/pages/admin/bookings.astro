@@ -149,7 +149,8 @@ const statusCounts = {
   document.addEventListener('DOMContentLoaded', function() {
     // Attach event listeners to action buttons
     document.querySelectorAll('[data-action]').forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function(e) {
+        e.stopPropagation();
         const action = this.getAttribute('data-action');
         const id = this.getAttribute('data-id') ? parseInt(this.getAttribute('data-id')) : null;
 
@@ -168,6 +169,16 @@ const statusCounts = {
         }
       });
     });
+
+    // Close modal when clicking on background overlay
+    const modal = document.getElementById('viewModal');
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeViewModal();
+        }
+      });
+    }
   });
 
   function viewBooking(id) {
