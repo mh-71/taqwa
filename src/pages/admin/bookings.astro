@@ -145,10 +145,10 @@ const statusCounts = {
   </div>
 </AdminLayout>
 
-<script define:vars={{ base }}>
+<script>
   async function viewBooking(id) {
     try {
-      const response = await fetch(`${base}api/admin/bookings?id=${id}`, {
+      const response = await fetch(`/api/admin/bookings?id=${id}`, {
         headers: { 'Cookie': document.cookie }
       });
       const data = await response.json();
@@ -186,7 +186,7 @@ const statusCounts = {
     if (!confirm(`Change status to ${newStatus}?`)) return;
 
     try {
-      const response = await fetch(`${base}api/admin/bookings/${id}/status`, {
+      const response = await fetch(`/api/admin/bookings/${id}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Cookie': document.cookie },
         body: JSON.stringify({ status: newStatus })
@@ -206,7 +206,7 @@ const statusCounts = {
     if (!confirm('Delete this booking? This cannot be undone.')) return;
 
     try {
-      const response = await fetch(`${base}api/admin/bookings/${id}/delete`, {
+      const response = await fetch(`/api/admin/bookings/${id}/delete`, {
         method: 'DELETE',
         headers: { 'Cookie': document.cookie }
       });
