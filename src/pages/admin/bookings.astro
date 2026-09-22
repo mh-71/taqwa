@@ -138,7 +138,7 @@ const statusCounts = {
     <div class="modal-content">
       <div class="modal-header">
         <h2>Booking Details</h2>
-        <button class="modal-close" onclick="closeViewModal()">×</button>
+        <button class="modal-close" data-action="close-modal">×</button>
       </div>
       <div id="viewContent"></div>
     </div>
@@ -151,7 +151,7 @@ const statusCounts = {
     document.querySelectorAll('[data-action]').forEach(button => {
       button.addEventListener('click', function() {
         const action = this.getAttribute('data-action');
-        const id = parseInt(this.getAttribute('data-id'));
+        const id = this.getAttribute('data-id') ? parseInt(this.getAttribute('data-id')) : null;
 
         if (action === 'view') {
           viewBooking(id);
@@ -163,6 +163,8 @@ const statusCounts = {
           updateStatus(id, 'cancelled');
         } else if (action === 'delete') {
           deleteBooking(id);
+        } else if (action === 'close-modal') {
+          closeViewModal();
         }
       });
     });
