@@ -7,19 +7,34 @@ export const prerender = false;
 const runtime = Astro.locals.runtime;
 const statusFilter = Astro.url.searchParams.get('status') ?? '';
 
-let bookings: any[] = [];
-let stats = { total: 0, pending: 0, confirmed: 0, completed: 0, cancelled: 0 };
+let bookings: Awaited<ReturnType<typeof getAllBookings>> = [];
+let stats: Awaited<ReturnType<typeof getBookingStats>> = {
+  total: 0,
+  pending: 0,
+  confirmed: 0,
+  completed: 0,
+  cancelled: 0,
+};
 
 if (runtime) {
-  const db = runtime.env.DB;
-  const [allBookings, bookingStats] = await Promise.all([
-    getAllBookings(db, {
+  try {
+    const db = runtime.env.DB;
+    bookings = await getAllBookings(db, {
       status: statusFilter || undefined
-    }),
-    getBookingStats(db)
-  ]);
-  bookings = allBookings;
-  stats = bookingStats;
+    });
+    stats = await getBookingStats(db);
+  } catch (error) {
+    console.error('Error loading bookings:', error);
+    // Fallback to empty state
+    bookings = [];
+    stats = {
+      total: 0,
+      pending: 0,
+      confirmed: 0,
+      completed: 0,
+      cancelled: 0,
+    };
+  }
 }
 
 const statusCounts = {
