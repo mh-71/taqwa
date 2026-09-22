@@ -131,11 +131,12 @@ export async function getAllBookings(
 
   const stmt = db.prepare(query);
 
-  if (bindValues.length > 0) {
-    stmt.bind(...bindValues);
-  }
+  const boundStmt =
+    bindValues.length > 0
+      ? stmt.bind(...bindValues)
+      : stmt;
 
-  const result = await stmt.all<Booking>();
+  const result = await boundStmt.all<Booking>();
   return result.results ?? [];
 }
 
