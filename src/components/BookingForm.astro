@@ -3,13 +3,17 @@
 ---
 
 <form id="bookingForm" class="booking-form">
-  <!-- Customer Information -->
-  <fieldset class="form-section">
-    <legend>Your Information</legend>
+  <!-- SECTION 1: YOUR INFORMATION -->
+  <div class="form-section">
+    <div class="section-header">
+      <span class="section-icon">👤</span>
+      <h3>Your Information</h3>
+      <span class="section-hint">Tell us how to contact you</span>
+    </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label for="name">Full Name *</label>
+        <label for="name">Full Name <span class="required">*</span></label>
         <input
           type="text"
           id="name"
@@ -18,41 +22,48 @@
           required
           minlength="2"
           maxlength="100"
+          aria-label="Full Name"
         />
       </div>
 
       <div class="form-group">
-        <label for="phoneNumber">Phone Number *</label>
+        <label for="phoneNumber">Phone Number <span class="required">*</span></label>
         <input
           type="tel"
           id="phoneNumber"
           name="phoneNumber"
           placeholder="01XXX-XXXXXX"
           required
+          aria-label="Phone Number"
         />
       </div>
     </div>
 
-    <div class="form-row">
+    <div class="form-row full">
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">Email Address <span class="optional">(optional)</span></label>
         <input
           type="email"
           id="email"
           name="email"
           placeholder="your@email.com"
+          aria-label="Email Address"
         />
       </div>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- Vehicle Information -->
-  <fieldset class="form-section">
-    <legend>Vehicle Information</legend>
+  <!-- SECTION 2: VEHICLE INFORMATION -->
+  <div class="form-section">
+    <div class="section-header">
+      <span class="section-icon">🚗</span>
+      <h3>Vehicle Information</h3>
+      <span class="section-hint">Tell us about your vehicle</span>
+    </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label for="vehicleMake">Vehicle Make *</label>
+        <label for="vehicleMake">Vehicle Make <span class="required">*</span></label>
         <input
           type="text"
           id="vehicleMake"
@@ -61,11 +72,12 @@
           required
           minlength="2"
           maxlength="50"
+          aria-label="Vehicle Make"
         />
       </div>
 
       <div class="form-group">
-        <label for="vehicleModel">Vehicle Model *</label>
+        <label for="vehicleModel">Vehicle Model <span class="required">*</span></label>
         <input
           type="text"
           id="vehicleModel"
@@ -74,32 +86,38 @@
           required
           minlength="2"
           maxlength="50"
+          aria-label="Vehicle Model"
         />
       </div>
     </div>
 
-    <div class="form-row">
+    <div class="form-row full">
       <div class="form-group">
-        <label for="registrationNo">Registration Number</label>
+        <label for="registrationNo">Registration Number <span class="optional">(optional)</span></label>
         <input
           type="text"
           id="registrationNo"
           name="registrationNo"
           placeholder="License plate or chassis number"
           maxlength="20"
+          aria-label="Registration Number"
         />
       </div>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- Service & Appointment -->
-  <fieldset class="form-section">
-    <legend>Service & Appointment</legend>
+  <!-- SECTION 3: SERVICE & APPOINTMENT -->
+  <div class="form-section">
+    <div class="section-header">
+      <span class="section-icon">🔧</span>
+      <h3>Service & Appointment</h3>
+      <span class="section-hint">Choose your service and preferred time</span>
+    </div>
 
     <div class="form-row full">
       <div class="form-group">
-        <label for="serviceType">Service Type *</label>
-        <select id="serviceType" name="serviceType" required>
+        <label for="serviceType">Service Type <span class="required">*</span></label>
+        <select id="serviceType" name="serviceType" required aria-label="Service Type">
           <option value="">Select a service</option>
           <option value="lpg-conversion">LPG Conversion</option>
           <option value="cng-conversion">CNG Conversion</option>
@@ -117,63 +135,102 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label for="preferredDate">Preferred Date *</label>
-        <input type="date" id="preferredDate" name="preferredDate" required />
+        <label for="preferredDate">Preferred Date <span class="required">*</span></label>
+        <input
+          type="date"
+          id="preferredDate"
+          name="preferredDate"
+          required
+          aria-label="Preferred Date"
+        />
       </div>
 
       <div class="form-group">
-        <label for="preferredTime">Preferred Time *</label>
-        <input type="time" id="preferredTime" name="preferredTime" required />
+        <label for="preferredTime">Preferred Time <span class="required">*</span></label>
+        <input
+          type="time"
+          id="preferredTime"
+          name="preferredTime"
+          required
+          aria-label="Preferred Time"
+        />
       </div>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- Additional Message -->
-  <fieldset class="form-section">
-    <legend>Additional Information</legend>
+  <!-- SECTION 4: ADDITIONAL INFORMATION -->
+  <div class="form-section">
+    <div class="section-header">
+      <span class="section-icon">💬</span>
+      <h3>Problem / Additional Information</h3>
+      <span class="section-hint">Tell us what's wrong or any special requests</span>
+    </div>
 
     <div class="form-group">
-      <label for="message">Message</label>
+      <label for="message">Message <span class="optional">(optional)</span></label>
       <textarea
         id="message"
         name="message"
-        placeholder="Any additional details or special requests..."
+        placeholder="Describe your car problem or any special requests..."
         maxlength="1000"
         rows="4"
+        aria-label="Message"
       ></textarea>
       <div class="char-count">
         <span id="charCount">0</span>/1000
       </div>
     </div>
-  </fieldset>
+  </div>
+
+  <!-- SECTION 5: CONTACT PERMISSION -->
+  <div class="form-section">
+    <div class="form-group checkbox-group">
+      <label for="contactPermission" class="checkbox-label">
+        <input
+          type="checkbox"
+          id="contactPermission"
+          name="contactPermission"
+          required
+          aria-label="Contact Permission"
+        />
+        <span class="checkbox-text">
+          I agree that Taqwa Automobile Service Center may contact me regarding this booking.
+          <span class="required">*</span>
+        </span>
+      </label>
+      <div id="contactPermissionError" class="form-error" style="display: none;">
+        Please check this box to proceed with your booking.
+      </div>
+    </div>
+  </div>
 
   <!-- Spam protection honeypot -->
   <input type="hidden" name="website" value="" />
   <input type="hidden" name="company" value="" />
 
-  <!-- Form actions -->
-  <div class="form-actions">
-    <button type="submit" class="btn btn-primary" id="submitBtn">
-      <span id="submitText">Submit Booking Request</span>
-    </button>
-    <button type="reset" class="btn btn-ghost">Clear</button>
-  </div>
-
   <!-- Status messages -->
   <div id="formSuccess" class="form-message success" style="display: none;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="#22A24D" stroke-width="1.8" />
-      <path d="M8 12.5l2.5 2.5L16 9" stroke="#22A24D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="12" cy="12" r="10" stroke="#16A34A" stroke-width="1.8" />
+      <path d="M8 12.5l2.5 2.5L16 9" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
     <span id="successText">Booking submitted successfully! We will confirm shortly.</span>
   </div>
 
   <div id="formError" class="form-message error" style="display: none;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="#D14343" stroke-width="1.8" />
-      <path d="M12 7v6M12 16.5v.01" stroke="#D14343" stroke-width="2" stroke-linecap="round" />
+      <circle cx="12" cy="12" r="10" stroke="#DC2626" stroke-width="1.8" />
+      <path d="M12 7v6M12 16.5v.01" stroke="#DC2626" stroke-width="2" stroke-linecap="round" />
     </svg>
     <span id="errorText">An error occurred. Please try again.</span>
+  </div>
+
+  <!-- Form actions -->
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+      <span id="submitText">Book Appointment</span>
+    </button>
+    <button type="reset" class="btn btn-secondary">Clear Form</button>
   </div>
 </form>
 
@@ -181,28 +238,73 @@
   .booking-form {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
   }
 
+  /* ===== FORM SECTIONS ===== */
   .form-section {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    border: none;
-    padding: 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .form-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .section-icon {
+    font-size: 24px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .section-header h3 {
     margin: 0;
-  }
-
-  .form-section legend {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: var(--text-strong);
-    padding: 0;
-    margin-bottom: 8px;
+    line-height: 1.3;
   }
 
+  .section-header h3 + .section-hint {
+    display: none;
+  }
+
+  .section-hint {
+    display: none;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  @media (min-width: 768px) {
+    .section-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 0;
+    }
+
+    .section-hint {
+      display: block;
+      text-align: right;
+      grid-column: 3;
+    }
+  }
+
+  /* ===== FORM ROWS & GROUPS ===== */
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -225,17 +327,33 @@
     color: var(--text-strong);
   }
 
+  .required {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .optional {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
   .form-group input,
   .form-group select,
   .form-group textarea {
-    padding: 10px 12px;
+    padding: 11px 12px;
     border: 1px solid var(--surface-border);
     border-radius: var(--radius-sm);
     font-family: inherit;
     font-size: 14px;
     color: var(--text-strong);
-    background: var(--surface-2);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: var(--surface-0);
+    transition: all 0.2s ease;
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: var(--text-muted);
   }
 
   .form-group input:focus,
@@ -243,30 +361,140 @@
   .form-group textarea:focus {
     outline: none;
     border-color: var(--red);
-    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    background: var(--surface-0);
+  }
+
+  .form-group input:disabled,
+  .form-group select:disabled {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    cursor: not-allowed;
   }
 
   .form-group textarea {
     resize: vertical;
     min-height: 100px;
+    font-family: inherit;
   }
 
+  /* ===== CHARACTER COUNT ===== */
   .char-count {
     font-size: 12px;
     color: var(--text-muted);
     text-align: right;
+    margin-top: 2px;
   }
 
+  /* ===== CHECKBOX GROUP ===== */
+  .checkbox-group {
+    gap: 8px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: var(--red);
+  }
+
+  .checkbox-label input[type="checkbox"]:focus {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .checkbox-text {
+    font-size: 14px;
+    color: var(--text-strong);
+    line-height: 1.5;
+  }
+
+  .form-error {
+    font-size: 13px;
+    color: var(--red);
+    margin-top: 4px;
+  }
+
+  /* ===== FORM ACTIONS ===== */
   .form-actions {
     display: flex;
     gap: 12px;
-    margin-top: 12px;
+    margin-top: 16px;
   }
 
-  .form-actions button {
+  .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: white;
     flex: 1;
   }
 
+  .btn-primary:hover:not(:disabled) {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    background: var(--off);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  .btn-primary:focus {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .btn-secondary {
+    background: var(--surface-2);
+    color: var(--text-strong);
+    flex: 1;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--off);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn-secondary:focus {
+    outline: 2px solid var(--text-strong);
+    outline-offset: 2px;
+  }
+
+  /* ===== FORM MESSAGES ===== */
   .form-message {
     display: flex;
     align-items: flex-start;
@@ -280,13 +508,13 @@
   .form-message.success {
     background: #F0FDF4;
     border-color: #86EFAC;
-    color: #22A24D;
+    color: #16A34A;
   }
 
   .form-message.error {
     background: #FDECEC;
     border-color: #F5B4B4;
-    color: #D14343;
+    color: #DC2626;
   }
 
   .form-message svg {
@@ -294,9 +522,10 @@
     margin-top: 2px;
   }
 
+  /* ===== MOBILE RESPONSIVE ===== */
   @media (max-width: 640px) {
     .booking-form {
-      gap: 16px;
+      gap: 24px;
     }
 
     .form-row {
@@ -306,28 +535,55 @@
 
     .form-section {
       gap: 12px;
+      padding-bottom: 12px;
+    }
+
+    .section-header {
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .section-icon {
+      font-size: 20px;
+    }
+
+    .section-header h3 {
+      font-size: 15px;
     }
 
     .form-actions {
       flex-direction: column;
+      gap: 10px;
     }
 
-    .form-actions button {
-      flex: none;
+    .btn {
       width: 100%;
+      padding: 12px 16px;
+    }
+  }
+
+  /* ===== ACCESSIBILITY ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .form-group input,
+    .form-group select,
+    .form-group textarea,
+    .btn {
+      transition: none;
     }
   }
 </style>
 
 <script>
   const form = document.getElementById('bookingForm') as HTMLFormElement;
-  const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
   const submitText = document.getElementById('submitText') as HTMLElement;
   const successMsg = document.getElementById('formSuccess') as HTMLElement;
   const errorMsg = document.getElementById('formError') as HTMLElement;
   const errorText = document.getElementById('errorText') as HTMLElement;
   const charCountEl = document.getElementById('charCount') as HTMLElement;
   const messageEl = document.getElementById('message') as HTMLTextAreaElement;
+  const contactPermissionCheckbox = document.getElementById('contactPermission') as HTMLInputElement;
+  const contactPermissionError = document.getElementById('contactPermissionError') as HTMLElement;
+  const submitBtn = form.querySelector('[type="submit"]') as HTMLButtonElement;
 
   // Update character count
   if (messageEl) {
@@ -339,6 +595,15 @@
   // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Validate contact permission checkbox
+    if (!contactPermissionCheckbox.checked) {
+      contactPermissionError.style.display = 'block';
+      contactPermissionCheckbox.focus();
+      return;
+    }
+
+    contactPermissionError.style.display = 'none';
 
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -379,6 +644,7 @@
         successMsg.style.display = 'flex';
         form.reset();
         charCountEl.textContent = '0';
+        contactPermissionError.style.display = 'none';
       } else {
         errorText.textContent = data.error || 'Failed to submit booking. Please try again.';
         errorMsg.style.display = 'flex';
@@ -388,7 +654,14 @@
       errorMsg.style.display = 'flex';
     } finally {
       submitBtn.disabled = false;
-      submitText.textContent = 'Submit Booking Request';
+      submitText.textContent = 'Book Appointment';
+    }
+  });
+
+  // Clear contact permission error when checkbox is checked
+  contactPermissionCheckbox.addEventListener('change', () => {
+    if (contactPermissionCheckbox.checked) {
+      contactPermissionError.style.display = 'none';
     }
   });
 </script>

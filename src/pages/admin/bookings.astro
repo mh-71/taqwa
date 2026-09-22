@@ -134,15 +134,32 @@ const statusCounts = {
     </div>
   )}
 
-  <div id="viewModal" class="modal" style="display: none;">
+  <!-- Booking Details Modal -->
+  <div id="bookingModal" class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-backdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Booking Details</h2>
-        <button class="modal-close" data-action="close-modal">×</button>
+        <div class="header-left">
+          <span class="header-icon">📅</span>
+          <div class="header-text">
+            <h2 id="modalTitle">Booking Details</h2>
+            <p>Complete information about this booking request</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="booking-meta">
+            <div id="statusBadgeContainer" class="status-badge-container"></div>
+            <div id="bookingNumberContainer" class="booking-number-container"></div>
+          </div>
+          <button class="modal-close" data-action="close-modal" aria-label="Close modal">×</button>
+        </div>
       </div>
-      <div id="viewContent"></div>
+      <div id="modalBody" class="modal-body">
+        <!-- Content loaded by JavaScript -->
+      </div>
     </div>
   </div>
+
 </AdminLayout>
 
 <script define:vars={{ bookings }}>
@@ -165,20 +182,26 @@ const statusCounts = {
         } else if (action === 'delete') {
           deleteBooking(id);
         } else if (action === 'close-modal') {
-          closeViewModal();
+          closeBookingModal();
         }
       });
     });
 
-    // Close modal when clicking on background overlay
-    const modal = document.getElementById('viewModal');
+    // Modal backdrop click to close
+    const modal = document.getElementById('bookingModal');
     if (modal) {
-      modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-          closeViewModal();
-        }
-      });
+      const backdrop = modal.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.addEventListener('click', closeBookingModal);
+      }
     }
+
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeBookingModal();
+      }
+    });
   });
 
   function viewBooking(id) {
@@ -188,29 +211,233 @@ const statusCounts = {
       return;
     }
 
-    document.getElementById('viewContent').innerHTML = `
-      <div style="padding: 20px;">
-        <h3>Booking #${booking.id}</h3>
-        <div style="margin-top: 16px;">
-          <strong>Customer:</strong> ${booking.name}<br>
-          <strong>Phone:</strong> ${booking.phone_number}<br>
-          <strong>Email:</strong> ${booking.email || 'N/A'}<br>
-          <strong>Vehicle:</strong> ${booking.vehicle_make} ${booking.vehicle_model}<br>
-          <strong>Registration:</strong> ${booking.registration_no || 'N/A'}<br>
-          <strong>Service:</strong> ${booking.service_type}<br>
-          <strong>Date:</strong> ${new Date(booking.preferred_date).toLocaleDateString()}<br>
-          <strong>Time:</strong> ${booking.preferred_time}<br>
-          <strong>Message:</strong> ${booking.message || 'None'}<br>
-          <strong>Status:</strong> ${booking.status}<br>
-          <strong>Created:</strong> ${new Date(booking.created_at).toLocaleString()}<br>
+    // Update header with booking info
+    const statusBadgeContainer = document.getElementById('statusBadgeContainer');
+    const bookingNumberContainer = document.getElementById('bookingNumberContainer');
+
+    if (statusBadgeContainer && bookingNumberContainer) {
+      statusBadgeContainer.innerHTML = `<span class="badge badge-${booking.status}">${booking.status.toUpperCase()}</span>`;
+      bookingNumberContainer.innerHTML = `
+        <div class="booking-number">
+          <div class="booking-title">Booking #${booking.id}</div>
+          <div class="booking-id">ID: BK-${String(booking.id).padStart(4, '0')}</div>
+        </div>
+      `;
+    }
+
+    const modalBody = document.getElementById('modalBody');
+    if (!modalBody) return;
+
+    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    });
+
+    const formatDateTime = (dateStr) => new Date(dateStr).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    modalBody.innerHTML = `
+      <div class="booking-details-grid">
+        <!-- Row 1: Customer & Vehicle -->
+        <div class="detail-card">
+          <div class="card-header customer-info">
+            <span class="card-icon">👤</span>
+            <h3>Customer Information</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-label">Name:</span>
+              <span class="info-value">${booking.name}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Phone:</span>
+              <span class="info-value"><a href="tel:${booking.phone_number}">${booking.phone_number}</a></span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email:</span>
+              <span class="info-value">${booking.email ? `<a href="mailto:${booking.email}">${booking.email}</a>` : 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="card-header vehicle-info">
+            <span class="card-icon">🚗</span>
+            <h3>Vehicle Information</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-label">Make:</span>
+              <span class="info-value">${booking.vehicle_make}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Model:</span>
+              <span class="info-value">${booking.vehicle_model}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Registration:</span>
+              <span class="info-value">${booking.registration_no || 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Service & Additional -->
+        <div class="detail-card">
+          <div class="card-header service-details">
+            <span class="card-icon">🔧</span>
+            <h3>Service Details</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-label">Service Type:</span>
+              <span class="info-value">${booking.service_type}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Preferred Date:</span>
+              <span class="info-value">
+                <span class="date-icon">📅</span>
+                ${formatDate(booking.preferred_date)}
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Preferred Time:</span>
+              <span class="info-value">
+                <span class="time-icon">⏰</span>
+                ${booking.preferred_time}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="card-header additional-info">
+            <span class="card-icon">💬</span>
+            <h3>Additional Information</h3>
+          </div>
+          <div class="card-content">
+            ${booking.message ? `
+              <div class="message-box">
+                ${booking.message}
+              </div>
+            ` : '<div class="no-message">No message provided</div>'}
+          </div>
+        </div>
+
+        <!-- Row 3: Status & Timestamps -->
+        <div class="detail-card">
+          <div class="card-header booking-status">
+            <span class="card-icon">📋</span>
+            <h3>Booking Status</h3>
+          </div>
+          <div class="card-content">
+            <div class="status-timeline">
+              <div class="status-step ${booking.status === 'pending' || booking.status === 'confirmed' || booking.status === 'completed' ? 'active' : ''}">
+                <div class="status-marker">●</div>
+                <div class="status-label">Pending</div>
+                <div class="status-desc">Booking request received</div>
+              </div>
+              <div class="status-step ${booking.status === 'confirmed' || booking.status === 'completed' ? 'active' : ''}">
+                <div class="status-marker">●</div>
+                <div class="status-label">Confirmed</div>
+                <div class="status-desc">Appointment confirmed</div>
+              </div>
+              <div class="status-step ${booking.status === 'completed' ? 'active' : ''}">
+                <div class="status-marker">●</div>
+                <div class="status-label">Completed</div>
+                <div class="status-desc">Service completed</div>
+              </div>
+              ${booking.status === 'cancelled' ? `
+                <div class="status-step cancelled">
+                  <div class="status-marker">✕</div>
+                  <div class="status-label">Cancelled</div>
+                  <div class="status-desc">Booking cancelled</div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="card-header timestamps">
+            <span class="card-icon">🕐</span>
+            <h3>Timestamps</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-label">Created:</span>
+              <span class="info-value">${formatDateTime(booking.created_at)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Last Updated:</span>
+              <span class="info-value">${formatDateTime(booking.updated_at)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button class="btn-action btn-close" data-action="close-modal">
+            ✕ Close
+          </button>
+        </div>
+        <div class="modal-footer-right">
+          <button class="btn-action btn-update" data-action="update-status" data-id="${booking.id}">
+            ✎ Update Status
+          </button>
+          <button class="btn-action btn-print" data-action="print-details" data-id="${booking.id}">
+            🖨 Print Details
+          </button>
         </div>
       </div>
     `;
-    document.getElementById('viewModal').style.display = 'flex';
+
+    // Attach event listeners to new buttons
+    const updateStatusBtn = modalBody.querySelector('[data-action="update-status"]');
+    if (updateStatusBtn) {
+      updateStatusBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const bookingId = parseInt(updateStatusBtn.getAttribute('data-id'));
+        const newStatus = prompt('New status (pending, confirmed, completed, cancelled):', booking.status);
+        if (newStatus && ['pending', 'confirmed', 'completed', 'cancelled'].includes(newStatus)) {
+          updateStatus(bookingId, newStatus);
+        }
+      });
+    }
+
+    const printBtn = modalBody.querySelector('[data-action="print-details"]');
+    if (printBtn) {
+      printBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.print();
+      });
+    }
+
+    openBookingModal();
   }
 
-  function closeViewModal() {
-    document.getElementById('viewModal').style.display = 'none';
+  function openBookingModal() {
+    const modal = document.getElementById('bookingModal');
+    if (!modal) return;
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBookingModal() {
+    const modal = document.getElementById('bookingModal');
+    if (!modal) return;
+
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
   }
 
   async function updateStatus(id, newStatus) {
@@ -342,44 +569,5 @@ const statusCounts = {
     padding: 4px 8px;
     font-size: 11px;
     white-space: nowrap;
-  }
-
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-  }
-
-  .modal.open {
-    display: flex;
-  }
-
-  .modal-content {
-    background: var(--surface-1);
-    border-radius: var(--radius-md);
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--surface-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--text-muted);
   }
 </style>
