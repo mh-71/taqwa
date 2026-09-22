@@ -105,25 +105,25 @@ const statusCounts = {
                 <span class={`badge badge-${booking.status}`}>{booking.status}</span>
               </td>
               <td class="actions">
-                <button class="btn-view" onclick={`viewBooking(${booking.id})`} title="View booking">
+                <button class="btn-view" data-action="view" data-id={booking.id} title="View booking">
                   View
                 </button>
                 {booking.status !== 'completed' && booking.status !== 'cancelled' && (
-                  <button class="btn-approve" onclick={`updateStatus(${booking.id}, 'confirmed')`} title="Confirm booking">
+                  <button class="btn-approve" data-action="confirm" data-id={booking.id} title="Confirm booking">
                     Confirm
                   </button>
                 )}
                 {booking.status === 'confirmed' && (
-                  <button class="btn-approve" onclick={`updateStatus(${booking.id}, 'completed')`} title="Mark completed">
+                  <button class="btn-approve" data-action="complete" data-id={booking.id} title="Mark completed">
                     Complete
                   </button>
                 )}
                 {booking.status !== 'cancelled' && booking.status !== 'completed' && (
-                  <button class="btn-reject" onclick={`updateStatus(${booking.id}, 'cancelled')`} title="Cancel booking">
+                  <button class="btn-reject" data-action="cancel" data-id={booking.id} title="Cancel booking">
                     Cancel
                   </button>
                 )}
-                <button class="btn-delete" onclick={`deleteBooking(${booking.id})`} title="Delete booking">
+                <button class="btn-delete" data-action="delete" data-id={booking.id} title="Delete booking">
                   Delete
                 </button>
               </td>
@@ -146,8 +146,30 @@ const statusCounts = {
 </AdminLayout>
 
 <script define:vars={{ bookings }}>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Attach event listeners to action buttons
+    document.querySelectorAll('[data-action]').forEach(button => {
+      button.addEventListener('click', function() {
+        const action = this.getAttribute('data-action');
+        const id = parseInt(this.getAttribute('data-id'));
+
+        if (action === 'view') {
+          viewBooking(id);
+        } else if (action === 'confirm') {
+          updateStatus(id, 'confirmed');
+        } else if (action === 'complete') {
+          updateStatus(id, 'completed');
+        } else if (action === 'cancel') {
+          updateStatus(id, 'cancelled');
+        } else if (action === 'delete') {
+          deleteBooking(id);
+        }
+      });
+    });
+  });
+
   function viewBooking(id) {
-    const booking = bookings.find(b => b.id === parseInt(id));
+    const booking = bookings.find(b => b.id === id);
     if (!booking) {
       alert('Booking not found');
       return;
