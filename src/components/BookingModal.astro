@@ -1,0 +1,187 @@
+---
+import BookingForm from './BookingForm.astro';
+---
+
+<div id="bookingModal" class="booking-modal" style="display: none;">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Book an Appointment</h2>
+      <button id="modalClose" class="modal-close" aria-label="Close booking modal">
+        ×
+      </button>
+    </div>
+    <div class="modal-body">
+      <BookingForm />
+    </div>
+  </div>
+</div>
+
+<style>
+  .booking-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none !important;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .booking-modal.open {
+    display: flex !important;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-content {
+    position: relative;
+    z-index: 1001;
+    background: var(--surface-0);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .modal-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-strong);
+    margin: 0;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .modal-close:hover {
+    background-color: var(--surface-2);
+    color: var(--text-strong);
+  }
+
+  .modal-close:focus {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .modal-body {
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  @media (max-width: 640px) {
+    .booking-modal {
+      padding: 0;
+    }
+
+    .modal-content {
+      max-width: 100%;
+      border-radius: 16px 16px 0 0;
+      max-height: 100%;
+    }
+
+    .modal-header {
+      padding: 20px;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modal-content {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const modal = document.getElementById('bookingModal') as HTMLElement;
+  const modalClose = document.getElementById('modalClose') as HTMLButtonElement;
+  const overlay = modal?.querySelector('.modal-overlay') as HTMLElement;
+
+  // Open modal
+  window.openBookingModal = () => {
+    if (modal) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  // Close modal
+  window.closeBookingModal = () => {
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  };
+
+  // Close button
+  if (modalClose) {
+    modalClose.addEventListener('click', () => {
+      window.closeBookingModal();
+    });
+  }
+
+  // Close on overlay click
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      window.closeBookingModal();
+    });
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('open')) {
+      window.closeBookingModal();
+    }
+  });
+
+  // Declare global functions for TypeScript
+  declare global {
+    function openBookingModal(): void;
+    function closeBookingModal(): void;
+  }
+</script>

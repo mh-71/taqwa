@@ -7,7 +7,7 @@ import '../styles/admin.css';
 
 interface Props {
   title: string;
-  active?: 'dashboard' | 'new' | 'posts' | 'reviews' | 'categories' | '';
+  active?: 'dashboard' | 'new' | 'posts' | 'reviews' | 'bookings' | 'categories' | '';
 }
 const { title, active = '' } = Astro.props;
 const isLive = !!Astro.locals.runtime;
@@ -65,6 +65,10 @@ const isLive = !!Astro.locals.runtime;
         <a href="/admin/reviews" class={`nav-link ${active === 'reviews' ? 'active' : ''}`}>
           <span class="nav-icon">⭐</span>
           <span>Customer Reviews</span>
+        </a>
+        <a href="/admin/bookings" class={`nav-link ${active === 'bookings' ? 'active' : ''}`}>
+          <span class="nav-icon">📅</span>
+          <span>Bookings</span>
         </a>
         <a href="/admin/categories" class={`nav-link ${active === 'categories' ? 'active' : ''}`}>
           <span class="nav-icon">🏷️</span>

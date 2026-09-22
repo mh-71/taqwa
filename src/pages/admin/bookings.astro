@@ -1,0 +1,340 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getBookingById } from '../../lib/booking-db';
+
+export const prerender = false;
+
+const base = import.meta.env.BASE_URL;
+const runtime = Astro.locals.runtime;
+const statusFilter = Astro.url.searchParams.get('status') ?? '';
+
+let bookings: any[] = [];
+let stats = { total: 0, pending: 0, confirmed: 0, completed: 0, cancelled: 0 };
+
+if (runtime) {
+  const db = runtime.env.DB;
+  const response = await fetch(`${base}api/admin/bookings${statusFilter ? `?status=${statusFilter}` : ''}`, {
+    headers: { 'Cookie': Astro.request.headers.get('cookie') || '' }
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    bookings = data.bookings;
+    stats = data.stats;
+  }
+}
+
+const statusCounts = {
+  pending: stats.pending || 0,
+  confirmed: stats.confirmed || 0,
+  completed: stats.completed || 0,
+  cancelled: stats.cancelled || 0,
+};
+---
+
+<AdminLayout title="Bookings" active="bookings">
+  <div class="page-head">
+    <div>
+      <h1>Bookings</h1>
+      <p>{bookings.length} booking{bookings.length === 1 ? '' : 's'}</p>
+    </div>
+  </div>
+
+  <div class="status-tabs">
+    <a href="/admin/bookings" class:list={['btn', 'btn-ghost', statusFilter === '' && 'active']}>
+      All ({stats.total})
+    </a>
+    <a href="/admin/bookings?status=pending" class:list={['btn', 'btn-ghost', statusFilter === 'pending' && 'active']}>
+      Pending ({statusCounts.pending})
+    </a>
+    <a href="/admin/bookings?status=confirmed" class:list={['btn', 'btn-ghost', statusFilter === 'confirmed' && 'active']}>
+      Confirmed ({statusCounts.confirmed})
+    </a>
+    <a href="/admin/bookings?status=completed" class:list={['btn', 'btn-ghost', statusFilter === 'completed' && 'active']}>
+      Completed ({statusCounts.completed})
+    </a>
+    <a href="/admin/bookings?status=cancelled" class:list={['btn', 'btn-ghost', statusFilter === 'cancelled' && 'active']}>
+      Cancelled ({statusCounts.cancelled})
+    </a>
+  </div>
+
+  {bookings.length === 0 ? (
+    <div class="empty-state">
+      <p>No bookings found{statusFilter ? ` with status "${statusFilter}"` : ''}.</p>
+      <p class="text-muted">Booking requests will appear here.</p>
+    </div>
+  ) : (
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Vehicle</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookings.map((booking) => (
+            <tr>
+              <td class="id">#{booking.id}</td>
+              <td class="name">{booking.name}</td>
+              <td class="phone">{booking.phone_number}</td>
+              <td class="vehicle">{booking.vehicle_make} {booking.vehicle_model}</td>
+              <td class="service">{booking.service_type}</td>
+              <td class="date">{new Date(booking.preferred_date).toLocaleDateString()}</td>
+              <td>
+                <span class={`badge badge-${booking.status}`}>{booking.status}</span>
+              </td>
+              <td class="actions">
+                <button class="btn-view" onclick={`viewBooking(${booking.id})`} title="View booking">
+                  View
+                </button>
+                {booking.status !== 'completed' && booking.status !== 'cancelled' && (
+                  <button class="btn-approve" onclick={`updateStatus(${booking.id}, 'confirmed')`} title="Confirm booking">
+                    Confirm
+                  </button>
+                )}
+                {booking.status === 'confirmed' && (
+                  <button class="btn-approve" onclick={`updateStatus(${booking.id}, 'completed')`} title="Mark completed">
+                    Complete
+                  </button>
+                )}
+                {booking.status !== 'cancelled' && booking.status !== 'completed' && (
+                  <button class="btn-reject" onclick={`updateStatus(${booking.id}, 'cancelled')`} title="Cancel booking">
+                    Cancel
+                  </button>
+                )}
+                <button class="btn-delete" onclick={`deleteBooking(${booking.id})`} title="Delete booking">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+
+  <div id="viewModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Booking Details</h2>
+        <button class="modal-close" onclick="closeViewModal()">×</button>
+      </div>
+      <div id="viewContent"></div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script define:vars={{ base }}>
+  async function viewBooking(id) {
+    try {
+      const response = await fetch(`${base}api/admin/bookings?id=${id}`, {
+        headers: { 'Cookie': document.cookie }
+      });
+      const data = await response.json();
+      const booking = data.bookings[0];
+
+      document.getElementById('viewContent').innerHTML = `
+        <div style="padding: 20px;">
+          <h3>Booking #${booking.id}</h3>
+          <div style="margin-top: 16px;">
+            <strong>Customer:</strong> ${booking.name}<br>
+            <strong>Phone:</strong> ${booking.phone_number}<br>
+            <strong>Email:</strong> ${booking.email || 'N/A'}<br>
+            <strong>Vehicle:</strong> ${booking.vehicle_make} ${booking.vehicle_model}<br>
+            <strong>Registration:</strong> ${booking.registration_no || 'N/A'}<br>
+            <strong>Service:</strong> ${booking.service_type}<br>
+            <strong>Date:</strong> ${new Date(booking.preferred_date).toLocaleDateString()}<br>
+            <strong>Time:</strong> ${booking.preferred_time}<br>
+            <strong>Message:</strong> ${booking.message || 'None'}<br>
+            <strong>Status:</strong> ${booking.status}<br>
+            <strong>Created:</strong> ${new Date(booking.created_at).toLocaleString()}<br>
+          </div>
+        </div>
+      `;
+      document.getElementById('viewModal').style.display = 'flex';
+    } catch (error) {
+      alert('Error loading booking details');
+    }
+  }
+
+  function closeViewModal() {
+    document.getElementById('viewModal').style.display = 'none';
+  }
+
+  async function updateStatus(id, newStatus) {
+    if (!confirm(`Change status to ${newStatus}?`)) return;
+
+    try {
+      const response = await fetch(`${base}api/admin/bookings/${id}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Cookie': document.cookie },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert('Failed to update status');
+      }
+    } catch (error) {
+      alert('Error updating status');
+    }
+  }
+
+  async function deleteBooking(id) {
+    if (!confirm('Delete this booking? This cannot be undone.')) return;
+
+    try {
+      const response = await fetch(`${base}api/admin/bookings/${id}/delete`, {
+        method: 'DELETE',
+        headers: { 'Cookie': document.cookie }
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        alert('Failed to delete booking');
+      }
+    } catch (error) {
+      alert('Error deleting booking');
+    }
+  }
+</script>
+
+<style>
+  .status-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--surface-border);
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+  }
+
+  .admin-table thead {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .admin-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .admin-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--surface-border);
+    font-size: 14px;
+  }
+
+  .admin-table tbody tr:hover {
+    background: var(--surface-2);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .badge-pending {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .badge-confirmed {
+    background: #DBEAFE;
+    color: #0C4A6E;
+  }
+
+  .badge-completed {
+    background: #DCFCE7;
+    color: #15803D;
+  }
+
+  .badge-cancelled {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .actions button {
+    padding: 4px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+  }
+
+  .modal.open {
+    display: flex;
+  }
+
+  .modal-content {
+    background: var(--surface-1);
+    border-radius: var(--radius-md);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--surface-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+</style>

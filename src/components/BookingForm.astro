@@ -1,0 +1,394 @@
+---
+// Booking form component - used inside BookingModal
+---
+
+<form id="bookingForm" class="booking-form">
+  <!-- Customer Information -->
+  <fieldset class="form-section">
+    <legend>Your Information</legend>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Your full name"
+          required
+          minlength="2"
+          maxlength="100"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number *</label>
+        <input
+          type="tel"
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="01XXX-XXXXXX"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="your@email.com"
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Vehicle Information -->
+  <fieldset class="form-section">
+    <legend>Vehicle Information</legend>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="vehicleMake">Vehicle Make *</label>
+        <input
+          type="text"
+          id="vehicleMake"
+          name="vehicleMake"
+          placeholder="e.g., Toyota"
+          required
+          minlength="2"
+          maxlength="50"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="vehicleModel">Vehicle Model *</label>
+        <input
+          type="text"
+          id="vehicleModel"
+          name="vehicleModel"
+          placeholder="e.g., Corolla"
+          required
+          minlength="2"
+          maxlength="50"
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="registrationNo">Registration Number</label>
+        <input
+          type="text"
+          id="registrationNo"
+          name="registrationNo"
+          placeholder="License plate or chassis number"
+          maxlength="20"
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Service & Appointment -->
+  <fieldset class="form-section">
+    <legend>Service & Appointment</legend>
+
+    <div class="form-row full">
+      <div class="form-group">
+        <label for="serviceType">Service Type *</label>
+        <select id="serviceType" name="serviceType" required>
+          <option value="">Select a service</option>
+          <option value="lpg-conversion">LPG Conversion</option>
+          <option value="cng-conversion">CNG Conversion</option>
+          <option value="engine-repair">Engine Repair & Service</option>
+          <option value="car-ac">Car AC Service</option>
+          <option value="battery-electrical">Battery & Electrical</option>
+          <option value="denting-painting">Denting & Painting</option>
+          <option value="car-wash">Car Wash & Detailing</option>
+          <option value="periodic-maintenance">Periodic Maintenance</option>
+          <option value="hybrid">Hybrid Vehicle Service</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="preferredDate">Preferred Date *</label>
+        <input type="date" id="preferredDate" name="preferredDate" required />
+      </div>
+
+      <div class="form-group">
+        <label for="preferredTime">Preferred Time *</label>
+        <input type="time" id="preferredTime" name="preferredTime" required />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Additional Message -->
+  <fieldset class="form-section">
+    <legend>Additional Information</legend>
+
+    <div class="form-group">
+      <label for="message">Message</label>
+      <textarea
+        id="message"
+        name="message"
+        placeholder="Any additional details or special requests..."
+        maxlength="1000"
+        rows="4"
+      ></textarea>
+      <div class="char-count">
+        <span id="charCount">0</span>/1000
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Spam protection honeypot -->
+  <input type="hidden" name="website" value="" />
+  <input type="hidden" name="company" value="" />
+
+  <!-- Form actions -->
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary" id="submitBtn">
+      <span id="submitText">Submit Booking Request</span>
+    </button>
+    <button type="reset" class="btn btn-ghost">Clear</button>
+  </div>
+
+  <!-- Status messages -->
+  <div id="formSuccess" class="form-message success" style="display: none;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#22A24D" stroke-width="1.8" />
+      <path d="M8 12.5l2.5 2.5L16 9" stroke="#22A24D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span id="successText">Booking submitted successfully! We will confirm shortly.</span>
+  </div>
+
+  <div id="formError" class="form-message error" style="display: none;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#D14343" stroke-width="1.8" />
+      <path d="M12 7v6M12 16.5v.01" stroke="#D14343" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <span id="errorText">An error occurred. Please try again.</span>
+  </div>
+</form>
+
+<style>
+  .booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .form-section legend {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-strong);
+    padding: 0;
+    margin-bottom: 8px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-row.full {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-strong);
+    background: var(--surface-2);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .char-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .form-actions button {
+    flex: 1;
+  }
+
+  .form-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    border: 1px solid;
+  }
+
+  .form-message.success {
+    background: #F0FDF4;
+    border-color: #86EFAC;
+    color: #22A24D;
+  }
+
+  .form-message.error {
+    background: #FDECEC;
+    border-color: #F5B4B4;
+    color: #D14343;
+  }
+
+  .form-message svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .booking-form {
+      gap: 16px;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .form-section {
+      gap: 12px;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .form-actions button {
+      flex: none;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('bookingForm') as HTMLFormElement;
+  const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+  const submitText = document.getElementById('submitText') as HTMLElement;
+  const successMsg = document.getElementById('formSuccess') as HTMLElement;
+  const errorMsg = document.getElementById('formError') as HTMLElement;
+  const errorText = document.getElementById('errorText') as HTMLElement;
+  const charCountEl = document.getElementById('charCount') as HTMLElement;
+  const messageEl = document.getElementById('message') as HTMLTextAreaElement;
+
+  // Update character count
+  if (messageEl) {
+    messageEl.addEventListener('input', () => {
+      charCountEl.textContent = messageEl.value.length;
+    });
+  }
+
+  // Handle form submission
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    successMsg.style.display = 'none';
+    errorMsg.style.display = 'none';
+    submitBtn.disabled = true;
+    submitText.textContent = 'Submitting...';
+
+    try {
+      const formData = new FormData(form);
+      const payload = {
+        name: formData.get('name'),
+        phoneNumber: formData.get('phoneNumber'),
+        email: formData.get('email'),
+        vehicleMake: formData.get('vehicleMake'),
+        vehicleModel: formData.get('vehicleModel'),
+        registrationNo: formData.get('registrationNo'),
+        serviceType: formData.get('serviceType'),
+        preferredDate: formData.get('preferredDate'),
+        preferredTime: formData.get('preferredTime'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+        company: formData.get('company'),
+      };
+
+      const response = await fetch('/api/bookings/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        successMsg.style.display = 'flex';
+        form.reset();
+        charCountEl.textContent = '0';
+      } else {
+        errorText.textContent = data.error || 'Failed to submit booking. Please try again.';
+        errorMsg.style.display = 'flex';
+      }
+    } catch (error) {
+      errorText.textContent = 'An error occurred. Please try again.';
+      errorMsg.style.display = 'flex';
+    } finally {
+      submitBtn.disabled = false;
+      submitText.textContent = 'Submit Booking Request';
+    }
+  });
+</script>

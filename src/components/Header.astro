@@ -1,4 +1,6 @@
 ---
+import BookingModal from './BookingModal.astro';
+
 const base = import.meta.env.BASE_URL;
 // `current` selects which top-level nav item gets the .active treatment.
 // Matches the `id`s used below: 'home' | 'about' | 'services' | 'hybrid' |
@@ -75,10 +77,10 @@ const isActive = (id: string) => (current === id ? 'active' : '');
     ) : langToggle ? (
       <a href={base + langToggle.href} class="lang-toggle-btn">{langToggle.label}</a>
     ) : (
-      <a href={base + "contact.html"} class="call-btn">
+      <button class="call-btn" onclick="openBookingModal()" type="button">
         <svg class="icon" width="15" height="15"><use href="#icon-phone"/></svg>
         <span class="txt">Book Now</span>
-      </a>
+      </button>
     )}
 
     <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
@@ -261,3 +263,50 @@ const isActive = (id: string) => (current === id ? 'active' : '');
     });
   })();
 </script>
+
+<BookingModal />
+
+<style>
+  .call-btn {
+    background: var(--red);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 11px 22px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .call-btn:hover {
+    background: var(--red-dark);
+  }
+
+  .call-btn:focus {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 1024px) {
+    .call-btn {
+      display: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .call-btn span.txt {
+      display: none;
+    }
+
+    .call-btn {
+      padding: 11px 14px;
+    }
+  }
+</style>
