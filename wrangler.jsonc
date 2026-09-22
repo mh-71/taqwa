@@ -30,6 +30,12 @@
   "ai": {
     "binding": "AI"
   },
+  // Email service: sends booking confirmation and cancellation emails to customers
+  // Requires: Workers Paid plan + taqwa.autos domain onboarding in Cloudflare Email Service
+  // Configure sender address (bookings@taqwa.autos) in Cloudflare Email Service dashboard
+  "email": {
+    "binding": "EMAIL"
+  },
   "d1_databases": [
     {
       "binding": "DB",

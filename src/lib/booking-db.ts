@@ -159,6 +159,24 @@ export async function updateBookingStatus(
   return result.success && result.meta.changes > 0;
 }
 
+/**
+ * Get current status of a booking
+ * Used to determine if email should be sent on status change
+ */
+export async function getBookingStatus(
+  db: D1Database,
+  id: number
+): Promise<string | null> {
+  if (!db) return null;
+
+  const result = await db
+    .prepare(`SELECT status FROM bookings WHERE id = ?`)
+    .bind(id)
+    .first<{ status: string }>();
+
+  return result?.status ?? null;
+}
+
 export async function updateBooking(
   db: D1Database,
   id: number,
