@@ -145,37 +145,33 @@ const statusCounts = {
   </div>
 </AdminLayout>
 
-<script>
-  async function viewBooking(id) {
-    try {
-      const response = await fetch(`/api/admin/bookings?id=${id}`, {
-        headers: { 'Cookie': document.cookie }
-      });
-      const data = await response.json();
-      const booking = data.bookings[0];
-
-      document.getElementById('viewContent').innerHTML = `
-        <div style="padding: 20px;">
-          <h3>Booking #${booking.id}</h3>
-          <div style="margin-top: 16px;">
-            <strong>Customer:</strong> ${booking.name}<br>
-            <strong>Phone:</strong> ${booking.phone_number}<br>
-            <strong>Email:</strong> ${booking.email || 'N/A'}<br>
-            <strong>Vehicle:</strong> ${booking.vehicle_make} ${booking.vehicle_model}<br>
-            <strong>Registration:</strong> ${booking.registration_no || 'N/A'}<br>
-            <strong>Service:</strong> ${booking.service_type}<br>
-            <strong>Date:</strong> ${new Date(booking.preferred_date).toLocaleDateString()}<br>
-            <strong>Time:</strong> ${booking.preferred_time}<br>
-            <strong>Message:</strong> ${booking.message || 'None'}<br>
-            <strong>Status:</strong> ${booking.status}<br>
-            <strong>Created:</strong> ${new Date(booking.created_at).toLocaleString()}<br>
-          </div>
-        </div>
-      `;
-      document.getElementById('viewModal').style.display = 'flex';
-    } catch (error) {
-      alert('Error loading booking details');
+<script define:vars={{ bookings }}>
+  function viewBooking(id) {
+    const booking = bookings.find(b => b.id === parseInt(id));
+    if (!booking) {
+      alert('Booking not found');
+      return;
     }
+
+    document.getElementById('viewContent').innerHTML = `
+      <div style="padding: 20px;">
+        <h3>Booking #${booking.id}</h3>
+        <div style="margin-top: 16px;">
+          <strong>Customer:</strong> ${booking.name}<br>
+          <strong>Phone:</strong> ${booking.phone_number}<br>
+          <strong>Email:</strong> ${booking.email || 'N/A'}<br>
+          <strong>Vehicle:</strong> ${booking.vehicle_make} ${booking.vehicle_model}<br>
+          <strong>Registration:</strong> ${booking.registration_no || 'N/A'}<br>
+          <strong>Service:</strong> ${booking.service_type}<br>
+          <strong>Date:</strong> ${new Date(booking.preferred_date).toLocaleDateString()}<br>
+          <strong>Time:</strong> ${booking.preferred_time}<br>
+          <strong>Message:</strong> ${booking.message || 'None'}<br>
+          <strong>Status:</strong> ${booking.status}<br>
+          <strong>Created:</strong> ${new Date(booking.created_at).toLocaleString()}<br>
+        </div>
+      </div>
+    `;
+    document.getElementById('viewModal').style.display = 'flex';
   }
 
   function closeViewModal() {
