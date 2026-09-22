@@ -4,6 +4,7 @@ import { getAllBookings, getBookingStats } from '../../lib/booking-db';
 
 export const prerender = false;
 
+const base = import.meta.env.BASE_URL;
 const runtime = Astro.locals.runtime;
 const statusFilter = Astro.url.searchParams.get('status') ?? '';
 
