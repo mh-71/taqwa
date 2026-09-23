@@ -62,7 +62,7 @@ export class EmailProvider implements NotificationProvider {
         },
         body: JSON.stringify({
           from: 'bookings@taqwa.autos',
-          to: [booking.email],
+          to: booking.email,
           subject,
           html
         })
