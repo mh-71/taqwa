@@ -70,17 +70,24 @@ export class EmailProvider implements NotificationProvider {
       });
 
       if (!response.ok) {
-        let errorDetail = '';
+        const rawBody = await response.text();
+
+        let errorDetail = rawBody || 'No error details provided';
+
         try {
-          // Try to parse as JSON first (Resend API returns JSON errors)
-          const jsonError = await response.json();
-          errorDetail = jsonError.message || jsonError.error || JSON.stringify(jsonError);
+          const parsed = JSON.parse(rawBody);
+          errorDetail =
+            parsed?.message ||
+            parsed?.error ||
+            rawBody ||
+            'No error details provided';
         } catch {
-          // Fall back to text if JSON parsing fails
-          const textError = await response.text();
-          errorDetail = textError || 'No error details provided';
+          // Keep rawBody as the error detail when response is not JSON
         }
-        throw new Error(`Resend API error (HTTP ${response.status}): ${errorDetail}`);
+
+        throw new Error(
+          `Resend API error (HTTP ${response.status}): ${errorDetail}`
+        );
       }
 
       const data = (await response.json()) as { id: string };
