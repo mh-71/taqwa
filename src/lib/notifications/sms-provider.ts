@@ -17,56 +17,11 @@ export class SmsProvider implements NotificationProvider {
   }
 
   async send(request: NotificationRequest): Promise<NotificationResult> {
-    const { booking, type } = request;
-
-    // Skip if no phone number
-    if (!booking.phone_number) {
-      return {
-        channel: 'sms',
-        status: 'skipped',
-        message: 'No phone number provided'
-      };
-    }
-
-    // In mock/development mode, don't actually send
-    if (this.mode === 'mock' || this.mode === 'development') {
-      const message = this.formatMessage(booking, type);
-      console.log(`[SMS] Mock mode - not sending to ${booking.phone_number}`);
-      console.log(`[SMS] Message: "${message}"`);
-      return {
-        channel: 'sms',
-        status: this.mode === 'mock' ? 'mock' : 'skipped',
-        message: `Mock SMS to ${booking.phone_number}`
-      };
-    }
-
-    // Production: attempt to send via Twilio
-    if (!this.accountSid || !this.authToken || !this.phoneNumber) {
-      return {
-        channel: 'sms',
-        status: 'failed',
-        error: 'Twilio credentials not configured'
-      };
-    }
-
-    try {
-      const message = this.formatMessage(booking, type);
-      const response = await this.sendViaTwilio(booking.phone_number, message);
-
-      return {
-        channel: 'sms',
-        status: 'sent',
-        message: `SMS sent to ${booking.phone_number} (SID: ${response.sid})`
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error(`SMS send failed for booking ${booking.id}:`, errorMessage);
-      return {
-        channel: 'sms',
-        status: 'failed',
-        error: `Failed to send SMS: ${errorMessage}`
-      };
-    }
+    return {
+      channel: 'sms',
+      status: 'disabled',
+      message: 'SMS notifications are currently disabled'
+    };
   }
 
   private formatMessage(booking: any, type: string): string {

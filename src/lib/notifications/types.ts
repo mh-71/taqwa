@@ -4,7 +4,7 @@ import type { Booking } from '../booking-db';
 
 export type NotificationType = 'confirmation' | 'cancellation';
 export type NotificationChannel = 'email' | 'sms' | 'whatsapp';
-export type NotificationStatus = 'sent' | 'failed' | 'skipped' | 'mock';
+export type NotificationStatus = 'sent' | 'failed' | 'skipped' | 'mock' | 'disabled';
 export type NotificationMode = 'production' | 'development' | 'mock';
 
 export interface NotificationResult {
@@ -50,6 +50,7 @@ export interface EmailBindingType {
 }
 
 export interface ProviderEnvironment {
+  RESEND_API_KEY?: string;
   EMAIL?: EmailBindingType;
   TWILIO_ACCOUNT_SID?: string;
   TWILIO_AUTH_TOKEN?: string;

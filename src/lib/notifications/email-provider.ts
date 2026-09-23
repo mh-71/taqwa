@@ -1,22 +1,21 @@
 // Email notification provider
-// Uses Cloudflare EMAIL binding in production, mocks in development
+// Uses Resend API in production, mocks in development
 
-import type { NotificationProvider, NotificationRequest, NotificationResult, EmailBindingType } from './types';
+import type { NotificationProvider, NotificationRequest, NotificationResult } from './types';
 import { getConfirmationEmailHTML, getConfirmationEmailText, getCancellationEmailHTML, getCancellationEmailText } from '../email-templates';
 
 export class EmailProvider implements NotificationProvider {
-  private emailBinding: EmailBindingType | undefined;
+  private apiKey: string | undefined;
   private mode: 'production' | 'development' | 'mock';
 
-  constructor(emailBinding?: EmailBindingType, mode?: string) {
-    this.emailBinding = emailBinding;
+  constructor(apiKey?: string, mode?: string) {
+    this.apiKey = apiKey;
     this.mode = (mode as any) || 'production';
   }
 
   async send(request: NotificationRequest): Promise<NotificationResult> {
     const { booking, type } = request;
 
-    // Skip if no email address
     if (!booking.email) {
       return {
         channel: 'email',
@@ -25,7 +24,6 @@ export class EmailProvider implements NotificationProvider {
       };
     }
 
-    // In mock mode, don't actually send
     if (this.mode === 'mock' || this.mode === 'development') {
       console.log(`[Email] Mock mode - not sending to ${booking.email}`);
       return {
@@ -35,12 +33,11 @@ export class EmailProvider implements NotificationProvider {
       };
     }
 
-    // Production: attempt to send via Cloudflare EMAIL binding
-    if (!this.emailBinding) {
+    if (!this.apiKey) {
       return {
         channel: 'email',
         status: 'failed',
-        error: 'EMAIL binding not configured'
+        error: 'RESEND_API_KEY not configured'
       };
     }
 
@@ -57,18 +54,32 @@ export class EmailProvider implements NotificationProvider {
         ? getConfirmationEmailText(booking)
         : getCancellationEmailText(booking);
 
-      await this.emailBinding.send({
-        from: 'bookings@taqwa.autos',
-        to: booking.email,
-        subject,
-        text,
-        html
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'bookings@taqwa.autos',
+          to: booking.email,
+          subject,
+          html,
+          text
+        })
       });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Resend API error: ${error}`);
+      }
+
+      const data = (await response.json()) as { id: string };
 
       return {
         channel: 'email',
         status: 'sent',
-        message: `Email sent to ${booking.email}`
+        message: `Email sent to ${booking.email} (Message ID: ${data.id})`
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);

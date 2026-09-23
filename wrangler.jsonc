@@ -30,12 +30,6 @@
   "ai": {
     "binding": "AI"
   },
-  // Email service: sends booking confirmation and cancellation emails to customers
-  // Requires: Workers Paid plan + taqwa.autos domain onboarding in Cloudflare Email Service
-  // Configure sender address (bookings@taqwa.autos) in Cloudflare Email Service dashboard
-  "email": {
-    "binding": "EMAIL"
-  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -49,5 +43,8 @@
   //   ANTHROPIC_API_KEY       optional; enables automatic Bangla/English blog
   //                           translation (src/lib/translate.ts). Without it
   //                           posts just stay in their original language.
+  //   RESEND_API_KEY          Resend email service API key for booking notifications.
+  //                           Requires domain verification for bookings@taqwa.autos.
+  //                           Set with: npx wrangler secret put RESEND_API_KEY
   // See ADMIN.md for the exact setup commands.
 }

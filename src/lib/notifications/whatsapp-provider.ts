@@ -17,67 +17,11 @@ export class WhatsAppProvider implements NotificationProvider {
   }
 
   async send(request: NotificationRequest): Promise<NotificationResult> {
-    const { booking, type } = request;
-
-    // Skip if no phone number
-    if (!booking.phone_number) {
-      return {
-        channel: 'whatsapp',
-        status: 'skipped',
-        message: 'No phone number provided'
-      };
-    }
-
-    // In mock/development mode, don't actually send
-    if (this.mode === 'mock' || this.mode === 'development') {
-      const templateName = type === 'confirmation'
-        ? 'booking_confirmation'
-        : 'booking_cancellation';
-
-      console.log(`[WhatsApp] Mock mode - not sending to ${booking.phone_number}`);
-      console.log(`[WhatsApp] Template: ${templateName}`);
-      console.log(`[WhatsApp] Booking: BK-${String(booking.id).padStart(4, '0')}`);
-      return {
-        channel: 'whatsapp',
-        status: this.mode === 'mock' ? 'mock' : 'skipped',
-        message: `Mock WhatsApp to ${booking.phone_number} using template ${templateName}`
-      };
-    }
-
-    // Production: attempt to send via Meta WhatsApp Business API
-    if (!this.businessAccountId || !this.phoneNumberId || !this.accessToken) {
-      return {
-        channel: 'whatsapp',
-        status: 'failed',
-        error: 'WhatsApp Business credentials not configured'
-      };
-    }
-
-    try {
-      const templateName = type === 'confirmation'
-        ? 'booking_confirmation'
-        : 'booking_cancellation';
-
-      const response = await this.sendViaMetaWhatsApp(
-        booking.phone_number,
-        templateName,
-        booking
-      );
-
-      return {
-        channel: 'whatsapp',
-        status: 'sent',
-        message: `WhatsApp sent to ${booking.phone_number} (Message ID: ${response.messages[0].id})`
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error(`WhatsApp send failed for booking ${booking.id}:`, errorMessage);
-      return {
-        channel: 'whatsapp',
-        status: 'failed',
-        error: `Failed to send WhatsApp: ${errorMessage}`
-      };
-    }
+    return {
+      channel: 'whatsapp',
+      status: 'disabled',
+      message: 'WhatsApp notifications are currently disabled'
+    };
   }
 
   private async sendViaMetaWhatsApp(
