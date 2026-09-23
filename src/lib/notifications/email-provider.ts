@@ -68,8 +68,19 @@ export class EmailProvider implements NotificationProvider {
         })
       });
 
+      // TEMPORARY DIAGNOSTIC: Log response metadata for troubleshooting
+      console.log(`[Email Diagnostic] Resend HTTP ${response.status} ${response.statusText}`);
+      console.log(`[Email Diagnostic] Content-Type: ${response.headers.get('content-type')}`);
+      console.log(`[Email Diagnostic] Content-Length: ${response.headers.get('content-length')}`);
+      console.log(`[Email Diagnostic] X-Request-ID: ${response.headers.get('x-request-id')}`);
+      console.log(`[Email Diagnostic] Request-ID: ${response.headers.get('request-id')}`);
+
       if (!response.ok) {
         const rawBody = await response.text();
+
+        // TEMPORARY DIAGNOSTIC: Log response body metadata only (not contents)
+        console.log(`[Email Diagnostic] Response body length: ${rawBody.length}`);
+        console.log(`[Email Diagnostic] Response body empty: ${rawBody.length === 0}`);
 
         let errorDetail = rawBody || 'No error details provided';
 
