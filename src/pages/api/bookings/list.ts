@@ -21,11 +21,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Format bookings for dashboard consumption
     const formattedBookings = bookings.map(b => ({
       id: b.id,
-      customer_name: b.customer_name,
-      customer_email: b.customer_email,
-      customer_phone: b.customer_phone,
-      vehicle_number: b.vehicle_number,
-      vehicle_type: b.vehicle_type,
+      customer_name: b.name,
+      customer_email: b.email,
+      customer_phone: b.phone_number,
+      vehicle_number: b.registration_no,
+      vehicle_type: `${b.vehicle_make} ${b.vehicle_model}`,
       service_type: b.service_type,
       preferred_date: b.preferred_date,
       preferred_time: b.preferred_time,
