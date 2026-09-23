@@ -64,8 +64,7 @@ export class EmailProvider implements NotificationProvider {
           from: 'bookings@taqwa.autos',
           to: [booking.email],
           subject,
-          html,
-          text
+          html
         })
       });
 
