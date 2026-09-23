@@ -18,7 +18,8 @@
     "db:migrate:remote": "wrangler d1 execute taqwa-blog --remote --file=./migrations/0001_init.sql"
   },
   "dependencies": {
-    "astro": "^4.16.0"
+    "astro": "^4.16.0",
+    "resend": "^6.28.1"
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^11.1.0",

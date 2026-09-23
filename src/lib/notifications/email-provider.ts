@@ -1,6 +1,7 @@
 // Email notification provider
-// Uses Resend API in production, mocks in development
+// Uses Resend SDK for production, mocks in development
 
+import { Resend } from 'resend';
 import type { NotificationProvider, NotificationRequest, NotificationResult } from './types';
 import { getConfirmationEmailHTML, getConfirmationEmailText, getCancellationEmailHTML, getCancellationEmailText } from '../email-templates';
 
@@ -50,57 +51,20 @@ export class EmailProvider implements NotificationProvider {
         ? getConfirmationEmailHTML(booking)
         : getCancellationEmailHTML(booking);
 
-      const text = type === 'confirmation'
-        ? getConfirmationEmailText(booking)
-        : getCancellationEmailText(booking);
+      const resend = new Resend(this.apiKey);
 
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: 'bookings@taqwa.autos',
-          to: booking.email,
-          subject,
-          html
-        })
+      const { data, error } = await resend.emails.send({
+        from: 'bookings@taqwa.autos',
+        to: booking.email,
+        subject,
+        html
       });
 
-      // TEMPORARY DIAGNOSTIC: Log response metadata for troubleshooting
-      console.log(`[Email Diagnostic] Resend HTTP ${response.status} ${response.statusText}`);
-      console.log(`[Email Diagnostic] Content-Type: ${response.headers.get('content-type')}`);
-      console.log(`[Email Diagnostic] Content-Length: ${response.headers.get('content-length')}`);
-      console.log(`[Email Diagnostic] X-Request-ID: ${response.headers.get('x-request-id')}`);
-      console.log(`[Email Diagnostic] Request-ID: ${response.headers.get('request-id')}`);
-
-      if (!response.ok) {
-        const rawBody = await response.text();
-
-        // TEMPORARY DIAGNOSTIC: Log response body metadata only (not contents)
-        console.log(`[Email Diagnostic] Response body length: ${rawBody.length}`);
-        console.log(`[Email Diagnostic] Response body empty: ${rawBody.length === 0}`);
-
-        let errorDetail = rawBody || 'No error details provided';
-
-        try {
-          const parsed = JSON.parse(rawBody);
-          errorDetail =
-            parsed?.message ||
-            parsed?.error ||
-            rawBody ||
-            'No error details provided';
-        } catch {
-          // Keep rawBody as the error detail when response is not JSON
-        }
-
+      if (error) {
         throw new Error(
-          `Resend API error (HTTP ${response.status}): ${errorDetail}`
+          `Resend API error: ${error.message}`
         );
       }
-
-      const data = (await response.json()) as { id: string };
 
       return {
         channel: 'email',
