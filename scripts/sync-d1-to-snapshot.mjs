@@ -225,8 +225,8 @@ async function syncBlogData() {
     process.exit(0);
 
   } catch (err) {
-    if (allowFail && isCI) {
-      console.warn(`\n⚠️  Sync failed in CI/CD, using existing snapshot.json`);
+    if (allowFail) {
+      console.warn(`\n⚠️  Sync failed, using existing snapshot.json`);
       console.warn(`   Error: ${err.message}`);
       console.warn(`   Blog translations will work with current snapshot data.`);
       process.exit(0);  // Don't fail the build
