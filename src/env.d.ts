@@ -21,6 +21,14 @@ type AdminEnv = {
   /** Workers AI (wrangler.jsonc `ai` binding). The free translation backend,
    *  used when no ANTHROPIC_API_KEY is set. */
   AI?: { run(model: string, inputs: Record<string, unknown>): Promise<unknown> };
+  /** Resend email service API key for booking notifications.
+   *  Set with: npx wrangler secret put RESEND_API_KEY */
+  RESEND_API_KEY?: string;
+  /** Notification mode: mock (local), development, or production */
+  NOTIFICATION_MODE?: string;
+  /** Website to Dashboard booking sync secret (Bearer token).
+   *  Set with: npx wrangler secret put WEBSITE_BOOKING_SYNC_SECRET */
+  WEBSITE_BOOKING_SYNC_SECRET?: string;
 };
 
 declare namespace App {

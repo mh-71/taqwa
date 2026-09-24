@@ -157,8 +157,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // ===== CREATE BOOKING =====
+    let bookingId: number;
     try {
-      const bookingId = await createBooking(db, {
+      bookingId = await createBooking(db, {
         name,
         phone_number: phoneNumber,
         email: email || undefined,
@@ -170,15 +171,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
         preferred_time: preferredTime,
         message: message || undefined,
       });
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          bookingId,
-          message: 'Booking submitted successfully. We will confirm shortly.',
-        }),
-        { status: 201, headers: { 'Content-Type': 'application/json' } }
-      );
     } catch (dbError) {
       console.error('Booking creation error:', dbError);
       return new Response(
@@ -186,6 +178,59 @@ export const POST: APIRoute = async ({ request, locals }) => {
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    // ===== SYNC TO DASHBOARD =====
+    // After booking saved to website DB, create it in dashboard D1
+    // This sync is non-blocking: if it fails, the website booking remains saved
+    try {
+      const syncSecret = (locals as any).runtime?.env?.WEBSITE_BOOKING_SYNC_SECRET;
+      if (syncSecret) {
+        const dashboardApiUrl = 'https://taqwa-api.blinto.workers.dev/api/website-bookings';
+        const bookingSyncPayload = {
+          name,
+          phone_number: phoneNumber,
+          email: email || undefined,
+          vehicle_make: vehicleMake,
+          vehicle_model: vehicleModel,
+          registration_no: registrationNo || undefined,
+          service_type: serviceType,
+          preferred_date: preferredDate,
+          preferred_time: preferredTime,
+          message: message || undefined,
+        };
+
+        const syncResponse = await fetch(dashboardApiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${syncSecret}`,
+          },
+          body: JSON.stringify(bookingSyncPayload),
+        });
+
+        if (!syncResponse.ok) {
+          console.warn(`[Booking Sync] Dashboard sync warning: ${syncResponse.status}`);
+          // Non-blocking: booking still saved on website
+        } else {
+          console.log(`[Booking Sync] Dashboard sync successful for booking ${bookingId}`);
+        }
+      } else {
+        console.warn('[Booking Sync] WEBSITE_BOOKING_SYNC_SECRET not configured');
+      }
+    } catch (syncError) {
+      const errorMsg = syncError instanceof Error ? syncError.message : String(syncError);
+      console.warn(`[Booking Sync] Dashboard sync error: ${errorMsg}`);
+      // Non-blocking error - booking still succeeded on website
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        bookingId,
+        message: 'Booking submitted successfully. We will confirm shortly.',
+      }),
+      { status: 201, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     console.error('Booking API error:', error);
     return new Response(

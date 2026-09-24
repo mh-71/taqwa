@@ -33,13 +33,17 @@ export const GET: APIRoute = async ({ request, locals }) => {
       created_at: b.created_at
     }));
 
-    return new Response(JSON.stringify({ bookings: formattedBookings }), {
+    const response = new Response(JSON.stringify({ bookings: formattedBookings }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS, POST',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400'
       }
     });
+    return response;
   } catch (error) {
     console.error('Error fetching bookings:', error);
     return new Response(JSON.stringify({ error: 'Failed to fetch bookings' }), {
