@@ -215,7 +215,13 @@ const isActive = (id: string) => (current === id ? 'active' : '');
       btn.textContent = BUSY_LABEL[next];
       content.classList.add('is-swapping');
 
-      fetch(href, { credentials: 'same-origin' })
+      // Add timeout to prevent indefinite "Translating..." state on slow networks
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function () {
+        controller.abort();
+      }, 60000); // 60 second timeout
+
+      fetch(href, { credentials: 'same-origin', signal: controller.signal })
         .then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
           return res.text();
@@ -250,6 +256,7 @@ const isActive = (id: string) => (current === id ? 'active' : '');
           reloadInstead(href);
         })
         .then(function () {
+          clearTimeout(timeoutId);
           busy = false;
           btn.disabled = false;
           content.classList.remove('is-swapping');

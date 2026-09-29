@@ -190,14 +190,15 @@ async function aiTranslateHtml(
 ): Promise<string> {
   // The capture group keeps the tags in the result, at odd indexes.
   const parts = html.split(/(<[^>]+>)/);
-  const out: string[] = [];
-  for (const part of parts) {
-    if (part.startsWith('<') || !part.trim()) {
-      out.push(part);
-      continue;
-    }
-    out.push(await aiTranslateText(ai, part, from, to));
-  }
+  // Translate all text segments in parallel (not sequentially) to reduce latency.
+  const out = await Promise.all(
+    parts.map(async (part) => {
+      if (part.startsWith('<') || !part.trim()) {
+        return part;
+      }
+      return aiTranslateText(ai, part, from, to);
+    })
+  );
   return out.join('');
 }
 
@@ -207,11 +208,12 @@ async function translateWithWorkersAI(
   to: PostLanguage
 ): Promise<TranslatedFields> {
   const from = post.original_language;
-  const [title, excerpt, content] = [
-    await aiTranslateText(ai, post.title, from, to),
-    await aiTranslateText(ai, post.excerpt, from, to),
-    await aiTranslateHtml(ai, post.content, from, to),
-  ];
+  // Translate all fields in parallel (not sequentially) to reduce latency.
+  const [title, excerpt, content] = await Promise.all([
+    aiTranslateText(ai, post.title, from, to),
+    aiTranslateText(ai, post.excerpt, from, to),
+    aiTranslateHtml(ai, post.content, from, to),
+  ]);
   return {
     title: title.trim(),
     excerpt: excerpt.trim(),
