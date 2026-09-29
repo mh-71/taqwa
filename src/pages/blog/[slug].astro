@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getPublishedPosts, getRecentPosts, formatDisplayDate } from '../../lib/blog-data';
+import { getPostBySlug } from '../../lib/blog-db';
 import { ensureTranslation, otherLanguage, canTranslate } from '../../lib/translate';
 import { readingLanguage, withLanguage } from '../../lib/reading-language';
 import { blogText } from '../../lib/blog-ui-text';
@@ -8,6 +9,7 @@ import { listTranslationsForPosts } from '../../lib/blog-db';
 import { postUrl } from '../../lib/post-url';
 import { IS_CLOUDFLARE_BUILD } from '../../lib/runtime-flag';
 import blogSnapshot from '../../lib/blog-snapshot.json';
+import type { PublicPost } from '../../lib/blog-data';
 
 export const prerender = false;
 
@@ -23,21 +25,42 @@ export function getStaticPaths() {
     .map((p) => ({ params: { slug: p.slug } }));
 }
 
-// Fetch all posts to find the one we need
-let allPosts: any[] = [];
-try {
-  allPosts = await getPublishedPosts(runtimeDb);
-} catch (err) {
-  console.error('Failed to fetch posts from D1:', err);
-  // Fallback to snapshot if D1 fails
-  allPosts = await getPublishedPosts(null);
+// Fetch only the post we need by slug (not all posts)
+let post: PublicPost | null = null;
+
+// Try D1 first if available
+if (slug && runtimeDb) {
+  try {
+    const dbPost = await getPostBySlug(runtimeDb, slug);
+    if (dbPost) {
+      // Convert D1 post to PublicPost (inline fromD1 conversion)
+      post = {
+        id: dbPost.id,
+        title: dbPost.title,
+        slug: dbPost.slug,
+        categoryName: dbPost.category_name,
+        categorySlug: dbPost.category_slug,
+        featuredImage: dbPost.featured_image,
+        excerpt: dbPost.excerpt,
+        content: dbPost.content,
+        author: dbPost.author,
+        tags: dbPost.tags ? dbPost.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+        original_language: dbPost.original_language,
+        publishDate: dbPost.publish_date,
+        seoTitle: dbPost.seo_title,
+        seoDescription: dbPost.seo_description,
+      };
+    }
+  } catch (err) {
+    console.error('Failed to fetch post from D1:', err);
+  }
 }
 
-if (!allPosts || allPosts.length === 0) {
-  return Astro.redirect(`${base}blog.html`, 302);
+// Fallback to snapshot if D1 fails or post not found
+if (!post && slug) {
+  const snapshotPosts = await getPublishedPosts(null);
+  post = snapshotPosts.find(p => p.slug === slug) || null;
 }
-
-const post = slug ? allPosts.find(p => p.slug === slug) : null;
 
 if (!post) {
   return Astro.redirect(`${base}blog.html`, 302);
