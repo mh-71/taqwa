@@ -90,20 +90,25 @@ let displayPost = post;
 let currentBlogLanguage = post.original_language;
 let showLanguageToggle = false;
 
+// Show language toggle if translation is possible (independent of post.id or runtimeDb)
+if (canTranslate(translateEnv)) {
+  showLanguageToggle = true;
+}
+
+// If we have post ID and database, check for cached translations or perform translation
 if (post.id && runtimeDb) {
   try {
     if (wantsOtherLanguage) {
+      // User requested other language via ?lang parameter
       const translated = await ensureTranslation(runtimeDb, translateEnv, post, otherLang);
       if (translated) {
         displayPost = translated;
         currentBlogLanguage = otherLang;
-        showLanguageToggle = true;
       }
     } else {
-      // Reading the original: offer the toggle if the other language is already
-      // stored, or if we could produce it on demand when the reader asks.
+      // Reading the original: check if cached translation exists (with null env to avoid auto-translation)
       const stored = await ensureTranslation(runtimeDb, null, post, otherLang);
-      showLanguageToggle = !!stored || canTranslate(translateEnv);
+      // showLanguageToggle already set above based on canTranslate
     }
   } catch (err) {
     // A failed or unconfigured translation must never break the post - the
