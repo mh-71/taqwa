@@ -181,6 +181,33 @@ async function aiTranslateText(
   return translated;
 }
 
+async function translateSegmentsIndividually(
+  ai: NonNullable<TranslateEnv['AI']>,
+  segments: string[],
+  from: PostLanguage,
+  to: PostLanguage
+): Promise<string[]> {
+  if (segments.length === 0) return [];
+
+  const MAX_CONCURRENT = 5;
+  const results: string[] = new Array(segments.length);
+
+  for (let i = 0; i < segments.length; i += MAX_CONCURRENT) {
+    const batch = segments.slice(i, Math.min(i + MAX_CONCURRENT, segments.length));
+    const batchIndices = Array.from({ length: batch.length }, (_, j) => i + j);
+
+    const translations = await Promise.all(
+      batch.map((segment) => aiTranslateText(ai, segment, from, to))
+    );
+
+    batchIndices.forEach((idx, j) => {
+      results[idx] = translations[j];
+    });
+  }
+
+  return results;
+}
+
 async function aiTranslateHtml(
   ai: NonNullable<TranslateEnv['AI']>,
   html: string,
@@ -225,21 +252,41 @@ async function aiTranslateHtml(
     batches.push(currentBatch);
   }
 
-  // Translate each batch with delimiter, then split back into segments.
+  // Translate each batch with delimiter, with fallback to individual translation.
   const translatedSegments: string[] = [];
   for (const batch of batches) {
-    const batchText = batch.join(SEGMENT_DELIMITER);
-    const translated = await aiTranslateText(ai, batchText, from, to);
+    try {
+      const batchText = batch.join(SEGMENT_DELIMITER);
+      const translated = await aiTranslateText(ai, batchText, from, to);
 
-    // Split translated batch back on delimiter and validate segment count.
-    const translatedParts = translated.split(SEGMENT_DELIMITER);
-    if (translatedParts.length !== batch.length) {
-      throw new Error(
-        `Segment count mismatch: expected ${batch.length} segments but got ${translatedParts.length}`
+      // Split translated batch back on delimiter and validate segment count.
+      const translatedParts = translated.split(SEGMENT_DELIMITER);
+      if (translatedParts.length !== batch.length) {
+        throw new Error(
+          `Segment count mismatch: expected ${batch.length} segments but got ${translatedParts.length}`
+        );
+      }
+
+      translatedSegments.push(...translatedParts);
+    } catch (batchErr) {
+      console.warn(
+        `Batch translation failed (${(batchErr as Error).message}), retrying segments individually...`
       );
-    }
 
-    translatedSegments.push(...translatedParts);
+      try {
+        const individualResults = await translateSegmentsIndividually(
+          ai,
+          batch,
+          from,
+          to
+        );
+        translatedSegments.push(...individualResults);
+      } catch (fallbackErr) {
+        throw new Error(
+          `Batch failed and individual fallback failed: ${(fallbackErr as Error).message}`
+        );
+      }
+    }
   }
 
   // Reconstruct HTML: replace text segments with translations, keep tags unchanged.
