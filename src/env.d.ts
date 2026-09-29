@@ -15,11 +15,12 @@ type AdminEnv = {
   DB: import('./lib/blog-db').D1Database;
   ADMIN_PASSWORD: string;
   ADMIN_SESSION_SECRET: string;
-  /** Optional, and preferred when present: Claude writes better Bangla than the
-   *  free model and rewrites the HTML body in one pass. See src/lib/translate.ts. */
+  /** Optional: Claude API for higher-quality Bangla translation (fallback only).
+   *  Set with: npx wrangler secret put ANTHROPIC_API_KEY
+   *  See src/lib/translate.ts for details. */
   ANTHROPIC_API_KEY?: string;
-  /** Workers AI (wrangler.jsonc `ai` binding). The free translation backend,
-   *  used when no ANTHROPIC_API_KEY is set. */
+  /** Workers AI (wrangler.jsonc `ai` binding). Primary free translation backend.
+   *  No API key or billing required. See src/lib/translate.ts. */
   AI?: { run(model: string, inputs: Record<string, unknown>): Promise<unknown> };
   /** Resend email service API key for booking notifications.
    *  Set with: npx wrangler secret put RESEND_API_KEY */

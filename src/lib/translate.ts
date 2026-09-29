@@ -1,4 +1,4 @@
-// ===== Automatic post translation (Claude API) =====
+// ===== Automatic post translation (Workers AI) =====
 // Every blog post is offered in both English and Bangla. A post is written in
 // one language in the admin panel; the other language is produced once, on the
 // first request for it, and stored in the same `post_translations` table the
@@ -9,12 +9,11 @@
 // is all a Worker needs, and keeps this project on its single runtime
 // dependency (@astrojs/cloudflare) as the rest of src/lib does.
 //
-// Two backends, best one wins:
-//   1. Claude, when the ANTHROPIC_API_KEY secret is set - better Bangla, and it
-//      rewrites the HTML body in one pass.
-//   2. Workers AI (the `AI` binding) - free, no key, no billing account. Its
-//      translation model takes plain text only, so the HTML body is split on
-//      tags and only the text between them is sent.
+// Primary backend:
+//   1. Workers AI (the `AI` binding) - free, no key, no billing. Uses controlled
+//      batching to translate HTML content efficiently with minimal API calls.
+//   2. Claude (optional fallback when ANTHROPIC_API_KEY secret is set) - higher
+//      quality but requires API key and billing.
 // Neither configured means posts simply stay in the language they were written
 // in. A missing backend or a failed call must never take the blog down.
 import type { D1Database, PostLanguage } from './blog-db';
@@ -188,18 +187,82 @@ async function aiTranslateHtml(
   from: PostLanguage,
   to: PostLanguage
 ): Promise<string> {
-  // The capture group keeps the tags in the result, at odd indexes.
+  // Split on tags: tags end up at odd indexes, text at even indexes.
   const parts = html.split(/(<[^>]+>)/);
-  // Translate all text segments in parallel (not sequentially) to reduce latency.
-  const out = await Promise.all(
-    parts.map(async (part) => {
-      if (part.startsWith('<') || !part.trim()) {
-        return part;
+
+  // Separate tags (preserve as-is) from text segments (need translation).
+  const textIndexes: number[] = [];
+  const textSegments: string[] = [];
+  for (let i = 0; i < parts.length; i += 2) {
+    if (parts[i].trim()) {
+      textIndexes.push(i);
+      textSegments.push(parts[i]);
+    }
+  }
+
+  if (textSegments.length === 0) {
+    return html; // No text to translate
+  }
+
+  // Group segments into batches (~2000 chars each) to reduce API calls from 50+ to 3-5.
+  const SEGMENT_DELIMITER = '[TAQWA_SEGMENT_BREAK]';
+  const MAX_BATCH_SIZE = 2000;
+  const batches: string[][] = [];
+  let currentBatch: string[] = [];
+  let currentSize = 0;
+
+  for (const segment of textSegments) {
+    // If adding this segment would exceed limit and we have a batch, start a new one.
+    if (currentSize + segment.length > MAX_BATCH_SIZE && currentBatch.length > 0) {
+      batches.push(currentBatch);
+      currentBatch = [];
+      currentSize = 0;
+    }
+    currentBatch.push(segment);
+    currentSize += segment.length + SEGMENT_DELIMITER.length;
+  }
+  if (currentBatch.length > 0) {
+    batches.push(currentBatch);
+  }
+
+  // Translate each batch with delimiter, then split back into segments.
+  const translatedSegments: string[] = [];
+  for (const batch of batches) {
+    const batchText = batch.join(SEGMENT_DELIMITER);
+    const translated = await aiTranslateText(ai, batchText, from, to);
+
+    // Split translated batch back on delimiter and validate segment count.
+    const translatedParts = translated.split(SEGMENT_DELIMITER);
+    if (translatedParts.length !== batch.length) {
+      throw new Error(
+        `Segment count mismatch: expected ${batch.length} segments but got ${translatedParts.length}`
+      );
+    }
+
+    translatedSegments.push(...translatedParts);
+  }
+
+  // Reconstruct HTML: replace text segments with translations, keep tags unchanged.
+  const result: string[] = [];
+  let segmentIndex = 0;
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 1) {
+      // Odd index = tag, keep as-is
+      result.push(parts[i]);
+    } else {
+      // Even index = text
+      if (parts[i].trim()) {
+        // Non-empty text: use translated segment
+        result.push(translatedSegments[segmentIndex]);
+        segmentIndex++;
+      } else {
+        // Empty or whitespace-only: preserve original
+        result.push(parts[i]);
       }
-      return aiTranslateText(ai, part, from, to);
-    })
-  );
-  return out.join('');
+    }
+  }
+
+  return result.join('');
 }
 
 async function translateWithWorkersAI(
@@ -228,8 +291,14 @@ async function translateWithWorkersAI(
 /**
  * The translation of `post` into `to`: the stored one if there is one, otherwise
  * translated once now and stored. Returns null when there is no translation and
- * none can be made (no API key, or the call failed) - callers fall back to the
- * post's original language.
+ * none can be made (no provider available, or all calls failed) - callers fall
+ * back to the post's original language.
+ *
+ * Translation provider priority:
+ * 1. D1 cache (checked first, if hit returns immediately)
+ * 2. Workers AI (primary free provider)
+ * 3. Claude API (optional fallback if ANTHROPIC_API_KEY configured)
+ * 4. Original language (no provider available)
  */
 export async function ensureTranslation(
   db: D1Database,
@@ -242,14 +311,28 @@ export async function ensureTranslation(
   const stored = await getPostTranslation(db, post.id, to);
   if (stored) return applyTranslation(post, stored);
 
-  // Claude first when it is configured - better Bangla than the free model -
-  // then Workers AI, which needs no key and no billing account.
-  let fields: TranslatedFields;
-  if (hasClaude(env)) {
-    fields = await requestTranslation(env!.ANTHROPIC_API_KEY as string, post, to);
-  } else if (env?.AI) {
-    fields = await translateWithWorkersAI(env.AI, post, to);
-  } else {
+  let fields: TranslatedFields | null = null;
+
+  // Try Workers AI first (primary free provider)
+  if (!fields && env?.AI) {
+    try {
+      fields = await translateWithWorkersAI(env.AI, post, to);
+    } catch (err) {
+      console.error('Workers AI translation error:', err instanceof Error ? err.message : 'unknown error');
+    }
+  }
+
+  // Fall back to Claude API (optional, requires ANTHROPIC_API_KEY)
+  if (!fields && hasClaude(env)) {
+    try {
+      fields = await requestTranslation(env!.ANTHROPIC_API_KEY as string, post, to);
+    } catch (err) {
+      console.error('Claude translation error:', err instanceof Error ? err.message : 'unknown error');
+    }
+  }
+
+  // No provider available or all failed
+  if (!fields) {
     return null;
   }
 

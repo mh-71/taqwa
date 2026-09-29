@@ -24,9 +24,8 @@
   //   npx wrangler d1 create taqwa-blog
   // then replace database_id below with the id that command prints, and
   // apply migrations/0001_init.sql (see ADMIN.md for exact commands).
-  // Workers AI: the free translation backend for the bilingual blog. Needs no
-  // key and no billing account; src/lib/translate.ts uses it whenever the
-  // optional ANTHROPIC_API_KEY secret is not set.
+  // Workers AI: the primary free translation backend for the bilingual blog. Needs no
+  // key and no billing account; src/lib/translate.ts uses it first.
   "ai": {
     "binding": "AI"
   },
@@ -40,9 +39,9 @@
   // Secrets (never listed here — set with `npx wrangler secret put <NAME>`):
   //   ADMIN_PASSWORD          the login password for /admin
   //   ADMIN_SESSION_SECRET    a long random string used to sign session cookies
-  //   ANTHROPIC_API_KEY       optional; enables automatic Bangla/English blog
-  //                           translation (src/lib/translate.ts). Without it
-  //                           posts just stay in their original language.
+  //   ANTHROPIC_API_KEY       optional; enables Claude-based translation (fallback).
+  //                           Set with: npx wrangler secret put ANTHROPIC_API_KEY
+  //                           Without it, posts use Workers AI (primary free provider).
   //   RESEND_API_KEY          Resend email service API key for booking notifications.
   //                           Requires domain verification for bookings@taqwa.autos.
   //                           Set with: npx wrangler secret put RESEND_API_KEY
