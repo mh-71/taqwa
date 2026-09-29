@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -516,7 +517,7 @@ const base = import.meta.env.BASE_URL;
     <div class="gallery-grid" id="galleryGrid">
 
       <div class="gallery-item" data-category="workshop" data-img={base + "img/hero-background.jpg"} data-title="Our Service Workshop" data-cat-label="Workshop">
-        <img src={base + "img/hero-background.jpg"} alt="Our Service Workshop">
+        <ResponsiveImage src="img/hero-background" alt="Our Service Workshop" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Workshop</div>
           <div class="gallery-title">Our Service Workshop</div>
@@ -525,7 +526,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="lpgcng" data-img={base + "img/lpg-and-cng.jpg"} data-title="LPG Conversion Kit Installation" data-cat-label="LPG & CNG Conversion">
-        <img src={base + "img/lpg-and-cng.jpg"} alt="LPG Conversion Kit Installation">
+        <ResponsiveImage src="img/lpg-and-cng" alt="LPG Conversion Kit Installation" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">LPG Conversion Kit Installation</div>
@@ -534,7 +535,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="carwash" data-img={base + "img/car-wash.jpg"} data-title="Premium Car Wash" data-cat-label="Car Wash & Detailing">
-        <img src={base + "img/car-wash.jpg"} alt="Premium Car Wash">
+        <ResponsiveImage src="img/car-wash" alt="Premium Car Wash" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Car Wash &amp; Detailing</div>
           <div class="gallery-title">Premium Car Wash</div>
@@ -543,7 +544,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="hybrid" data-img={base + "img/hybrid-car.jpg"} data-title="Hybrid Vehicle Bay" data-cat-label="Hybrid Service">
-        <img src={base + "img/hybrid-car.jpg"} alt="Hybrid Vehicle Bay">
+        <ResponsiveImage src="img/hybrid-car" alt="Hybrid Vehicle Bay" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Hybrid Service</div>
           <div class="gallery-title">Hybrid Vehicle Bay</div>
@@ -552,7 +553,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/evn-1.jpg"} data-title="Car AC Service" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/evn-1.jpg"} alt="Car AC Service">
+        <ResponsiveImage src="img/evn-1" alt="Car AC Service" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Car AC Service</div>
@@ -561,7 +562,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="workshop" data-img={base + "img/features-car.jpg"} data-title="Quality Service in Progress" data-cat-label="Workshop">
-        <img src={base + "img/features-car.jpg"} alt="Quality Service in Progress">
+        <ResponsiveImage src="img/features-car" alt="Quality Service in Progress" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Workshop</div>
           <div class="gallery-title">Quality Service in Progress</div>
@@ -570,7 +571,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="lpgcng" data-img={base + "img/lpg.jpg"} data-title="CNG Cylinder Fitting" data-cat-label="LPG & CNG Conversion">
-        <img src={base + "img/lpg.jpg"} alt="CNG Cylinder Fitting">
+        <ResponsiveImage src="img/lpg" alt="CNG Cylinder Fitting" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">CNG Cylinder Fitting</div>
@@ -579,7 +580,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/evn-2.jpg"} data-title="Oil &amp; Filter Change" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/evn-2.jpg"} alt="Oil & Filter Change">
+        <ResponsiveImage src="img/evn-2" alt="Oil & Filter Change" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Oil &amp; Filter Change</div>
@@ -588,7 +589,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="carwash" data-img={base + "img/Car-Wash-detailing.jpg"} data-title="Interior Detailing" data-cat-label="Car Wash & Detailing">
-        <img src={base + "img/Car-Wash-detailing.jpg"} alt="Interior Detailing">
+        <ResponsiveImage src="img/Car-Wash-detailing" alt="Interior Detailing" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Car Wash &amp; Detailing</div>
           <div class="gallery-title">Interior Detailing</div>
@@ -597,7 +598,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="workshop" data-img={base + "img/Expert-Technicians.jpg"} data-title="Our Expert Technicians" data-cat-label="Workshop">
-        <img src={base + "img/Expert-Technicians.jpg"} alt="Our Expert Technicians">
+        <ResponsiveImage src="img/Expert-Technicians" alt="Our Expert Technicians" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Workshop</div>
           <div class="gallery-title">Our Expert Technicians</div>
@@ -606,7 +607,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/evn-3.jpg"} data-title="Expert Advice Session" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/evn-3.jpg"} alt="Expert Advice Session">
+        <ResponsiveImage src="img/evn-3" alt="Expert Advice Session" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Expert Advice Session</div>
@@ -615,7 +616,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="hybrid" data-img={base + "img/latest-3.jpg"} data-title="Hybrid Battery Diagnostics" data-cat-label="Hybrid Service">
-        <img src={base + "img/latest-3.jpg"} alt="Hybrid Battery Diagnostics">
+        <ResponsiveImage src="img/latest-3" alt="Hybrid Battery Diagnostics" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Hybrid Service</div>
           <div class="gallery-title">Hybrid Battery Diagnostics</div>
@@ -624,7 +625,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/evn-4.jpg"} data-title="Full Vehicle Inspection" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/evn-4.jpg"} alt="Full Vehicle Inspection">
+        <ResponsiveImage src="img/evn-4" alt="Full Vehicle Inspection" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Full Vehicle Inspection</div>
@@ -633,7 +634,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="lpgcng" data-img={base + "img/latest-1.jpg"} data-title="LPG vs CNG Consultation" data-cat-label="LPG & CNG Conversion">
-        <img src={base + "img/latest-1.jpg"} alt="LPG vs CNG Consultation">
+        <ResponsiveImage src="img/latest-1" alt="LPG vs CNG Consultation" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">LPG vs CNG Consultation</div>
@@ -642,7 +643,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/car-servicing.jpg"} data-title="Transparent Price Quote" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/car-servicing.jpg"} alt="Transparent Price Quote">
+        <ResponsiveImage src="img/car-servicing" alt="Transparent Price Quote" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Transparent Price Quote</div>
@@ -651,7 +652,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/Emergency-Roadside-Assistance.jpg"} data-title="24x7 Roadside Assistance" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/Emergency-Roadside-Assistance.jpg"} alt="24x7 Roadside Assistance">
+        <ResponsiveImage src="img/Emergency-Roadside-Assistance" alt="24x7 Roadside Assistance" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">24x7 Roadside Assistance</div>
@@ -660,7 +661,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="lpgcng" data-img={base + "img/latest-2.jpg"} data-title="Conversion Kit Testing" data-cat-label="LPG & CNG Conversion">
-        <img src={base + "img/latest-2.jpg"} alt="Conversion Kit Testing">
+        <ResponsiveImage src="img/latest-2" alt="Conversion Kit Testing" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">LPG &amp; CNG Conversion</div>
           <div class="gallery-title">Conversion Kit Testing</div>
@@ -669,7 +670,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       <div class="gallery-item" data-category="engine" data-img={base + "img/latest-4.jpg"} data-title="Brake System Check" data-cat-label="Engine & Diagnostics">
-        <img src={base + "img/latest-4.jpg"} alt="Brake System Check">
+        <ResponsiveImage src="img/latest-4" alt="Brake System Check" loading="lazy" />
         <div class="gallery-overlay">
           <div class="gallery-cat">Engine &amp; Diagnostics</div>
           <div class="gallery-title">Brake System Check</div>

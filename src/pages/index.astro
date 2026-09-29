@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getLatestNews, formatDisplayDate } from '../lib/blog-data';
 import { postUrl } from '../lib/post-url';
 import ReviewForm from '../components/ReviewForm.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 import { getApprovedTestimonials } from '../lib/testimonial-db';
 
 // Cloudflare deployment only: server-render this page per request so a
@@ -426,7 +427,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/lpg-and-cng.jpg"} alt="LPG & CNG Conversion" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/lpg-and-cng" alt="LPG & CNG Conversion" loading="lazy" />
         </div>
         <div class="body">
           <h3>LPG &amp; CNG Conversion</h3>
@@ -439,7 +441,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/engine-repeir.jpg"} alt="Engine Repair & Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/engine-repeir" alt="Engine Repair & Service" loading="lazy" />
         </div>
         <div class="body">
           <h3>Engine Repair &amp; Service</h3>
@@ -452,7 +455,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/oil-and-filter.jpg"} alt="Oil & Filter Change" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/oil-and-filter" alt="Oil & Filter Change" loading="lazy" />
         </div>
         <div class="body">
           <h3>Oil &amp; Filter Change</h3>
@@ -465,7 +469,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/brake-service.jpg"} alt="Brake Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/brake-service" alt="Brake Service" loading="lazy" />
         </div>
         <div class="body">
           <h3>Brake Service</h3>
@@ -480,7 +485,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/transmission-service.jpg"} alt="Transmission Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/transmission-service" alt="Transmission Service" loading="lazy" />
         </div>
           <div class="body">
             <h3>Transmission Service</h3>
@@ -493,7 +499,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/wheel-alignment.jpg"} alt="Wheel Alignment & Balancing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/wheel-alignment" alt="Wheel Alignment & Balancing" loading="lazy" />
         </div>
           <div class="body">
             <h3>Wheel Alignment &amp; Balancing</h3>
@@ -506,7 +513,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/tyre-service.jpg"} alt="Tire Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/tyre-service" alt="Tire Service" loading="lazy" />
         </div>
           <div class="body">
             <h3>Tire Service</h3>
@@ -519,7 +527,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Battery-Electrical.jpg"} alt="Battery & Electrical" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Battery-Electrical" alt="Battery & Electrical" loading="lazy" />
         </div>
           <div class="body">
             <h3>Battery &amp; Electrical</h3>
@@ -532,7 +541,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-ac-Service.jpg"} alt="Car AC Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Car-ac-Service" alt="Car AC Service" loading="lazy" />
         </div>
           <div class="body">
             <h3>Car AC Service</h3>
@@ -545,7 +555,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Suspension-Steering.jpg"} alt="Suspension & Steering" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Suspension-Steering" alt="Suspension & Steering" loading="lazy" />
         </div>
           <div class="body">
             <h3>Suspension &amp; Steering</h3>
@@ -558,7 +569,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-Diagnostics.jpg"} alt="Car Diagnostics" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Car-Diagnostics" alt="Car Diagnostics" loading="lazy" />
         </div>
           <div class="body">
             <h3>Car Diagnostics</h3>
@@ -588,7 +600,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-Wash-detailing.jpg"} alt="Car Wash & Detailing" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Car-Wash-detailing" alt="Car Wash & Detailing" loading="lazy" />
         </div>
           <div class="body">
             <h3>Car Wash &amp; Detailing</h3>
@@ -601,7 +614,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/body-repiaring.jpg"} alt="Body Repair & Painting" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/body-repiaring" alt="Body Repair & Painting" loading="lazy" />
         </div>
           <div class="body">
             <h3>Body Repair &amp; Painting</h3>
@@ -614,7 +628,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Periodic-Maintenance.jpg"} alt="Periodic Maintenance" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Periodic-Maintenance" alt="Periodic Maintenance" loading="lazy" />
         </div>
           <div class="body">
             <h3>Periodic Maintenance</h3>
@@ -627,7 +642,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="service-card">
           <div class="icon-panel" style="padding:0; height:160px;">
-          <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Emergency-Roadside-Assistance.jpg"} alt="Emergency Roadside Assistance" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+          
+          <ResponsiveImage src="img/Emergency-Roadside-Assistance" alt="Emergency Roadside Assistance" loading="lazy" />
         </div>
           <div class="body">
             <h3>Emergency Roadside Assistance</h3>
@@ -691,7 +707,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-Diagnostics.jpg"} alt="Inverter Inspection & Repair">
+            
+          <ResponsiveImage src="img/Car-Diagnostics" alt="Inverter Inspection & Repair" loading="lazy" />
           </div>
           <div class="hybrid-item-body">
             <h4>Inverter Inspection &amp; Repair</h4>
@@ -701,7 +718,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
         <div class="hybrid-item">
           <div class="hybrid-item-img">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/hybrid-car.jpg"} alt="Hybrid System Diagnostics">
+            
+          <ResponsiveImage src="img/hybrid-car" alt="Hybrid System Diagnostics" loading="lazy" />
           </div>
           <div class="hybrid-item-body">
             <h4>Hybrid System Diagnostics</h4>
@@ -847,22 +865,26 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
     <div class="why-choose-grid">
 
       <div class="wc-card tech">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/expert-technitian.jpg"} alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/expert-technitian" alt="Expert Technicians" loading="lazy" />
         <div class="wc-label">Expert Technicians</div>
       </div>
 
       <div class="wc-card tech">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/oil-and-filter.jpg"} alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/oil-and-filter" alt="Expert Technicians" loading="lazy" />
         <div class="wc-label">Advanced Tools</div>
       </div>
 
       <div class="wc-card tech">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/car-parts.jpg"} alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/car-parts" alt="Expert Technicians" loading="lazy" />
         <div class="wc-label">Genuine Parts</div>
       </div>
 
       <div class="wc-card tech">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/trusted-service-2.jpg"} alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/trusted-service-2" alt="Expert Technicians" loading="lazy" />
         <div class="wc-label">Trusted Service</div>
       </div>
            
@@ -881,7 +903,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="env-card">
         <div class="env-image ac">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Car-ac-Service.jpg"} alt="Car AC Service" style="width:100%; height:100%; object-fit:cover;">
+            
+          <ResponsiveImage src="img/Car-ac-Service" alt="Car AC Service" loading="lazy" />
         </div>
         <div class="env-caption">
           <h3>Car AC Service</h3>
@@ -891,7 +914,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="env-card">
         <div class="env-image ac">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/oil-and-filter.jpg"} alt="Car AC Service" style="width:100%; height:100%; object-fit:cover;">
+            
+          <ResponsiveImage src="img/oil-and-filter" alt="Car AC Service" loading="lazy" />
         </div>
         <div class="env-caption">
           <h3>Car Oil Service</h3>
@@ -901,7 +925,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="env-card">
         <div class="env-image ac">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/expert-advice.jpg"} alt="Car AC Service" style="width:100%; height:100%; object-fit:cover;">
+            
+          <ResponsiveImage src="img/expert-advice" alt="Car AC Service" loading="lazy" />
         </div>
         <div class="env-caption">
           <h3>Expert Advice</h3>
@@ -911,7 +936,8 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       <div class="env-card">
         <div class="env-image ac">
-            <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/car-full-service.jpg"} alt="Car AC Service" style="width:100%; height:100%; object-fit:cover;">
+            
+          <ResponsiveImage src="img/car-full-service" alt="Car AC Service" loading="lazy" />
         </div>
         <div class="env-caption">
           <h3>Car Full Service</h3>

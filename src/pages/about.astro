@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -1097,7 +1098,8 @@ const base = import.meta.env.BASE_URL;
       <p>Whether you need a routine service, an emergency roadside rescue, or a complete gas conversion, our team treats your vehicle like it's our own.</p>
     </div>
     <div class="story-image reveal">
-      <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/about-1.jpg"} alt="Inside Taqwa Automobile's workshop">
+      
+          <ResponsiveImage src="img/about-1" alt="Inside Taqwa Automobile's workshop" loading="lazy" />
     </div>
   </div>
 
@@ -1439,22 +1441,26 @@ const base = import.meta.env.BASE_URL;
     <div class="why-choose-grid">
 
       <div class="wc-card tech">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Expert-Technicians.jpg"} alt="Expert Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/Expert-Technicians" alt="Expert Technicians" loading="lazy" />
         <div class="wc-label">Expert Technicians</div>
       </div>
 
       <div class="wc-card tools">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/advanced-tools.jpg"} alt="Advanced Tools" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/advanced-tools" alt="Advanced Tools" loading="lazy" />
         <div class="wc-label">Advanced Tools</div>
       </div>
 
       <div class="wc-card parts">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/car-parts.jpg"} alt="Genuine Parts" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/car-parts" alt="Genuine Parts" loading="lazy" />
         <div class="wc-label">Genuine Parts</div>
       </div>
 
       <div class="wc-card service">
-        <img loading="lazy" decoding="async" class="lazy-fade" onload="this.classList.add('is-loaded')" src={base + "img/Trusted-Service.jpg"} alt="Trusted Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        
+          <ResponsiveImage src="img/Trusted-Service" alt="Trusted Service" loading="lazy" />
         <div class="wc-label">Trusted Service</div>
       </div>
 

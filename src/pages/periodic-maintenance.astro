@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -1157,7 +1158,7 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <div class="hybrid-illustration">
-          <img src={base + "img/engine-repeir.jpg"} alt="Engine repair work at Taqwa Automobile" style="width:100%; height:auto; border-radius:6px;">
+          <ResponsiveImage src="img/engine-repeir" alt="Engine repair work at Taqwa Automobile" loading="lazy" />width:100%; height:auto; border-radius:6px;">
         </div>
       </div>
 
@@ -1382,22 +1383,22 @@ const base = import.meta.env.BASE_URL;
     <div class="why-choose-grid">
 
       <div class="wc-card tech">
-        <img src={base + "img/expert-technitian.jpg"} alt="Certified Periodic Maintenance Technicians" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <ResponsiveImage src="img/expert-technitian" alt="Certified Periodic Maintenance Technicians" loading="lazy" />position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Certified Technicians</div>
       </div>
 
       <div class="wc-card tools">
-        <img src={base + "img/car-parts.jpg"} alt="Genuine Engine Parts" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <ResponsiveImage src="img/car-parts" alt="Genuine Engine Parts" loading="lazy" />position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Genuine Parts</div>
       </div>
 
       <div class="wc-card parts">
-        <img src={base + "img/Car-Diagnostics.jpg"} alt="Regular Service Checks" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <ResponsiveImage src="img/Car-Diagnostics" alt="Regular Service Checks" loading="lazy" />position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">Service Schedules</div>
       </div>
 
       <div class="wc-card service">
-        <img src={base + "img/Trusted-Service.jpg"} alt="Honest Periodic Maintenance Service" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+        <ResponsiveImage src="img/Trusted-Service" alt="Honest Periodic Maintenance Service" loading="lazy" />position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
         <div class="wc-label">No Hidden Charges</div>
       </div>
 

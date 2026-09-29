@@ -12,6 +12,11 @@ export class EmailProvider implements NotificationProvider {
   constructor(apiKey?: string, mode?: string) {
     this.apiKey = apiKey;
     this.mode = (mode as any) || 'production';
+    if (!apiKey) {
+      console.warn('[Email Provider] WARNING: RESEND_API_KEY is undefined or empty');
+    } else {
+      console.log('[Email Provider] RESEND_API_KEY configured (length: ' + apiKey.length + ')');
+    }
   }
 
   async send(request: NotificationRequest): Promise<NotificationResult> {
@@ -50,6 +55,9 @@ export class EmailProvider implements NotificationProvider {
       const html = type === 'confirmation'
         ? getConfirmationEmailHTML(booking)
         : getCancellationEmailHTML(booking);
+
+      console.log(`[Email Diagnostic] Preparing to send ${type} email to ${booking.email}`);
+      console.log(`[Email Diagnostic] HTML length: ${html.length} chars, Subject: ${subject.substring(0, 50)}`);
 
       const resend = new Resend(this.apiKey);
 

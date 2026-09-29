@@ -4,6 +4,11 @@ import { verifySessionToken } from '../../../../../lib/auth';
 
 export const prerender = false;
 
+// Prevent static build validation error on dynamic [id] segment
+export async function getStaticPaths() {
+  return [];
+}
+
 export const DELETE: APIRoute = async ({ request, params, locals }) => {
   const runtime = (locals as any).runtime;
   if (!runtime) {
