@@ -1036,7 +1036,18 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
                 <svg class={`icon ${i <= review.rating ? 'filled' : ''}`}><use href="#icon-star"/></svg>
               ))}
             </div>
-            <p class="quote" itemprop="reviewBody">"{review.review}"</p>
+            <div class="quote-container">
+              <p class="quote" itemprop="reviewBody" data-review-id={review.id}>"{review.review}"</p>
+              <button
+                type="button"
+                class="read-more-btn"
+                data-review-id={review.id}
+                aria-expanded="false"
+                style="display:none;"
+              >
+                Read More
+              </button>
+            </div>
             <div class="person">
               <div class="avatar">{review.name.split(' ').map(n => n[0]).join('')}</div>
               <div class="person-meta">
@@ -1154,6 +1165,75 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
     window.addEventListener('resize', () => {
       showNavButtons();
       updateButtonStates();
+    });
+  });
+
+  // ===== TESTIMONIAL READ MORE / READ LESS FEATURE =====
+  document.addEventListener('DOMContentLoaded', () => {
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+
+    testimonialCards.forEach((card) => {
+      const quoteEl = card.querySelector('p.quote');
+      const buttonEl = card.querySelector('.read-more-btn');
+
+      if (!quoteEl || !buttonEl) return;
+
+      // Check if text is overflowing (needs Read More)
+      const checkIfNeedsExpansion = () => {
+        // Temporarily remove collapsed class to measure full height
+        quoteEl.classList.remove('collapsed');
+        const fullHeight = quoteEl.scrollHeight;
+
+        // Apply collapsed state
+        quoteEl.classList.add('collapsed');
+        const collapsedHeight = quoteEl.scrollHeight;
+
+        // If heights differ, text is clamped - show button
+        const needsExpansion = fullHeight > collapsedHeight + 1;
+        buttonEl.style.display = needsExpansion ? 'inline-block' : 'none';
+
+        return needsExpansion;
+      };
+
+      // Initialize
+      checkIfNeedsExpansion();
+
+      // Button click handler
+      buttonEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isExpanded = buttonEl.getAttribute('aria-expanded') === 'true';
+
+        if (isExpanded) {
+          // Collapse
+          quoteEl.classList.add('collapsed');
+          buttonEl.textContent = 'Read More';
+          buttonEl.setAttribute('aria-expanded', 'false');
+        } else {
+          // Expand
+          quoteEl.classList.remove('collapsed');
+          buttonEl.textContent = 'Read Less';
+          buttonEl.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      // Keyboard support (Enter and Space)
+      buttonEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          buttonEl.click();
+        }
+      });
+
+      // Recheck on window resize
+      window.addEventListener('resize', () => {
+        const needsExpansion = checkIfNeedsExpansion();
+        // If no longer needs expansion and currently expanded, collapse it
+        if (!needsExpansion && buttonEl.getAttribute('aria-expanded') === 'true') {
+          quoteEl.classList.add('collapsed');
+          buttonEl.textContent = 'Read More';
+          buttonEl.setAttribute('aria-expanded', 'false');
+        }
+      });
     });
   });
 </script>
