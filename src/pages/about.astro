@@ -869,49 +869,9 @@ const base = import.meta.env.BASE_URL;
    5th + 6th cards
 ================================ */
 
-.services-grid .service-card:nth-child(n + 5){
-  opacity:0;
-  visibility:hidden;
-
-  max-height:0;
-
-  overflow:hidden;
-
-  transform:translateY(-20px);
-
-  margin-top:0;
-  margin-bottom:0;
-
-  pointer-events:none;
-
-  transition:
-    opacity .65s ease,
-    transform .65s ease,
-    max-height .75s ease,
-    visibility 0s linear .75s;
-}
-
-
 /* ================================
-   SHOW ALL SERVICES
+   ALL SERVICES VISIBLE BY DEFAULT
 ================================ */
-
-.services-grid.show-all .service-card:nth-child(n + 5){
-  opacity:1;
-  visibility:visible;
-
-  max-height:700px;
-
-  transform:translateY(0);
-
-  pointer-events:auto;
-
-  transition:
-    opacity .65s ease,
-    transform .65s ease,
-    max-height .75s ease,
-    visibility 0s linear 0s;
-}
 
 
 /* ================================
