@@ -125,6 +125,13 @@ const base = import.meta.env.BASE_URL;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      // Check HTML5 validation before submitting
+      if (!form.checkValidity()) {
+        // Show browser's native validation messages
+        form.reportValidity();
+        return;
+      }
+
       const formData = new FormData(form);
 
       try {
