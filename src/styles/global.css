@@ -1270,12 +1270,8 @@
     scroll-snap-align: start;
   }
 
-  .testimonial-card .quote-container {
-    flex: 1;
-  }
-
   .testimonial-card .person {
-    margin-top: auto;
+    margin-top: var(--space-2);
   }
 
   .carousel-nav {
