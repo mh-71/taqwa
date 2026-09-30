@@ -148,6 +148,13 @@ const L = LABELS[originalLanguage];
   </div>
 
   <div class="field">
+    <label for="featuredImageAlt">Featured Image Alt Text</label>
+    <input type="text" id="featuredImageAlt" placeholder="e.g., Car maintenance checklist with mechanic">
+    <div class="hint">Describe the image for accessibility & SEO. Include keyword if natural.</div>
+    <div class="status-indicator" id="altTextStatus"></div>
+  </div>
+
+  <div class="field">
     <label for="excerpt"><span data-i18n="excerpt">{L.excerpt}</span> <span class="hint" data-i18n="excerptHint">{L.excerptHint}</span></label>
     <textarea id="excerpt" name="excerpt" required rows="2">{post?.excerpt ?? ''}</textarea>
   </div>
@@ -254,6 +261,20 @@ const L = LABELS[originalLanguage];
       <div id="keywordInfo">
         Keyword density will appear here after you type in content
       </div>
+    </div>
+
+    <div class="field">
+      <label for="internalLinks">Internal Links</label>
+      <textarea id="internalLinks" name="internalLinks" rows="3" placeholder="Link to 2-4 related posts&#10;e.g., https://taqwa.autos/blog/ac-service&#10;https://taqwa.autos/blog/maintenance-tips"></textarea>
+      <div class="hint">Link to 2-4 other relevant posts (one URL per line). Improves SEO & user navigation.</div>
+      <div class="status-indicator" id="internalLinksStatus"></div>
+    </div>
+
+    <div class="field">
+      <label for="externalLinks">External Links</label>
+      <textarea id="externalLinks" name="externalLinks" rows="3" placeholder="Link to authoritative sources&#10;e.g., https://automotive-authority.com/maintenance&#10;https://example.com/guide"></textarea>
+      <div class="hint">Link to 1-2 external authoritative sources (one URL per line). Shows credibility & research.</div>
+      <div class="status-indicator" id="externalLinksStatus"></div>
     </div>
   </fieldset>
 
@@ -480,8 +501,23 @@ const L = LABELS[originalLanguage];
     if (avgWordLength < 6) score += 10;
 
     // Image Alt Text (10 points)
-    const imageInput = document.getElementById('featuredImage') as HTMLSelectElement;
-    if (imageInput && imageInput.value) score += 10;
+    const altTextInput = document.getElementById('featuredImageAlt') as HTMLInputElement;
+    if (altTextInput && altTextInput.value && altTextInput.value.length >= 20) score += 10;
+
+    // Internal Links (10 points)
+    const internalLinksInput = document.getElementById('internalLinks') as HTMLTextAreaElement;
+    if (internalLinksInput) {
+      const internalLinks = internalLinksInput.value.split('\n').filter(l => l.trim().length > 0).length;
+      if (internalLinks >= 2 && internalLinks <= 4) score += 10;
+      else if (internalLinks > 0) score += 5;
+    }
+
+    // External Links (5 points)
+    const externalLinksInput = document.getElementById('externalLinks') as HTMLTextAreaElement;
+    if (externalLinksInput) {
+      const externalLinks = externalLinksInput.value.split('\n').filter(l => l.trim().length > 0).length;
+      if (externalLinks >= 1) score += 5;
+    }
 
     // Update badge color
     if (seoScoreBadge) {
@@ -513,9 +549,85 @@ const L = LABELS[originalLanguage];
     titleInput.addEventListener('input', updateLivePreview);
   }
 
+  // SEO Field Validators (Alt Text, Internal Links, External Links)
+  const altTextInput = document.getElementById('featuredImageAlt') as HTMLInputElement;
+  const internalLinksInput = document.getElementById('internalLinks') as HTMLTextAreaElement;
+  const externalLinksInput = document.getElementById('externalLinks') as HTMLTextAreaElement;
+
+  function validateAltText() {
+    const altStatus = document.getElementById('altTextStatus');
+    if (!altStatus || !altTextInput) return;
+
+    if (!altTextInput.value.trim()) {
+      altStatus.textContent = '⚠️ Missing - Required for SEO';
+      altStatus.className = 'status-indicator warning';
+    } else if (altTextInput.value.length < 20) {
+      altStatus.textContent = '⚠️ Too Short - Describe the image';
+      altStatus.className = 'status-indicator warning';
+    } else {
+      altStatus.textContent = '✅ Good';
+      altStatus.className = 'status-indicator good';
+    }
+  }
+
+  function validateInternalLinks() {
+    const linksStatus = document.getElementById('internalLinksStatus');
+    if (!linksStatus || !internalLinksInput) return;
+
+    const links = internalLinksInput.value
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    if (links.length === 0) {
+      linksStatus.textContent = '⚠️ Add 2-4 internal links';
+      linksStatus.className = 'status-indicator warning';
+    } else if (links.length < 2) {
+      linksStatus.textContent = '⚠️ Add at least 2 links';
+      linksStatus.className = 'status-indicator warning';
+    } else if (links.length > 4) {
+      linksStatus.textContent = '⚠️ Maximum 4 links recommended';
+      linksStatus.className = 'status-indicator warning';
+    } else {
+      linksStatus.textContent = `✅ ${links.length} links`;
+      linksStatus.className = 'status-indicator good';
+    }
+  }
+
+  function validateExternalLinks() {
+    const linksStatus = document.getElementById('externalLinksStatus');
+    if (!linksStatus || !externalLinksInput) return;
+
+    const links = externalLinksInput.value
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    if (links.length === 0) {
+      linksStatus.textContent = '⚠️ Add 1-2 external sources';
+      linksStatus.className = 'status-indicator warning';
+    } else if (links.length === 1) {
+      linksStatus.textContent = '✅ 1 link (add 1 more for better SEO)';
+      linksStatus.className = 'status-indicator good';
+    } else if (links.length > 2) {
+      linksStatus.textContent = '⚠️ Maximum 2 links recommended';
+      linksStatus.className = 'status-indicator warning';
+    } else {
+      linksStatus.textContent = `✅ ${links.length} links`;
+      linksStatus.className = 'status-indicator good';
+    }
+  }
+
+  if (altTextInput) altTextInput.addEventListener('input', validateAltText);
+  if (internalLinksInput) internalLinksInput.addEventListener('input', validateInternalLinks);
+  if (externalLinksInput) externalLinksInput.addEventListener('input', validateExternalLinks);
+
   // Initialize on page load
   calculateStats();
   updateLivePreview();
+  validateAltText();
+  validateInternalLinks();
+  validateExternalLinks();
 
   // Rich text editor setup function
   function setupEditor(toolbarSelector: string, bodySelector: string, hiddenInputSelector: string) {
