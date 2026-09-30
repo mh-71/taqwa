@@ -79,7 +79,6 @@ const base = import.meta.env.BASE_URL;
           maxlength="1000"
           placeholder="Share your experience with Taqwa Automobile (10-1000 characters)"
           aria-required="true"
-          oninput="document.getElementById('charCount').textContent = this.value.length"
         ></textarea>
         <div class="char-count">
           <span id="charCount">0</span>/1000
@@ -95,34 +94,37 @@ const base = import.meta.env.BASE_URL;
 </div>
 
 <script>
-  // Character counter - try multiple times to ensure elements are loaded
-  function initCharCounter() {
-    const reviewText = document.getElementById('reviewText') as HTMLTextAreaElement;
-    const charCount = document.getElementById('charCount') as HTMLSpanElement;
+  // Character counter - use polling to ensure it always works
+  function startCharCounterPolling() {
+    let lastValue = '';
+    let initialized = false;
 
-    console.log('[CharCounter] Elements found:', { reviewText: !!reviewText, charCount: !!charCount });
+    const poll = () => {
+      const reviewText = document.getElementById('reviewText') as HTMLTextAreaElement;
+      const charCount = document.getElementById('charCount') as HTMLSpanElement;
 
-    if (!reviewText || !charCount) {
-      console.warn('[CharCounter] Elements not found, retrying...');
-      setTimeout(initCharCounter, 100);
-      return;
-    }
+      if (reviewText && charCount) {
+        // Initialize on first find
+        if (!initialized) {
+          initialized = true;
+          console.log('[CharCounter] Elements found and polling started');
+        }
 
-    console.log('[CharCounter] Initializing with current value:', reviewText.value.length);
-
-    const updateCount = () => {
-      const len = reviewText.value.length;
-      charCount.textContent = len.toString();
-      console.log('[CharCounter] Updated to:', len);
+        // Always update if value changed
+        if (reviewText.value !== lastValue) {
+          const len = reviewText.value.length;
+          charCount.textContent = len.toString();
+          lastValue = reviewText.value;
+        }
+      }
     };
 
-    updateCount();
-    reviewText.addEventListener('input', updateCount);
-    console.log('[CharCounter] Event listener attached');
+    // Poll continuously every 50ms
+    setInterval(poll, 50);
   }
 
-  // Start initialization immediately
-  initCharCounter();
+  // Start polling after a small delay to ensure DOM is ready
+  setTimeout(startCharCounterPolling, 100);
 
   // Star rating interaction
   const ratingInputs = document.querySelectorAll('input[name="rating"]');
