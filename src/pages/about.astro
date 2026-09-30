@@ -1190,234 +1190,240 @@ const base = import.meta.env.BASE_URL;
 
     <div class="services-recap-header reveal">
       <h2 class="display" style="letter-spacing:0.4px;">
-        WHAT <span class="accent">WE DO</span>
+        OUR <span class="accent">SERVICES</span>
       </h2>
     </div>
 
-    <div class="services-grid">
+    <div class="services-grid" id="servicesGrid">
 
       <!-- Service 1 -->
-      <div class="service-card reveal">
+      <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img
-            loading="lazy"
-            decoding="async"
-            class="lazy-fade"
-            onload="this.classList.add('is-loaded')"
-            src={base + "img/lpg-and-cng.jpg"}
-            alt="LPG &amp; CNG Conversion"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
-          >
+          <ResponsiveImage src="img/lpg-and-cng" alt="LPG & CNG Conversion" loading="lazy" />
         </div>
-
         <div class="body">
           <h3>LPG &amp; CNG Conversion</h3>
           <p>Professional gas conversion with certified kits, safety checked and ready to save on fuel.</p>
-
-          <a href="index.html#gas-conversion" class="read-more">
-            Read More
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <a href="#gas-conversion" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-
       <!-- Service 2 -->
-      <div class="service-card reveal">
+      <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img
-            loading="lazy"
-            decoding="async"
-            class="lazy-fade"
-            onload="this.classList.add('is-loaded')"
-            src={base + "img/engine-repeir.jpg"}
-            alt="Engine Repair &amp; Service"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
-          >
+          <ResponsiveImage src="img/engine-repeir" alt="Engine Repair & Service" loading="lazy" />
         </div>
-
         <div class="body">
           <h3>Engine Repair &amp; Service</h3>
           <p>Expert diagnosis and repair to keep your engine running smooth and reliable.</p>
-
-          <a href="engine-repair.html" class="read-more">
-            Read More
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <a href="engine-repair.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-
       <!-- Service 3 -->
-      <div class="service-card reveal">
+      <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img
-            loading="lazy"
-            decoding="async"
-            class="lazy-fade"
-            onload="this.classList.add('is-loaded')"
-            src={base + "img/oil-and-filter.jpg"}
-            alt="Oil &amp; Filter Change"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
-          >
+          <ResponsiveImage src="img/oil-and-filter" alt="Oil & Filter Change" loading="lazy" />
         </div>
-
         <div class="body">
           <h3>Oil &amp; Filter Change</h3>
           <p>Regular oil and filter change to protect your engine and extend its life.</p>
-
-          <a href="contact.html" class="read-more">
-            Read More
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-
       <!-- Service 4 -->
-      <div class="service-card reveal">
+      <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img
-            loading="lazy"
-            decoding="async"
-            class="lazy-fade"
-            onload="this.classList.add('is-loaded')"
-            src={base + "img/brake-service.jpg"}
-            alt="Brake Service"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
-          >
+          <ResponsiveImage src="img/brake-service" alt="Brake Service" loading="lazy" />
         </div>
-
         <div class="body">
           <h3>Brake Service</h3>
           <p>Complete brake inspection and repair for confident, safe stopping every time.</p>
-
-          <a href="contact.html" class="read-more">
-            Read More
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-
-      <!-- Service 5 - Hidden initially -->
-      <div class="service-card service-card-hidden">
+      <!-- Service 5 -->
+      <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img
-            loading="lazy"
-            decoding="async"
-            class="lazy-fade"
-            onload="this.classList.add('is-loaded')"
-            src={base + "img/Battery-Electrical.jpg"}
-            alt="Battery &amp; Electrical"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
-          >
+          <ResponsiveImage src="img/transmission-service" alt="Transmission Service" loading="lazy" />
         </div>
+        <div class="body">
+          <h3>Transmission Service</h3>
+          <p>Smooth gear shifting with expert transmission checks and fluid service.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
 
+      <!-- Service 6 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/wheel-alignment" alt="Wheel Alignment & Balancing" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Wheel Alignment &amp; Balancing</h3>
+          <p>Precise alignment and balancing for a smoother ride and even tire wear.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Service 7 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/tyre-service" alt="Tire Service" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Tire Service</h3>
+          <p>Tire replacement, rotation and repair to keep you safe on the road.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Service 8 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Battery-Electrical" alt="Battery & Electrical" loading="lazy" />
+        </div>
         <div class="body">
           <h3>Battery &amp; Electrical</h3>
           <p>Battery testing, replacement and full electrical system diagnostics.</p>
-
-          <a href="contact.html" class="read-more">
-            Read More
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-
-      <!-- Service 6 - Hidden initially -->
-      <div class="service-card service-card-hidden">
+      <!-- Service 9 -->
+      <div class="service-card">
         <div class="icon-panel" style="padding:0; height:160px;">
-          <img
-            loading="lazy"
-            decoding="async"
-            class="lazy-fade"
-            onload="this.classList.add('is-loaded')"
-            src={base + "img/Car-Wash-detailing.jpg"}
-            alt="Car Wash &amp; Detailing"
-            style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;"
-          >
+          <ResponsiveImage src="img/Car-ac-Service" alt="Car AC Service" loading="lazy" />
         </div>
+        <div class="body">
+          <h3>Car AC Service</h3>
+          <p>AC gas refill, cooling checkup and repair to beat the summer heat.</p>
+          <a href="car-ac-service.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
 
+      <!-- Service 10 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Suspension-Steering" alt="Suspension & Steering" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Suspension &amp; Steering</h3>
+          <p>Suspension and steering repair for a stable, comfortable and safe drive.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Service 11 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Car-Diagnostics" alt="Car Diagnostics" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Car Diagnostics</h3>
+          <p>Computerized diagnostics to quickly find and fix hidden problems.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Service 12 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Cooling-System-Service" alt="Cooling System Service" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Cooling System Service</h3>
+          <p>Radiator and coolant service to keep your engine from overheating.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Service 13 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Car-Wash-detailing" alt="Car Wash & Detailing" loading="lazy" />
+        </div>
         <div class="body">
           <h3>Car Wash &amp; Detailing</h3>
           <p>Premium wash and detailing to make your car shine like new.</p>
-
-          <a href="car-wash-detailing.html" class="read-more">
-            Read More
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+          <a href="car-wash-detailing.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-    </div>
+      <!-- Service 14 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/body-repiaring" alt="Body Repair & Painting" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Body Repair &amp; Painting</h3>
+          <p>Dent removal and quality paintwork to restore your car's finish.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
 
+      <!-- Service 15 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Periodic-Maintenance" alt="Periodic Maintenance" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Periodic Maintenance</h3>
+          <p>Scheduled maintenance to catch small issues before they become big ones.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
 
-    <!-- View All / Hide Button -->
-    <div class="services-recap-cta reveal">
-      <button type="button" class="btn-learn" id="view-all-services">
-        <span class="btn-text">View All Services</span>
+      <!-- Service 16 -->
+      <div class="service-card">
+        <div class="icon-panel" style="padding:0; height:160px;">
+          <ResponsiveImage src="img/Emergency-Roadside-Assistance" alt="Emergency Roadside Assistance" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>Emergency Roadside Assistance</h3>
+          <p>24/7 roadside help whenever your car needs it, wherever you are.</p>
+          <a href="contact.html" class="read-more">Read More
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
 
-        <svg
-          class="btn-arrow"
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M5 12h14M13 6l6 6-6 6"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
     </div>
 
   </div>
 </section>
-
-<script>
-  const servicesGrid = document.querySelector('.services-grid');
-  const servicesToggle = document.getElementById('view-all-services');
-
-  if (servicesGrid && servicesToggle) {
-    const buttonText = servicesToggle.querySelector('.btn-text');
-    const buttonIcon = servicesToggle.querySelector('.btn-arrow');
-
-    servicesToggle.addEventListener('click', () => {
-      const isOpen = servicesGrid.classList.toggle('show-all');
-
-      if (buttonText) {
-        buttonText.textContent = isOpen
-          ? 'View Less Services'
-          : 'View All Services';
-      }
-
-      if (buttonIcon) {
-        buttonIcon.style.transform = isOpen
-          ? 'rotate(180deg)'
-          : 'rotate(0deg)';
-      }
-    });
-  }
-</script>
 
 
 
