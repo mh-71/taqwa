@@ -870,8 +870,41 @@ const base = import.meta.env.BASE_URL;
 ================================ */
 
 /* ================================
-   ALL SERVICES VISIBLE BY DEFAULT
+   HIDE EXTRA SERVICES (5-16)
 ================================ */
+
+.services-grid .service-card:nth-child(n + 5){
+  opacity:0;
+  visibility:hidden;
+  max-height:0;
+  overflow:hidden;
+  transform:translateY(-20px);
+  margin-top:0;
+  margin-bottom:0;
+  pointer-events:none;
+  transition:
+    opacity .65s ease,
+    transform .65s ease,
+    max-height .75s ease,
+    visibility 0s linear .75s;
+}
+
+/* ================================
+   SHOW ALL SERVICES WHEN EXPANDED
+================================ */
+
+.services-grid.show-all .service-card:nth-child(n + 5){
+  opacity:1;
+  visibility:visible;
+  max-height:700px;
+  transform:translateY(0);
+  pointer-events:auto;
+  transition:
+    opacity .65s ease,
+    transform .65s ease,
+    max-height .75s ease,
+    visibility 0s linear 0s;
+}
 
 
 /* ================================
@@ -1382,8 +1415,58 @@ const base = import.meta.env.BASE_URL;
 
     </div>
 
+    <!-- View More / View Less Button -->
+    <div class="services-recap-cta reveal">
+      <button type="button" class="btn-learn" id="view-all-services">
+        <span class="btn-text">View More Services</span>
+
+        <svg
+          class="btn-arrow"
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 12h14M13 6l6 6-6 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+
   </div>
 </section>
+
+<script>
+  const servicesGrid = document.querySelector('.services-grid');
+  const servicesToggle = document.getElementById('view-all-services');
+
+  if (servicesGrid && servicesToggle) {
+    const buttonText = servicesToggle.querySelector('.btn-text');
+    const buttonIcon = servicesToggle.querySelector('.btn-arrow');
+
+    servicesToggle.addEventListener('click', () => {
+      const isOpen = servicesGrid.classList.toggle('show-all');
+
+      if (buttonText) {
+        buttonText.textContent = isOpen
+          ? 'View Less Services'
+          : 'View More Services';
+      }
+
+      if (buttonIcon) {
+        buttonIcon.style.transform = isOpen
+          ? 'rotate(180deg)'
+          : 'rotate(0deg)';
+      }
+    });
+  }
+</script>
 
 
 
