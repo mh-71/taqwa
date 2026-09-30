@@ -366,7 +366,6 @@
   .hero-copy p{
     color:var(--paper); font-size:16px; line-height:1.7; max-width:480px; margin-bottom:28px;
   }
-  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px;}
   .btn{
     display:flex; align-items:center; gap:9px; font-size:16px; font-weight:800;
     letter-spacing:0.4px; text-transform:uppercase; padding:14px 26px; border-radius:var(--radius-sm);
@@ -446,7 +445,6 @@
     .call-btn{padding:11px 14px;}
     .hero{padding:40px 20px 36px;}
     .hero-copy h1{font-size:32px;}
-    .hero-actions{gap:10px;}
     .btn{padding:12px 18px; font-size:16px;}
     .specialist-card{padding:24px 20px 22px;}
     .specialist-actions{flex-direction:column;}
