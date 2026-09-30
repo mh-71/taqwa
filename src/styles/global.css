@@ -1385,15 +1385,17 @@
     outline-offset: 2px;
     border-radius: 4px;
   }
-  .testimonial-card .person{display:flex; align-items:center; gap:var(--space-3); margin-top:var(--space-2);}
+  .testimonial-card .person{display:flex; align-items:flex-start; gap:var(--space-3); margin-top:var(--space-2);}
   .testimonial-card .avatar{
     width:42px; height:42px; border-radius:var(--radius-full); flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
     background:linear-gradient(150deg, var(--red), var(--red-dark));
     color:#fff; font-weight:800; font-size:var(--text-sm); font-family:var(--font-display);
+    margin-top:2px;
   }
-  .testimonial-card .person-meta h4{color:#fff; font-size:var(--text-sm); letter-spacing:0.2px; margin-bottom:2px;}
-  .testimonial-card .person-meta span{color:var(--muted); font-size:var(--text-xs);}
+  .testimonial-card .person-meta{display:flex; flex-direction:column; gap:2px;}
+  .testimonial-card .person-meta h4{color:#fff; font-size:var(--text-sm); letter-spacing:0.2px; margin:0; line-height:1.4;}
+  .testimonial-card .person-meta span{color:var(--muted); font-size:var(--text-xs); line-height:1.3;}
 
   @media (max-width:1024px){
     .testimonial-card {
