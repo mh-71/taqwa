@@ -919,7 +919,7 @@
   .gasconv-intro{color:var(--off); font-size:16px; line-height:1.75;}
 
   .gasconv-content{
-    display:grid; grid-template-columns:1.3fr 1fr; gap:36px; align-items:start;
+    display:block;
     position:relative; margin-bottom:30px;
   }
   .gasconv-steps{display:grid; grid-template-columns:repeat(2, 1fr); gap:28px;}
@@ -952,24 +952,6 @@
   }
   .gs-card h4{color:#fff; font-size:16px; letter-spacing:0.2px; margin:0; line-height:1.4;}
   .gs-card p{color:var(--muted); font-size:15px; line-height:1.65; margin:0; flex:1;}
-
-  .gasconv-compare{display:flex; flex-direction:column; gap:16px;}
-  .gc-card{border-radius:var(--radius-lg); padding:20px 22px 18px; position:relative; overflow:hidden;}
-  .gc-card.lpg{background:linear-gradient(135deg, rgba(249,115,22,0.20), rgba(249,115,22,0.04)); border:1px solid rgba(249,115,22,0.45);}
-  .gc-card.cng{background:linear-gradient(135deg, rgba(22,163,74,0.20), rgba(22,163,74,0.04)); border:1px solid rgba(22,163,74,0.45);}
-  .gc-icon{margin-bottom:8px;}
-  .gc-icon svg{width:26px; height:26px;}
-  .gc-card.lpg .gc-icon{color:var(--red);}
-  .gc-card.cng .gc-icon{color:var(--green);}
-  .gc-card h3{color:#fff; font-size:16px; margin-bottom:10px; letter-spacing:0.3px;}
-  .gc-card ul{display:flex; flex-direction:column; gap:7px;}
-  .gc-card li{color:var(--off); font-size:16px; line-height:1.5; padding-left:16px; position:relative;}
-  .gc-card li::before{
-    content:""; position:absolute; left:0; top:2px; width:11px; height:11px;
-    background-repeat:no-repeat; background-position:center; background-size:contain;
-  }
-  .gc-card.lpg li::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");}
-  .gc-card.cng li::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316A34A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");}
 
   .gasconv-trust-strip{
     background:var(--surface-3); border-radius:var(--radius-lg); margin-top:20px;
