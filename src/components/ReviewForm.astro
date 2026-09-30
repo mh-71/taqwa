@@ -94,29 +94,34 @@ const base = import.meta.env.BASE_URL;
 </div>
 
 <script>
-  // Character counter
+  // Character counter - try multiple times to ensure elements are loaded
   function initCharCounter() {
     const reviewText = document.getElementById('reviewText') as HTMLTextAreaElement;
     const charCount = document.getElementById('charCount') as HTMLSpanElement;
 
+    console.log('[CharCounter] Elements found:', { reviewText: !!reviewText, charCount: !!charCount });
+
     if (!reviewText || !charCount) {
-      console.warn('Character counter elements not found');
+      console.warn('[CharCounter] Elements not found, retrying...');
+      setTimeout(initCharCounter, 100);
       return;
     }
 
+    console.log('[CharCounter] Initializing with current value:', reviewText.value.length);
+
     const updateCount = () => {
-      charCount.textContent = reviewText.value.length.toString();
+      const len = reviewText.value.length;
+      charCount.textContent = len.toString();
+      console.log('[CharCounter] Updated to:', len);
     };
 
     updateCount();
     reviewText.addEventListener('input', updateCount);
+    console.log('[CharCounter] Event listener attached');
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCharCounter);
-  } else {
-    initCharCounter();
-  }
+  // Start initialization immediately
+  initCharCounter();
 
   // Star rating interaction
   const ratingInputs = document.querySelectorAll('input[name="rating"]');
