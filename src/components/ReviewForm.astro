@@ -95,17 +95,27 @@ const base = import.meta.env.BASE_URL;
 
 <script>
   // Character counter
-  const reviewText = document.getElementById('reviewText') as HTMLTextAreaElement;
-  const charCount = document.getElementById('charCount') as HTMLSpanElement;
+  function initCharCounter() {
+    const reviewText = document.getElementById('reviewText') as HTMLTextAreaElement;
+    const charCount = document.getElementById('charCount') as HTMLSpanElement;
 
-  if (reviewText && charCount) {
-    // Initialize character count
-    charCount.textContent = reviewText.value.length.toString();
+    if (!reviewText || !charCount) {
+      console.warn('Character counter elements not found');
+      return;
+    }
 
-    // Update on input
-    reviewText.addEventListener('input', () => {
+    const updateCount = () => {
       charCount.textContent = reviewText.value.length.toString();
-    });
+    };
+
+    updateCount();
+    reviewText.addEventListener('input', updateCount);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCharCounter);
+  } else {
+    initCharCounter();
   }
 
   // Star rating interaction
