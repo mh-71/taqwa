@@ -111,20 +111,8 @@ const L = LABELS[originalLanguage];
 <form method="post" action={formAction} id="postForm">
   {errorMessage && <div class="alert alert-error">{errorMessage}</div>}
 
-  <!-- Original Language Selection -->
-  <fieldset>
-    <legend data-i18n="originalLanguage">{L.originalLanguage}</legend>
-    <div style="display: flex; gap: 20px;">
-      <label>
-        <input type="radio" name="original_language" value="en" checked={originalLanguage === 'en' || !post} required>
-        {L.english}
-      </label>
-      <label>
-        <input type="radio" name="original_language" value="bn" checked={originalLanguage === 'bn'} required>
-        {L.bengali}
-      </label>
-    </div>
-  </fieldset>
+  <!-- Original Language Selection - English Only -->
+  <input type="hidden" name="original_language" value="en">
 
   <!-- Original Post Content -->
   <div class="form-grid">
@@ -335,36 +323,6 @@ const L = LABELS[originalLanguage];
   </div>
 </form>
 
-<script define:vars={{ LABELS }}>
-  // Switch the panel's own labels when the author changes the post's language,
-  // so writing a Bangla post happens in a Bangla panel. Every translatable bit
-  // of chrome carries data-i18n (or data-i18n-placeholder) naming its key, and
-  // both label sets are inlined above - no round-trip, no second request.
-  (function () {
-    var radios = document.querySelectorAll('input[name="original_language"]');
-    if (!radios.length) return;
-
-    function apply(lang) {
-      var set = LABELS[lang];
-      if (!set) return;
-      document.querySelectorAll('[data-i18n]').forEach(function (el) {
-        var text = set[el.getAttribute('data-i18n')];
-        if (typeof text === 'string') el.textContent = text;
-      });
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
-        var text = set[el.getAttribute('data-i18n-placeholder')];
-        if (typeof text === 'string') el.setAttribute('placeholder', text);
-      });
-      document.documentElement.setAttribute('lang', lang);
-    }
-
-    radios.forEach(function (radio) {
-      radio.addEventListener('change', function () {
-        if (radio.checked) apply(radio.value);
-      });
-    });
-  })();
-</script>
 
 <script>
   // Show/hide translation fields based on language selection

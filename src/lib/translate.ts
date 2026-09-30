@@ -160,7 +160,8 @@ async function requestTranslation(
 // That keeps every tag, attribute and nesting byte-identical - the model never
 // sees markup it could mangle.
 const WORKERS_AI_MODEL = '@cf/meta/m2m100-1.2b';
-const AI_LANG_NAMES: Record<PostLanguage, string> = { en: 'english', bn: 'bengali' };
+// m2m100 accepts source/target_lang as ISO 639-1 codes
+const AI_LANG_NAMES: Record<PostLanguage, string> = { en: 'en', bn: 'bn' };
 
 async function aiTranslateText(
   ai: NonNullable<TranslateEnv['AI']>,
@@ -169,16 +170,28 @@ async function aiTranslateText(
   to: PostLanguage
 ): Promise<string> {
   if (!text.trim()) return text;
-  const out = (await ai.run(WORKERS_AI_MODEL, {
-    text,
-    source_lang: AI_LANG_NAMES[from],
-    target_lang: AI_LANG_NAMES[to],
-  })) as { translated_text?: string } | string;
-  const translated = typeof out === 'string' ? out : out?.translated_text;
-  if (typeof translated !== 'string' || !translated.trim()) {
-    throw new Error('Workers AI returned no translation');
+  try {
+    console.log(`[aiTranslateText] Sending request: text_length=${text.length}, from=${from} (${AI_LANG_NAMES[from]}), to=${to} (${AI_LANG_NAMES[to]})`);
+
+    const out = (await ai.run(WORKERS_AI_MODEL, {
+      text,
+      source_lang: AI_LANG_NAMES[from],
+      target_lang: AI_LANG_NAMES[to],
+    })) as { translated_text?: string } | string;
+
+    console.log(`[aiTranslateText] Response type: ${typeof out}, keys: ${typeof out === 'object' ? Object.keys(out).join(',') : 'N/A'}`);
+
+    const translated = typeof out === 'string' ? out : out?.translated_text;
+    if (typeof translated !== 'string' || !translated.trim()) {
+      console.error(`[aiTranslateText] FAILED: Empty response. Raw output: ${JSON.stringify(out)}`);
+      throw new Error('Workers AI returned no translation');
+    }
+    console.log(`[aiTranslateText] SUCCESS: Got ${translated.length} chars of translated text`);
+    return translated;
+  } catch (err) {
+    console.error(`[aiTranslateText] EXCEPTION: ${err instanceof Error ? err.message : String(err)}`);
+    throw err;
   }
-  return translated;
 }
 
 async function translateSegmentsIndividually(
@@ -189,6 +202,8 @@ async function translateSegmentsIndividually(
 ): Promise<string[]> {
   if (segments.length === 0) return [];
 
+  console.log(`[translateSegmentsIndividually] Starting translation of ${segments.length} segments from ${from} to ${to}`);
+
   const MAX_CONCURRENT = 5;
   const results: string[] = new Array(segments.length);
 
@@ -196,15 +211,23 @@ async function translateSegmentsIndividually(
     const batch = segments.slice(i, Math.min(i + MAX_CONCURRENT, segments.length));
     const batchIndices = Array.from({ length: batch.length }, (_, j) => i + j);
 
-    const translations = await Promise.all(
-      batch.map((segment) => aiTranslateText(ai, segment, from, to))
-    );
+    console.log(`[translateSegmentsIndividually] Translating batch ${Math.floor(i / MAX_CONCURRENT) + 1} (segments ${i}-${i + batch.length - 1})`);
 
-    batchIndices.forEach((idx, j) => {
-      results[idx] = translations[j];
-    });
+    try {
+      const translations = await Promise.all(
+        batch.map((segment) => aiTranslateText(ai, segment, from, to))
+      );
+
+      batchIndices.forEach((idx, j) => {
+        results[idx] = translations[j];
+      });
+    } catch (batchErr) {
+      console.error(`[translateSegmentsIndividually] Batch failed:`, batchErr);
+      throw batchErr;
+    }
   }
 
+  console.log(`[translateSegmentsIndividually] Successfully translated all segments`);
   return results;
 }
 
@@ -214,6 +237,8 @@ async function aiTranslateHtml(
   from: PostLanguage,
   to: PostLanguage
 ): Promise<string> {
+  console.log(`[aiTranslateHtml] Starting HTML translation from ${from} to ${to}`);
+
   // Split on tags: tags end up at odd indexes, text at even indexes.
   const parts = html.split(/(<[^>]+>)/);
 
@@ -227,66 +252,26 @@ async function aiTranslateHtml(
     }
   }
 
+  console.log(`[aiTranslateHtml] Extracted ${textSegments.length} text segments from HTML`);
+
   if (textSegments.length === 0) {
+    console.log(`[aiTranslateHtml] No text segments to translate`);
     return html; // No text to translate
   }
 
-  // Group segments into batches (~2000 chars each) to reduce API calls from 50+ to 3-5.
-  const SEGMENT_DELIMITER = '[TAQWA_SEGMENT_BREAK]';
-  const MAX_BATCH_SIZE = 2000;
-  const batches: string[][] = [];
-  let currentBatch: string[] = [];
-  let currentSize = 0;
-
-  for (const segment of textSegments) {
-    // If adding this segment would exceed limit and we have a batch, start a new one.
-    if (currentSize + segment.length > MAX_BATCH_SIZE && currentBatch.length > 0) {
-      batches.push(currentBatch);
-      currentBatch = [];
-      currentSize = 0;
-    }
-    currentBatch.push(segment);
-    currentSize += segment.length + SEGMENT_DELIMITER.length;
-  }
-  if (currentBatch.length > 0) {
-    batches.push(currentBatch);
-  }
-
-  // Translate each batch with delimiter, with fallback to individual translation.
-  const translatedSegments: string[] = [];
-  for (const batch of batches) {
-    try {
-      const batchText = batch.join(SEGMENT_DELIMITER);
-      const translated = await aiTranslateText(ai, batchText, from, to);
-
-      // Split translated batch back on delimiter and validate segment count.
-      const translatedParts = translated.split(SEGMENT_DELIMITER);
-      if (translatedParts.length !== batch.length) {
-        throw new Error(
-          `Segment count mismatch: expected ${batch.length} segments but got ${translatedParts.length}`
-        );
-      }
-
-      translatedSegments.push(...translatedParts);
-    } catch (batchErr) {
-      console.warn(
-        `Batch translation failed (${(batchErr as Error).message}), retrying segments individually...`
-      );
-
-      try {
-        const individualResults = await translateSegmentsIndividually(
-          ai,
-          batch,
-          from,
-          to
-        );
-        translatedSegments.push(...individualResults);
-      } catch (fallbackErr) {
-        throw new Error(
-          `Batch failed and individual fallback failed: ${(fallbackErr as Error).message}`
-        );
-      }
-    }
+  // Translate all text segments individually to ensure reliability.
+  let translatedSegments: string[];
+  try {
+    translatedSegments = await translateSegmentsIndividually(
+      ai,
+      textSegments,
+      from,
+      to
+    );
+    console.log(`[aiTranslateHtml] Got ${translatedSegments.length} translated segments`);
+  } catch (err) {
+    console.error(`[aiTranslateHtml] Translation failed:`, err);
+    throw err;
   }
 
   // Reconstruct HTML: replace text segments with translations, keep tags unchanged.

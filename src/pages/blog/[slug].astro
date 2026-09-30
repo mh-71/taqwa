@@ -95,27 +95,34 @@ if (canTranslate(translateEnv)) {
   showLanguageToggle = true;
 }
 
-// If we have post ID and database, check for cached translations or perform translation
-if (post.id && runtimeDb) {
-  try {
-    if (wantsOtherLanguage) {
-      // User requested other language via ?lang parameter
-      const translated = await ensureTranslation(runtimeDb, translateEnv, post, otherLang);
-      if (translated) {
-        displayPost = translated;
-        currentBlogLanguage = otherLang;
+// Parallelize translation check and related posts fetching
+const translationCheckPromise = (async () => {
+  if (post.id && runtimeDb) {
+    try {
+      if (wantsOtherLanguage) {
+        // User requested other language via ?lang parameter
+        const translated = await ensureTranslation(runtimeDb, translateEnv, post, otherLang);
+        if (translated) {
+          displayPost = translated;
+          currentBlogLanguage = otherLang;
+        }
+      } else {
+        // Reading the original: check if cached translation exists (with null env to avoid auto-translation)
+        const stored = await ensureTranslation(runtimeDb, null, post, otherLang);
+        // showLanguageToggle already set above based on canTranslate
       }
-    } else {
-      // Reading the original: check if cached translation exists (with null env to avoid auto-translation)
-      const stored = await ensureTranslation(runtimeDb, null, post, otherLang);
-      // showLanguageToggle already set above based on canTranslate
+    } catch (err) {
+      // A failed or unconfigured translation must never break the post - the
+      // reader just gets it in the language it was written in.
+      console.error('Translation failed:', err);
     }
-  } catch (err) {
-    // A failed or unconfigured translation must never break the post - the
-    // reader just gets it in the language it was written in.
-    console.error('Translation failed:', err);
   }
-}
+})();
+
+const recentPostsPromise = runtimeDb ? getRecentPosts(runtimeDb, 5) : Promise.resolve([]);
+
+// Wait for both in parallel
+const [_, recentPostsList] = await Promise.all([translationCheckPromise, recentPostsPromise]);
 
 // Both language versions live at the same path and differ only by ?lang=, so
 // tell search engines they are alternates of each other rather than duplicates.
@@ -128,7 +135,7 @@ const alternates = showLanguageToggle
     ]
   : [];
 
-const related = (await getRecentPosts(runtimeDb, 5))
+const related = recentPostsList
   .filter((p) => p.slug !== post.slug)
   .slice(0, 4);
 

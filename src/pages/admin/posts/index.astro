@@ -101,7 +101,7 @@ const base = import.meta.env.BASE_URL;
             <td><img class="thumb" src={base + post.featured_image} alt="" loading="lazy"></td>
             <td><strong>{post.title}</strong></td>
             <td>{post.category_name}</td>
-            <td><span class="badge badge-lang">{post.language === 'bn' ? 'বাংলা' : 'English'}</span></td>
+            <td><span class="badge badge-lang">{post.original_language === 'bn' ? 'বাংলা' : 'English'}</span></td>
             <td>{post.publish_date}</td>
             <td>
               <span class={`badge ${post.status === 'published' ? 'badge-published' : 'badge-draft'}`}>
