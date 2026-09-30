@@ -1180,18 +1180,20 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
 
       // Check if text is overflowing (needs Read More)
       const checkIfNeedsExpansion = () => {
-        // Temporarily remove collapsed class to measure full height
+        // Measure full height without clamping
         quoteEl.classList.remove('collapsed');
+        quoteEl.style.maxHeight = 'none';
         void quoteEl.offsetHeight; // Force reflow
         const fullHeight = quoteEl.scrollHeight;
 
-        // Apply collapsed state
+        // Apply collapsed state with line-clamp
         quoteEl.classList.add('collapsed');
         void quoteEl.offsetHeight; // Force reflow
-        const collapsedHeight = quoteEl.scrollHeight;
+        const computedStyle = window.getComputedStyle(quoteEl);
+        const collapsedHeight = parseFloat(computedStyle.height) || quoteEl.scrollHeight;
 
-        // If heights differ, text is clamped - show button
-        const needsExpansion = fullHeight > collapsedHeight + 1;
+        // If there's significant height difference, text is clamped
+        const needsExpansion = fullHeight > collapsedHeight + 10;
         buttonEl.style.display = needsExpansion ? 'inline-block' : 'none';
 
         return needsExpansion;
