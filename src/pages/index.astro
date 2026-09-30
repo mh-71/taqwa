@@ -1182,10 +1182,12 @@ const description = "Taqwa Automobile Service Center in Uttara, Dhaka offers LPG
       const checkIfNeedsExpansion = () => {
         // Temporarily remove collapsed class to measure full height
         quoteEl.classList.remove('collapsed');
+        void quoteEl.offsetHeight; // Force reflow
         const fullHeight = quoteEl.scrollHeight;
 
         // Apply collapsed state
         quoteEl.classList.add('collapsed');
+        void quoteEl.offsetHeight; // Force reflow
         const collapsedHeight = quoteEl.scrollHeight;
 
         // If heights differ, text is clamped - show button
