@@ -79,6 +79,7 @@ const base = import.meta.env.BASE_URL;
           maxlength="1000"
           placeholder="Share your experience with Taqwa Automobile (10-1000 characters)"
           aria-required="true"
+          oninput="document.getElementById('charCount').textContent = this.value.length"
         ></textarea>
         <div class="char-count">
           <span id="charCount">0</span>/1000
