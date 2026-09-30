@@ -1345,7 +1345,8 @@
 }
   .testimonial-card .quote-icon{color:rgba(249,115,22,0.35); width:30px; height:30px;}
   .testimonial-card .stars{display:flex; gap:2px; color:var(--red);}
-  .testimonial-card .stars .icon{width:14px; height:14px;}
+  .testimonial-card .stars .icon{width:14px; height:14px; color:#d4d4d8;}
+  .testimonial-card .stars .icon.filled{color:#F97316;}
   .testimonial-card p.quote{color:var(--off); font-size:var(--text-sm); line-height:1.75; flex:1;}
   .testimonial-card .person{display:flex; align-items:center; gap:var(--space-3); margin-top:var(--space-2);}
   .testimonial-card .avatar{
