@@ -19,6 +19,9 @@ dist/
 # temp file written by scripts/sync-d1-to-snapshot.mjs
 .sync-query.sql
 
+# database backups (production data - should not be committed)
+backup_*.sql
+
 # logs
 npm-debug.log*
 

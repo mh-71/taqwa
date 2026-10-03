@@ -550,6 +550,10 @@ const base = import.meta.env.BASE_URL;
       <p>Have a question about a service or want to book an appointment? Fill out the form below and our team will get back to you.</p>
 
       <form id="contactForm">
+        <!-- Honeypot fields: hidden from users, visible to bots -->
+        <input type="hidden" name="website" value="">
+        <input type="hidden" name="company" value="">
+
         <div class="form-row">
           <div class="form-group">
             <label for="fullName">Full Name</label>
