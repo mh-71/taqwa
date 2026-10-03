@@ -600,6 +600,18 @@ table.admin-table img.thumb {
   background: var(--admin-info-bg);
   color: var(--admin-info);
 }
+.badge-new {
+  background: var(--admin-info-bg);
+  color: var(--admin-info);
+}
+.badge-responded {
+  background: var(--admin-success-bg);
+  color: var(--admin-success);
+}
+.badge-spam {
+  background: var(--admin-danger-bg);
+  color: var(--admin-danger);
+}
 /* ========== ALERTS ========== */
 .alert {
   padding: 14px 16px;
