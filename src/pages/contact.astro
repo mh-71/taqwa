@@ -644,15 +644,12 @@ const base = import.meta.env.BASE_URL;
 
 
 <script>
-  // ===== CONTACT FORM (submits via FormSubmit.co - no server needed) =====
-  // NOTE: the first real submission sends a one-time confirmation email to
-  // mosharrafhossen090@gmail.com — that link must be clicked once to activate delivery.
+  // ===== CONTACT FORM (submits via /api/contact with database backend) =====
   var contactForm = document.getElementById('contactForm');
   var formSuccess = document.getElementById('formSuccess');
   var formError = document.getElementById('formError');
   var submitBtn = document.getElementById('formSubmitBtn');
   var submitBtnText = document.getElementById('formSubmitBtnText');
-  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/mosharrafhossen090@gmail.com';
 
   if (contactForm) {
     contactForm.addEventListener('submit', function(e){
@@ -669,26 +666,32 @@ const base = import.meta.env.BASE_URL;
 
       var formData = new FormData(contactForm);
       var payload = {
-        _subject: 'New enquiry from taqwaautomobile.com contact form',
-        Name: formData.get('fullName'),
-        Phone: formData.get('phoneNumber'),
-        Email: formData.get('emailAddress'),
-        'Service Interested In': formData.get('serviceInterest') || 'Not specified',
-        Message: formData.get('message')
+        name: formData.get('fullName'),
+        phoneNumber: formData.get('phoneNumber'),
+        email: formData.get('emailAddress'),
+        serviceInterest: formData.get('serviceInterest') || 'other',
+        message: formData.get('message'),
+        website: formData.get('website'),
+        company: formData.get('company')
       };
 
-      fetch(FORM_ENDPOINT, {
+      fetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
-        .then(function(res){ if(!res.ok){ throw new Error('Form submission failed'); } return res.json(); })
-        .then(function(){
+        .then(function(res){
+          if(!res.ok){
+            return res.json().then(function(data){ throw new Error(data.error || 'Form submission failed'); });
+          }
+          return res.json();
+        })
+        .then(function(data){
           formSuccess.classList.add('show');
           contactForm.reset();
           formSuccess.scrollIntoView({behavior:'smooth', block:'center'});
         })
-        .catch(function(){
+        .catch(function(err){
           formError.classList.add('show');
           formError.scrollIntoView({behavior:'smooth', block:'center'});
         })
