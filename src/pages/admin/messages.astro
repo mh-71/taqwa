@@ -747,4 +747,11 @@ const formatDate = (dateStr: string) => {
       return dateStr;
     }
   }
+
+  // Expose functions to global scope for inline event handlers
+  window.updateStatus = updateStatus;
+  window.deleteMessage = deleteMessage;
+  window.retryEmail = retryEmail;
+  window.closeModal = closeModal;
+  window.loadMessages = loadMessages;
 </script>
