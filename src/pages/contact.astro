@@ -599,8 +599,8 @@ const base = import.meta.env.BASE_URL;
           <span>Thank you! Your message has been received. We'll get back to you shortly.</span>
         </div>
         <div class="form-success" id="formError" style="background:#FDECEC; border-color:#F5B4B4;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#D14343" stroke-width="1.8"/><path d="M12 7v6M12 16.5v.01" stroke="#D14343" stroke-width="2" stroke-linecap="round"/></svg>
-          <span>Sorry, something went wrong sending your message. Please call us directly at <a href="tel:+8801854226757" style="color:#D14343; font-weight:700;">01854226757</a> or try again.</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#D14343" stroke-width="1.8"/><path d="M12 7v6M12 16.5v .01" stroke="#D14343" stroke-width="2" stroke-linecap="round"/></svg>
+          <span id="formErrorText">Sorry, something went wrong sending your message. Please call us directly at <a href="tel:+8801854226757" style="color:#D14343; font-weight:700;">01854226757</a> or try again.</span>
         </div>
       </form>
     </div>
@@ -687,7 +687,7 @@ const base = import.meta.env.BASE_URL;
       })
         .then(function(res){
           if(!res.ok){
-            return res.json().then(function(data){ throw new Error(data.error || 'Form submission failed'); });
+            return res.json().then(function(data){ throw Object.assign(new Error(data.message || data.error || 'Form submission failed'), { details: data }); });
           }
           return res.json();
         })
@@ -697,6 +697,11 @@ const base = import.meta.env.BASE_URL;
           formSuccess.scrollIntoView({behavior:'smooth', block:'center'});
         })
         .catch(function(err){
+          var errorText = document.getElementById('formErrorText');
+          errorText.textContent = err.message;
+          if(err.details && err.details.code === 'DUPLICATE_SUBMISSION_24H'){
+            errorText.innerHTML = err.message + ' Please call us at <a href="tel:+8801854226757" style="color:#D14343; font-weight:700;">01854226757</a> to speak with our team.';
+          }
           formError.classList.add('show');
           formError.scrollIntoView({behavior:'smooth', block:'center'});
         })
