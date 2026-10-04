@@ -659,12 +659,17 @@ const base = import.meta.env.BASE_URL;
         return;
       }
 
+      var formData = new FormData(contactForm);
+      var message = formData.get('message');
+      if(message.length < 100){
+        alert('Message must be at least 100 characters long.');
+        return;
+      }
+
       formSuccess.classList.remove('show');
       formError.classList.remove('show');
       submitBtn.disabled = true;
       submitBtnText.textContent = 'Sending...';
-
-      var formData = new FormData(contactForm);
       var payload = {
         name: formData.get('fullName'),
         phoneNumber: formData.get('phoneNumber'),
