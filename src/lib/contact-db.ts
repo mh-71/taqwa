@@ -166,44 +166,61 @@ export async function listContactMessages(
   if (!db) return { messages: [], total: 0, statusCounts: {} };
 
   const status = options?.status || '';
-  const search = options?.search || '';
+  const search = (options?.search || '').trim();
   const limit = Math.min(Math.max(options?.limit || 20, 1), 100);
   const offset = Math.max(options?.offset || 0, 0);
-  const searchTerm = `%${search}%`;
+  const hasSearch = search.length > 0;
+  const searchTerm = hasSearch ? `%${search}%` : '';
+
+  let messageQuery = `
+    SELECT id, name, phone_number, email, service_interest, message,
+           status, email_sent_at, email_failed_at, email_attempts,
+           deleted_at, created_at, updated_at
+    FROM contact_messages
+    WHERE deleted_at IS NULL
+      AND (status = ? OR ? = '')
+  `;
+
+  let countQuery = `
+    SELECT COUNT(*) as cnt FROM contact_messages
+    WHERE deleted_at IS NULL
+      AND (status = ? OR ? = '')
+  `;
+
+  let bindings = [status, status];
+
+  if (hasSearch) {
+    messageQuery += `
+      AND (
+        name LIKE ?
+        OR email LIKE ?
+        OR phone_number LIKE ?
+        OR message LIKE ?
+      )
+    `;
+    countQuery += `
+      AND (
+        name LIKE ?
+        OR email LIKE ?
+        OR phone_number LIKE ?
+        OR message LIKE ?
+      )
+    `;
+    bindings.push(searchTerm, searchTerm, searchTerm, searchTerm);
+  }
+
+  messageQuery += ` ORDER BY created_at DESC LIMIT ? OFFSET ? `;
+  bindings.push(limit, offset);
 
   const result = await db
-    .prepare(`
-      SELECT id, name, phone_number, email, service_interest, message,
-             status, email_sent_at, email_failed_at, email_attempts,
-             deleted_at, created_at, updated_at
-      FROM contact_messages
-      WHERE deleted_at IS NULL
-        AND (status = ? OR ? = '')
-        AND (
-          name LIKE ?
-          OR email LIKE ?
-          OR phone_number LIKE ?
-          OR message LIKE ?
-        )
-      ORDER BY created_at DESC
-      LIMIT ? OFFSET ?
-    `)
-    .bind(status, status, searchTerm, searchTerm, searchTerm, searchTerm, limit, offset)
+    .prepare(messageQuery)
+    .bind(...(bindings as unknown[]))
     .all<ContactMessage>();
 
+  const countBindings = bindings.slice(0, -2) as unknown[];
   const totalResult = await db
-    .prepare(`
-      SELECT COUNT(*) as cnt FROM contact_messages
-      WHERE deleted_at IS NULL
-        AND (status = ? OR ? = '')
-        AND (
-          name LIKE ?
-          OR email LIKE ?
-          OR phone_number LIKE ?
-          OR message LIKE ?
-        )
-    `)
-    .bind(status, status, searchTerm, searchTerm, searchTerm, searchTerm)
+    .prepare(countQuery)
+    .bind(...countBindings)
     .first<{ cnt: number}>();
 
   const countsResult = await db
