@@ -422,10 +422,16 @@ const formatDate = (dateStr: string) => {
   }
 
   function renderMessages() {
+    const messagesContainer = document.getElementById('messagesContainer');
     const tableBody = document.getElementById('tableBody');
 
+    if (!tableBody) {
+      console.error('tableBody element not found');
+      return;
+    }
+
     if (!currentMessages || currentMessages.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #64748B;">No messages found</td></tr>';
+      messagesContainer.innerHTML = '<div class="empty-state"><p>No messages found</p><p class="text-muted">Contact messages will appear here once submitted.</p></div>';
       return;
     }
 
