@@ -628,6 +628,7 @@ const formatDate = (dateStr: string) => {
       const response = await fetch(`/api/admin/messages/${messageId}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ status: newStatus })
       });
 
@@ -652,7 +653,8 @@ const formatDate = (dateStr: string) => {
 
     try {
       const response = await fetch(`/api/admin/messages/${messageId}/delete`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -676,7 +678,8 @@ const formatDate = (dateStr: string) => {
 
     try {
       const response = await fetch(`/api/admin/messages/${messageId}/email-retry`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include'
       });
 
       if (response.ok) {
