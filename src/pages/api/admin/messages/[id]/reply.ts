@@ -43,7 +43,7 @@ async function sendReplyEmail(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'admin@taqwa.autos',
+        from: 'Taqwa Automobile <admin@taqwa.autos>',
         to: customerEmail,
         subject: subject,
         html: htmlContent,
