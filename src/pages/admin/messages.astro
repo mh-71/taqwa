@@ -134,7 +134,7 @@ const formatDate = (dateStr: string) => {
   </div>
 
   <!-- Reply Form Container -->
-  <div id="replyFormContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; display: flex; align-items: center; justify-content: center;">
+  <div id="replyFormContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; display: none; align-items: center; justify-content: center;">
     <div style="background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
       <h3 style="margin: 0 0 20px 0; font-size: 20px;">Reply via Email</h3>
 
@@ -587,9 +587,9 @@ const formatDate = (dateStr: string) => {
 
     let actionButtons = `
       <div class="action-buttons">
-        <button class="btn-action" onclick="updateStatus(${message.id}, 'read')" ${message.status === 'read' ? 'disabled' : ''}>Mark as Read</button>
-        <button class="btn-action success" onclick="updateStatus(${message.id}, 'replied')" ${message.status === 'replied' ? 'disabled' : ''}>Mark as Replied</button>
-        <button class="btn-action danger" onclick="updateStatus(${message.id}, 'spam')" ${message.status === 'spam' ? 'disabled' : ''}>Mark as Spam</button>
+        <button class="btn-action" onclick="updateStatus(${message.id}, 'read', event)" ${message.status === 'read' ? 'disabled' : ''}>Mark as Read</button>
+        <button class="btn-action success" onclick="updateStatus(${message.id}, 'replied', event)" ${message.status === 'replied' ? 'disabled' : ''}>Mark as Replied</button>
+        <button class="btn-action danger" onclick="updateStatus(${message.id}, 'spam', event)" ${message.status === 'spam' ? 'disabled' : ''}>Mark as Spam</button>
     `;
 
     if (message.status !== 'spam' && message.email_failed_at) {
@@ -651,8 +651,9 @@ const formatDate = (dateStr: string) => {
     modal.classList.add('open');
   }
 
-  async function updateStatus(messageId, newStatus) {
-    const button = event.target;
+  async function updateStatus(messageId, newStatus, evt) {
+    const button = evt?.target;
+    if (!button) return;
     button.disabled = true;
     const originalText = button.textContent;
     button.textContent = 'Updating...';
@@ -804,7 +805,9 @@ const formatDate = (dateStr: string) => {
 
   function closeReplyForm() {
     const container = document.getElementById('replyFormContainer');
-    container.style.display = 'none';
+    if (container) {
+      container.style.display = 'none';
+    }
   }
 
   function updateCharCounts() {
@@ -823,6 +826,7 @@ const formatDate = (dateStr: string) => {
 
   async function sendReply() {
     const container = document.getElementById('replyFormContainer');
+    if (!container) return;
     const messageId = container.dataset.messageId;
     const subject = document.getElementById('replySubject').value.trim();
     const body = document.getElementById('replyBody').value.trim();
