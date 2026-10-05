@@ -133,6 +133,38 @@ const formatDate = (dateStr: string) => {
     </div>
   </div>
 
+  <!-- Reply Form Container -->
+  <div id="replyFormContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+      <h3 style="margin: 0 0 20px 0; font-size: 20px;">Reply via Email</h3>
+
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">To:</label>
+        <input id="replyToEmail" type="text" readonly style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; background: #f5f5f5; cursor: not-allowed;" />
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Subject:</label>
+        <input id="replySubject" type="text" placeholder="Subject of your reply" maxlength="200" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;" />
+        <div style="font-size: 12px; color: #666; margin-top: 3px;" id="subjectLength">0/200</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Reply Message:</label>
+        <textarea id="replyBody" placeholder="Type your reply here..." maxlength="5000" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; height: 150px; font-family: inherit; resize: vertical;"></textarea>
+        <div style="font-size: 12px; color: #666; margin-top: 3px;" id="bodyLength">0/5000</div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button id="replyCancelBtn" onclick="closeReplyForm()" style="padding: 10px 20px; background: #e5e7eb; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Cancel</button>
+        <button id="replySendBtn" onclick="sendReply()" style="padding: 10px 20px; background: #16A34A; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Send Reply</button>
+      </div>
+
+      <div id="replyError" style="margin-top: 15px; padding: 12px; background: #fee2e2; color: #991b1b; border-radius: 6px; display: none; font-size: 14px;"></div>
+      <div id="replyLoading" style="margin-top: 15px; text-align: center; color: #666; display: none;">Sending...</div>
+    </div>
+  </div>
+
   <!-- Message Details Modal -->
   <div id="messageModal" class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-backdrop"></div>
@@ -565,6 +597,7 @@ const formatDate = (dateStr: string) => {
     }
 
     if (message.status !== 'spam') {
+      actionButtons += `<button class="btn-action" onclick="openReplyForm(${message.id}, '${escapeHtml(message.email)}')">Reply via Email</button>`;
       actionButtons += `<button class="btn-action danger" onclick="deleteMessage(${message.id})">Delete</button>`;
     }
 
@@ -748,10 +781,122 @@ const formatDate = (dateStr: string) => {
     }
   }
 
+  function openReplyForm(messageId, customerEmail) {
+    const container = document.getElementById('replyFormContainer');
+    const emailInput = document.getElementById('replyToEmail');
+    const subjectInput = document.getElementById('replySubject');
+    const bodyInput = document.getElementById('replyBody');
+    const errorDiv = document.getElementById('replyError');
+
+    emailInput.value = customerEmail;
+    subjectInput.value = '';
+    bodyInput.value = '';
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+
+    // Store messageId in a data attribute
+    container.dataset.messageId = messageId;
+
+    container.style.display = 'flex';
+    subjectInput.focus();
+  }
+
+  function closeReplyForm() {
+    const container = document.getElementById('replyFormContainer');
+    container.style.display = 'none';
+  }
+
+  function updateCharCounts() {
+    const subjectInput = document.getElementById('replySubject');
+    const bodyInput = document.getElementById('replyBody');
+    const subjectLength = document.getElementById('subjectLength');
+    const bodyLength = document.getElementById('bodyLength');
+
+    subjectLength.textContent = `${subjectInput.value.length}/200`;
+    bodyLength.textContent = `${bodyInput.value.length}/5000`;
+  }
+
+  // Attach char count listeners
+  document.getElementById('replySubject')?.addEventListener('input', updateCharCounts);
+  document.getElementById('replyBody')?.addEventListener('input', updateCharCounts);
+
+  async function sendReply() {
+    const container = document.getElementById('replyFormContainer');
+    const messageId = container.dataset.messageId;
+    const subject = document.getElementById('replySubject').value.trim();
+    const body = document.getElementById('replyBody').value.trim();
+    const errorDiv = document.getElementById('replyError');
+    const loadingDiv = document.getElementById('replyLoading');
+    const sendBtn = document.getElementById('replySendBtn');
+    const cancelBtn = document.getElementById('replyCancelBtn');
+
+    // Validate
+    if (!subject) {
+      errorDiv.textContent = 'Subject is required';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    if (subject.length < 2 || subject.length > 200) {
+      errorDiv.textContent = 'Subject must be 2-200 characters';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    if (!body) {
+      errorDiv.textContent = 'Reply message is required';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    if (body.length < 10 || body.length > 5000) {
+      errorDiv.textContent = 'Reply must be 10-5000 characters';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    // Disable buttons and show loading
+    sendBtn.disabled = true;
+    cancelBtn.disabled = true;
+    errorDiv.style.display = 'none';
+    loadingDiv.style.display = 'block';
+
+    try {
+      const response = await fetch(`/api/admin/messages/${messageId}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ subject, body })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        showNotification('Reply sent successfully!');
+        closeReplyForm();
+        closeModal();
+        await loadMessages();
+      } else {
+        const data = await response.json();
+        errorDiv.textContent = data.error || 'Failed to send reply';
+        errorDiv.style.display = 'block';
+      }
+    } catch (error) {
+      errorDiv.textContent = `Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      errorDiv.style.display = 'block';
+    } finally {
+      sendBtn.disabled = false;
+      cancelBtn.disabled = false;
+      loadingDiv.style.display = 'none';
+    }
+  }
+
   // Expose functions to global scope for inline event handlers
   window.updateStatus = updateStatus;
   window.deleteMessage = deleteMessage;
   window.retryEmail = retryEmail;
   window.closeModal = closeModal;
   window.loadMessages = loadMessages;
+  window.openReplyForm = openReplyForm;
+  window.closeReplyForm = closeReplyForm;
+  window.sendReply = sendReply;
 </script>
