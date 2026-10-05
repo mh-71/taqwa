@@ -108,8 +108,8 @@ export function validateContactMessage(data: {
   }
 
   const message = (data.message || '').trim();
-  if (message.length < 100 || message.length > 5000) {
-    throw new Error('Message must be 100-5000 characters');
+  if (message.length < 1 || message.length > 1000) {
+    throw new Error('Message must be 1-1000 characters');
   }
 
   return { name, phoneNumber, email, serviceInterest, message };

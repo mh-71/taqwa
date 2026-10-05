@@ -586,7 +586,10 @@ const base = import.meta.env.BASE_URL;
 
         <div class="form-group">
           <label for="message">Message</label>
-          <textarea id="message" name="message" placeholder="Tell us about your vehicle and what you need..." required></textarea>
+          <textarea id="message" name="message" placeholder="Tell us about your vehicle and what you need..." maxlength="1000" required></textarea>
+          <div style="font-size: 12px; color: #666; text-align: right; margin-top: 4px;">
+            <span id="charCounter">0</span> / 1000
+          </div>
         </div>
 
         <button type="submit" class="form-submit-btn" id="formSubmitBtn">
@@ -652,6 +655,17 @@ const base = import.meta.env.BASE_URL;
   var submitBtnText = document.getElementById('formSubmitBtnText');
 
   if (contactForm) {
+    // Setup character counter
+    var messageField = document.getElementById('message');
+    var charCounter = document.getElementById('charCounter');
+    if (messageField && charCounter) {
+      messageField.addEventListener('input', function() {
+        charCounter.textContent = messageField.value.length;
+      });
+      // Initialize counter on page load
+      charCounter.textContent = messageField.value.length;
+    }
+
     contactForm.addEventListener('submit', function(e){
       e.preventDefault();
       if(!contactForm.checkValidity()){
@@ -661,8 +675,8 @@ const base = import.meta.env.BASE_URL;
 
       var formData = new FormData(contactForm);
       var message = formData.get('message');
-      if(message.length < 100){
-        alert('Message must be at least 100 characters long.');
+      if(message.length < 1 || message.length > 1000){
+        alert('Message must be between 1 and 1000 characters long.');
         return;
       }
 
