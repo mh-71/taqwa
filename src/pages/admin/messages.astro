@@ -736,6 +736,7 @@ const formatDate = (dateStr: string) => {
     if (modal) {
       modal.classList.remove('open');
     }
+    closeReplyForm();
   }
 
   function showNotification(message, isError = false) {
