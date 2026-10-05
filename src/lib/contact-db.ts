@@ -45,6 +45,20 @@ export interface AuditLog {
   created_at: string;
 }
 
+export interface MessageReply {
+  id: number;
+  contact_message_id: number;
+  to_email: string;
+  subject: string;
+  body: string;
+  status: 'sent' | 'bounced' | 'failed' | 'pending';
+  provider_message_id: string | null;
+  sent_at: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
 // ===== Validation & Normalization =====
 
 export function normalizePhoneNumber(phone: string): string {
@@ -459,4 +473,137 @@ export async function getAuditLogsForMessage(
     .all<AuditLog>();
 
   return result.results;
+}
+
+// ===== Message Replies =====
+
+export async function createReply(
+  db: D1Database,
+  data: {
+    contact_message_id: number;
+    to_email: string;
+    subject: string;
+    body: string;
+    status?: 'sent' | 'failed' | 'pending';
+    provider_message_id?: string;
+    idempotency_key?: string;
+  }
+): Promise<number> {
+  if (!db) throw new Error('Database not available');
+
+  const status = data.status || 'pending';
+
+  const result = await db
+    .prepare(`
+      INSERT INTO contact_message_replies (
+        contact_message_id, to_email, subject, body, provider_message_id, idempotency_key, status, sent_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ${status === 'sent' ? "datetime('now')" : 'NULL'})
+    `)
+    .bind(
+      data.contact_message_id,
+      data.to_email,
+      data.subject,
+      data.body,
+      data.provider_message_id ?? null,
+      data.idempotency_key ?? null,
+      status
+    )
+    .run();
+
+  return result.meta.last_row_id;
+}
+
+export async function getReplyHistory(
+  db: D1Database,
+  messageId: number,
+  limit = 50
+): Promise<MessageReply[]> {
+  if (!db) return [];
+
+  const result = await db
+    .prepare(`
+      SELECT id, contact_message_id, to_email, subject, body, status,
+             provider_message_id, sent_at, created_at, updated_at, deleted_at
+      FROM contact_message_replies
+      WHERE contact_message_id = ? AND deleted_at IS NULL
+      ORDER BY sent_at DESC
+      LIMIT ?
+    `)
+    .bind(messageId, limit)
+    .all<MessageReply>();
+
+  return result.results;
+}
+
+export async function getReply(
+  db: D1Database,
+  replyId: number
+): Promise<MessageReply | null> {
+  if (!db) return null;
+
+  const result = await db
+    .prepare(`
+      SELECT id, contact_message_id, to_email, subject, body, status,
+             provider_message_id, sent_at, created_at, updated_at, deleted_at
+      FROM contact_message_replies
+      WHERE id = ?
+    `)
+    .bind(replyId)
+    .first<MessageReply>();
+
+  return result ?? null;
+}
+
+export async function updateReplyStatus(
+  db: D1Database,
+  replyId: number,
+  status: 'sent' | 'failed' | 'pending',
+  providerMessageId?: string
+): Promise<boolean> {
+  if (!db) return false;
+
+  const updates: string[] = ['status = ?'];
+  const params: any[] = [status];
+
+  if (providerMessageId !== undefined) {
+    updates.push('provider_message_id = ?');
+    params.push(providerMessageId);
+  }
+
+  if (status === 'sent') {
+    updates.push('sent_at = datetime(\'now\')');
+  }
+
+  updates.push('updated_at = datetime(\'now\')');
+  params.push(replyId);
+
+  const result = await db
+    .prepare(`
+      UPDATE contact_message_replies
+      SET ${updates.join(', ')}
+      WHERE id = ?
+    `)
+    .bind(...params)
+    .run();
+
+  return result.success && result.meta.changes > 0;
+}
+
+export async function softDeleteReply(
+  db: D1Database,
+  replyId: number
+): Promise<boolean> {
+  if (!db) return false;
+
+  const result = await db
+    .prepare(`
+      UPDATE contact_message_replies
+      SET deleted_at = datetime('now'), updated_at = datetime('now')
+      WHERE id = ?
+    `)
+    .bind(replyId)
+    .run();
+
+  return result.success && result.meta.changes > 0;
 }

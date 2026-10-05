@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { verifySessionToken } from '../../../../lib/auth';
-import { getContactMessageById, getAuditLogsForMessage } from '../../../../lib/contact-db';
+import { verifySessionToken } from '../../../../../lib/auth';
+import { getContactMessageById, getReplyHistory } from '../../../../../lib/contact-db';
 
 export const prerender = false;
 
@@ -13,7 +13,10 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
   // ===== AUTHENTICATION =====
   const runtime = (locals as any).runtime;
   if (!runtime) {
-    return new Response('Admin API is only available on the Cloudflare deployment.', { status: 501 });
+    return new Response(
+      JSON.stringify({ error: 'Admin API is only available on the Cloudflare deployment.' }),
+      { status: 501, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   // ===== VERIFY ADMIN SESSION =====
@@ -40,7 +43,7 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
     });
   }
 
-  // ===== GET MESSAGE DETAIL =====
+  // ===== GET REPLY HISTORY =====
   try {
     const db = runtime.env.DB;
     const id = parseInt(params.id || '', 10);
@@ -52,8 +55,8 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
       });
     }
 
+    // Verify message exists
     const message = await getContactMessageById(db, id);
-
     if (!message) {
       return new Response(JSON.stringify({ error: 'Message not found' }), {
         status: 404,
@@ -61,13 +64,15 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
       });
     }
 
-    const auditLogs = await getAuditLogsForMessage(db, id, 100);
+    // Get reply history
+    const replies = await getReplyHistory(db, id, 100);
 
     return new Response(
       JSON.stringify({
         success: true,
-        message,
-        auditLogs
+        messageId: id,
+        replies: replies,
+        count: replies.length
       }),
       {
         status: 200,
@@ -75,10 +80,13 @@ export const GET: APIRoute = async ({ request, locals, params }) => {
       }
     );
   } catch (error) {
-    console.error('Error fetching message detail:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch message' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error('Reply history API error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch reply history' }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   }
 };

@@ -4,6 +4,11 @@ import { getContactMessageById, updateEmailStatus, logAuditAction } from '../../
 
 export const prerender = false;
 
+// Prevent static build validation error on dynamic [id] segment
+export async function getStaticPaths() {
+  return [];
+}
+
 function escapeHtml(text: string): string {
   const map: Record<string, string> = {
     '&': '&amp;',

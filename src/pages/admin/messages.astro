@@ -388,6 +388,15 @@ const formatDate = (dateStr: string) => {
     background: #DC2626;
   }
 
+  .reply-card {
+    word-break: break-word;
+  }
+
+  .reply-body {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
   @media (max-width: 1024px) {
     .info-section {
       grid-template-columns: 1fr;
@@ -395,6 +404,17 @@ const formatDate = (dateStr: string) => {
 
     .action-buttons {
       justify-content: flex-start;
+    }
+
+    .reply-card {
+      margin-bottom: 12px !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .reply-body {
+      max-height: 200px !important;
+      font-size: 12px !important;
     }
   }
 </style>
@@ -645,10 +665,98 @@ const formatDate = (dateStr: string) => {
       <h3 style="margin: 24px 0 12px 0; font-size: 16px; color: #162336;">Message Content</h3>
       <div class="message-content">${escapeHtml(message.message)}</div>
 
+      <div id="replyHistorySection" style="margin-top: 24px;">
+        <h3 style="margin: 24px 0 12px 0; font-size: 16px; color: #162336;">📧 Reply History</h3>
+        <div id="replyHistoryContainer" style="background: #F8FAFC; border: 1px solid #E5E7EB; border-radius: 8px; padding: 16px; text-align: center; color: #64748B;">
+          Loading replies...
+        </div>
+      </div>
+
       ${actionButtons}
     `;
 
     modal.classList.add('open');
+
+    // Load reply history after modal is rendered
+    loadReplyHistory(messageId);
+  }
+
+  async function loadReplyHistory(messageId) {
+    const container = document.getElementById('replyHistoryContainer');
+    if (!container) return;
+
+    try {
+      const response = await fetch(`/api/admin/messages/${messageId}/replies`, {
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to load replies');
+      }
+
+      const replies = data.replies || [];
+
+      if (replies.length === 0) {
+        container.innerHTML = '<p style="margin: 0; color: #64748B; font-size: 14px;">No replies yet.</p>';
+        return;
+      }
+
+      // Render replies (newest first)
+      const repliesHTML = replies.map((reply, index) => {
+        const sentDate = new Date(reply.sent_at);
+        const formattedSentDate = sentDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const statusBadgeClass = `badge-${reply.status}`;
+        const statusLabel = reply.status === 'pending' ? 'Pending' : reply.status === 'sent' ? 'Sent' : 'Failed';
+
+        return `
+          <div class="reply-card" style="background: white; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+              <div>
+                <div style="font-weight: 600; font-size: 14px; color: #162336;">Reply #${replies.length - index}</div>
+                <div style="font-size: 12px; color: #64748B; margin-top: 2px;">${formattedSentDate}</div>
+              </div>
+              <span class="${statusBadgeClass}" style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap;">${statusLabel}</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; margin-bottom: 12px; font-size: 13px;">
+              <div style="font-weight: 600; color: #162336;">To:</div>
+              <div style="color: #64748B; word-break: break-word;">${escapeHtml(reply.to_email)}</div>
+
+              <div style="font-weight: 600; color: #162336;">Subject:</div>
+              <div style="color: #64748B; word-break: break-word;">${escapeHtml(reply.subject)}</div>
+            </div>
+
+            <div style="border-top: 1px solid #E2E8F0; padding-top: 12px;">
+              <div style="font-weight: 600; font-size: 13px; color: #162336; margin-bottom: 8px;">Message:</div>
+              <div class="reply-body" style="background: #F8FAFC; border: 1px solid #E5E7EB; border-radius: 6px; padding: 12px; font-size: 13px; color: #162336; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto;">${escapeHtml(reply.body)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = repliesHTML;
+    } catch (error) {
+      console.error('Error loading reply history:', error);
+      container.innerHTML = `
+        <div style="text-align: left;">
+          <p style="color: #DC2626; font-size: 14px; margin: 0 0 12px 0;">Unable to load reply history</p>
+          <button class="btn-action" onclick="loadReplyHistory(${messageId})" style="font-size: 12px;">Retry</button>
+        </div>
+      `;
+    }
   }
 
   async function updateStatus(messageId, newStatus, evt) {
@@ -904,4 +1012,5 @@ const formatDate = (dateStr: string) => {
   window.openReplyForm = openReplyForm;
   window.closeReplyForm = closeReplyForm;
   window.sendReply = sendReply;
+  window.loadReplyHistory = loadReplyHistory;
 </script>

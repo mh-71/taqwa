@@ -1,8 +1,13 @@
 import type { APIRoute } from 'astro';
 import { verifySessionToken } from '../../../../../lib/auth';
-import { getContactMessageById, logAuditAction } from '../../../../../lib/contact-db';
+import { getContactMessageById, logAuditAction, createReply, updateReplyStatus } from '../../../../../lib/contact-db';
 
 export const prerender = false;
+
+// Prevent static build validation error on dynamic [id] segment
+export async function getStaticPaths() {
+  return [];
+}
 
 function escapeHtml(text: string): string {
   const map: Record<string, string> = {
@@ -15,11 +20,21 @@ function escapeHtml(text: string): string {
   return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
+function generateIdempotencyKey(messageId: number, subject: string, timestamp: number): string {
+  const data = `${messageId}|${subject}|${timestamp}`;
+  const hash = Array.from(data).reduce((acc, char) => {
+    const code = char.charCodeAt(0);
+    return ((acc << 5) - acc) + code | 0;
+  }, 0);
+  return `reply_${messageId}_${Math.abs(hash)}_${timestamp}`;
+}
+
 async function sendReplyEmail(
   customerEmail: string,
   subject: string,
   body: string,
-  resendApiKey?: string
+  resendApiKey?: string,
+  idempotencyKey?: string
 ): Promise<{ success: boolean; error?: string; messageId?: string }> {
   if (!resendApiKey) {
     return { success: false, error: 'Email service not configured' };
@@ -36,12 +51,18 @@ async function sendReplyEmail(
       </p>
     `;
 
+    const headers: Record<string, string> = {
+      'Authorization': `Bearer ${resendApiKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    if (idempotencyKey) {
+      headers['Idempotency-Key'] = idempotencyKey;
+    }
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         from: 'Taqwa Automobile <admin@taqwa.autos>',
         to: customerEmail,
@@ -183,12 +204,27 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
       });
     }
 
-    // ===== SEND REPLY EMAIL =====
-    try {
-      const emailResult = await sendReplyEmail(message.email, subject, body, resendApiKey);
+    // ===== REPLY FLOW: Create Pending → Send Email → Update Status =====
+    let replyId: number | null = null;
 
-      if (!emailResult.success) {
-        // Email failed - do NOT change status
+    try {
+      // Step 1: Generate idempotency key and create pending reply
+      const idempotencyKey = generateIdempotencyKey(id, subject, Date.now());
+
+      try {
+        replyId = await createReply(db, {
+          contact_message_id: id,
+          to_email: message.email,
+          subject: subject,
+          body: body,
+          status: 'pending',
+          idempotency_key: idempotencyKey
+        });
+        console.log(`[Reply] Created pending reply record ${replyId} for message ${id}`);
+      } catch (createError) {
+        const errorMessage = createError instanceof Error ? createError.message : String(createError);
+        console.error('[Reply] Failed to create pending reply:', errorMessage);
+
         try {
           await logAuditAction(
             db,
@@ -198,7 +234,126 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
             null,
             null,
             null,
-            JSON.stringify({ type: 'admin_reply', success: false, error: emailResult.error })
+            JSON.stringify({ type: 'admin_reply', success: false, error: `Failed to create reply record: ${errorMessage}` })
+          );
+        } catch (auditError) {
+          console.error('Audit log failed:', auditError);
+        }
+
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Failed to create reply record',
+            details: errorMessage
+          }),
+          {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+      }
+
+      // Step 2: Send email with idempotency key
+      const emailResult = await sendReplyEmail(
+        message.email,
+        subject,
+        body,
+        resendApiKey,
+        idempotencyKey
+      );
+
+      // Step 3: Update reply status based on email result
+      if (emailResult.success) {
+        // Email succeeded: update reply status to 'sent' with provider message ID
+        try {
+          await updateReplyStatus(db, replyId, 'sent', emailResult.messageId);
+          console.log(`[Reply] Updated reply ${replyId} status to sent`);
+        } catch (updateError) {
+          const errorMessage = updateError instanceof Error ? updateError.message : String(updateError);
+          console.error('[Reply] Failed to update reply status to sent:', errorMessage);
+          // Log but continue - email was sent successfully
+        }
+
+        // Step 4: Update contact message status to 'replied' only if email succeeded
+        try {
+          await db
+            .prepare(`
+              UPDATE contact_messages
+              SET status = 'replied', updated_at = datetime('now')
+              WHERE id = ? AND deleted_at IS NULL
+            `)
+            .bind(id)
+            .run();
+          console.log(`[Reply] Updated message ${id} status to replied`);
+        } catch (statusError) {
+          const errorMessage = statusError instanceof Error ? statusError.message : String(statusError);
+          console.error('[Reply] Failed to update contact message status:', errorMessage);
+          // Log but continue - email was sent successfully
+        }
+
+        // Step 5: Audit log success
+        try {
+          await logAuditAction(
+            db,
+            id,
+            'email_sent',
+            null,
+            'replied',
+            null,
+            null,
+            JSON.stringify({
+              type: 'admin_reply',
+              subject: subject.substring(0, 100),
+              messageId: emailResult.messageId,
+              replyId: replyId
+            })
+          );
+        } catch (auditError) {
+          console.error('Audit log failed:', auditError);
+        }
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: {
+              id,
+              replyId: replyId,
+              replySent: true,
+              status: 'replied',
+              sentAt: new Date().toISOString()
+            }
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+      } else {
+        // Email failed: update reply status to 'failed', do NOT update contact message status
+        try {
+          await updateReplyStatus(db, replyId, 'failed');
+          console.log(`[Reply] Updated reply ${replyId} status to failed`);
+        } catch (updateError) {
+          const errorMessage = updateError instanceof Error ? updateError.message : String(updateError);
+          console.error('[Reply] Failed to update reply status to failed:', errorMessage);
+        }
+
+        // Audit log failure
+        try {
+          await logAuditAction(
+            db,
+            id,
+            'email_sent',
+            null,
+            null,
+            null,
+            null,
+            JSON.stringify({
+              type: 'admin_reply',
+              success: false,
+              error: emailResult.error,
+              replyId: replyId
+            })
           );
         } catch (auditError) {
           console.error('Audit log failed:', auditError);
@@ -208,7 +363,8 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
           JSON.stringify({
             success: false,
             error: 'Failed to send reply',
-            details: emailResult.error || 'Unknown error'
+            details: emailResult.error || 'Unknown error',
+            replyId: replyId
           }),
           {
             status: 500,
@@ -216,58 +372,19 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
           }
         );
       }
+    } catch (emailException) {
+      const errorMessage = emailException instanceof Error ? emailException.message : String(emailException);
+      console.error('[Reply] Email exception:', errorMessage);
 
-      // ===== EMAIL SENT SUCCESSFULLY - UPDATE STATUS =====
-      try {
-        // Update status to 'replied'
-        await db
-          .prepare(`
-            UPDATE contact_messages
-            SET status = 'replied', updated_at = datetime('now')
-            WHERE id = ? AND deleted_at IS NULL
-          `)
-          .bind(id)
-          .run();
-
-        // Log the reply action
-        await logAuditAction(
-          db,
-          id,
-          'email_sent',
-          null,
-          'replied',
-          null,
-          null,
-          JSON.stringify({
-            type: 'admin_reply',
-            subject: subject.substring(0, 100),
-            messageId: emailResult.messageId
-          })
-        );
-      } catch (updateError) {
-        console.error('Status update or audit log failed:', updateError);
-        // Non-blocking: email was sent successfully
+      // Attempt to update reply status to failed if we have replyId
+      if (replyId) {
+        try {
+          await updateReplyStatus(db, replyId, 'failed');
+        } catch (updateError) {
+          console.error('[Reply] Failed to update reply to failed state:', updateError);
+        }
       }
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: {
-            id,
-            replySent: true,
-            status: 'replied',
-            sentAt: new Date().toISOString()
-          }
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    } catch (emailError) {
-      const errorMessage = emailError instanceof Error ? emailError.message : String(emailError);
-      console.error('Reply email exception:', errorMessage);
-
       try {
         await logAuditAction(
           db,
@@ -277,14 +394,19 @@ export const POST: APIRoute = async ({ request, locals, params }) => {
           null,
           null,
           null,
-          JSON.stringify({ type: 'admin_reply', error: errorMessage })
+          JSON.stringify({ type: 'admin_reply', error: errorMessage, replyId })
         );
       } catch (auditError) {
         console.error('Audit log failed:', auditError);
       }
 
       return new Response(
-        JSON.stringify({ error: 'Email send failed', details: errorMessage }),
+        JSON.stringify({
+          success: false,
+          error: 'Email send failed',
+          details: errorMessage,
+          replyId: replyId
+        }),
         {
           status: 500,
           headers: { 'Content-Type': 'application/json' }

@@ -4,6 +4,11 @@ import { getContactMessageById, softDeleteContactMessage, logAuditAction } from 
 
 export const prerender = false;
 
+// Prevent static build validation error on dynamic [id] segment
+export async function getStaticPaths() {
+  return [];
+}
+
 export const POST: APIRoute = async ({ request, locals, params }) => {
   // ===== AUTHENTICATION =====
   const runtime = (locals as any).runtime;
