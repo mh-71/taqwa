@@ -1,0 +1,515 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const title = 'Settings';
+---
+
+<AdminLayout title={title} active="settings">
+  <div class="settings-container">
+    <div class="settings-header">
+      <h1>Settings</h1>
+      <p class="settings-subtitle">Manage your Taqwa Automobile website and business configuration.</p>
+    </div>
+
+    <div class="settings-grid">
+      <!-- General Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🏢 General</h2>
+          <p class="card-description">Basic workshop information</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="workshop-name">Workshop Name</label>
+            <input type="text" id="workshop-name" placeholder="Enter workshop name" />
+          </div>
+          <div class="form-group">
+            <label for="phone-number">Phone Number</label>
+            <input type="tel" id="phone-number" placeholder="Enter phone number" />
+          </div>
+          <div class="form-group">
+            <label for="email-address">Email Address</label>
+            <input type="email" id="email-address" placeholder="Enter email address" />
+          </div>
+          <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" placeholder="Enter full address" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="website-url">Website URL</label>
+            <input type="url" id="website-url" placeholder="Enter website URL" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>📞 Contact</h2>
+          <p class="card-description">Contact form and customer communication settings</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="contact-form">Contact Form</label>
+            <select id="contact-form">
+              <option value="">-- Select --</option>
+              <option value="enabled">Enabled</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="notification-email">Notification Email</label>
+            <input type="email" id="notification-email" placeholder="Enter notification email" />
+          </div>
+          <div class="form-group">
+            <label for="whatsapp-number">WhatsApp Number</label>
+            <input type="tel" id="whatsapp-number" placeholder="Enter WhatsApp number" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Hours -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🕐 Business Hours</h2>
+          <p class="card-description">Workshop opening and closing times</p>
+        </div>
+        <div class="card-content">
+          <div class="business-hours-list">
+            {['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day) => (
+              <div class="business-hours-row">
+                <label>{day}</label>
+                <div class="hours-inputs">
+                  <select aria-label={`${day} status`}>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  <input type="time" aria-label={`${day} opening time`} placeholder="Opening Time" />
+                  <input type="time" aria-label={`${day} closing time`} placeholder="Closing Time" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>📅 Booking</h2>
+          <p class="card-description">Booking and appointment configuration</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="booking-enabled">Booking Enabled</label>
+            <select id="booking-enabled">
+              <option value="">-- Select --</option>
+              <option value="enabled">Enabled</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="appointment-duration">Appointment Duration (minutes)</label>
+            <input type="number" id="appointment-duration" placeholder="30" min="15" step="15" />
+          </div>
+          <div class="form-group">
+            <label for="advance-booking">Advance Booking (days)</label>
+            <input type="number" id="advance-booking" placeholder="30" min="1" />
+          </div>
+          <div class="form-group">
+            <label for="booking-notification">Booking Notification</label>
+            <select id="booking-notification">
+              <option value="">-- Select --</option>
+              <option value="email">Email Only</option>
+              <option value="sms">SMS Only</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>📧 Email</h2>
+          <p class="card-description">Email notification configuration</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="notification-email-setting">Notification Email</label>
+            <input type="email" id="notification-email-setting" placeholder="Enter notification email" />
+          </div>
+          <div class="form-group">
+            <label for="booking-email">Booking Email</label>
+            <input type="email" id="booking-email" placeholder="Enter booking email" />
+          </div>
+          <div class="form-group">
+            <label for="sender-name">Sender Name</label>
+            <input type="text" id="sender-name" placeholder="Enter sender name" />
+          </div>
+          <div class="form-group">
+            <label for="reply-to-email">Reply-To Email</label>
+            <input type="email" id="reply-to-email" placeholder="Enter reply-to email" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Media Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>📱 Social Media</h2>
+          <p class="card-description">Social media profile links</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="facebook">Facebook</label>
+            <input type="url" id="facebook" placeholder="https://facebook.com/..." />
+          </div>
+          <div class="form-group">
+            <label for="instagram">Instagram</label>
+            <input type="url" id="instagram" placeholder="https://instagram.com/..." />
+          </div>
+          <div class="form-group">
+            <label for="whatsapp">WhatsApp</label>
+            <input type="tel" id="whatsapp" placeholder="Enter WhatsApp number" />
+          </div>
+          <div class="form-group">
+            <label for="youtube">YouTube</label>
+            <input type="url" id="youtube" placeholder="https://youtube.com/..." />
+          </div>
+          <div class="form-group">
+            <label for="tiktok">TikTok</label>
+            <input type="url" id="tiktok" placeholder="https://tiktok.com/..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🎨 Appearance</h2>
+          <p class="card-description">Website appearance and branding</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="logo">Logo</label>
+            <input type="file" id="logo" accept="image/*" />
+            <small>Recommended size: 200x50px</small>
+          </div>
+          <div class="form-group">
+            <label for="favicon">Favicon</label>
+            <input type="file" id="favicon" accept="image/*" />
+            <small>Recommended size: 32x32px</small>
+          </div>
+          <div class="form-group">
+            <label for="primary-color">Primary Color</label>
+            <input type="color" id="primary-color" />
+          </div>
+          <div class="form-group">
+            <label for="footer-text">Footer Text</label>
+            <textarea id="footer-text" placeholder="Enter footer text" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEO Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🔍 SEO</h2>
+          <p class="card-description">Search engine optimization</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="default-meta-title">Default Meta Title</label>
+            <input type="text" id="default-meta-title" placeholder="Enter default meta title" maxlength="60" />
+            <small>Recommended: 50-60 characters</small>
+          </div>
+          <div class="form-group">
+            <label for="default-meta-description">Default Meta Description</label>
+            <textarea id="default-meta-description" placeholder="Enter default meta description" rows="2" maxlength="160"></textarea>
+            <small>Recommended: 150-160 characters</small>
+          </div>
+          <div class="form-group">
+            <label for="og-image">OG Image</label>
+            <input type="file" id="og-image" accept="image/*" />
+            <small>Recommended size: 1200x630px</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin & Security Settings -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2>🔐 Admin & Security</h2>
+          <p class="card-description">Admin account and security settings</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="admin-name">Admin Display Name</label>
+            <input type="text" id="admin-name" placeholder="Enter admin display name" />
+          </div>
+          <div class="form-group">
+            <label for="admin-email">Admin Email</label>
+            <input type="email" id="admin-email" placeholder="Enter admin email" />
+          </div>
+          <div class="form-group">
+            <label for="session-duration">Session Duration (hours)</label>
+            <input type="number" id="session-duration" placeholder="8" min="1" max="24" />
+          </div>
+          <div class="security-notice">
+            <strong>⚠️ Note:</strong> For security reasons, some sensitive settings cannot be changed here. Contact your system administrator if you need to update security credentials.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div class="settings-footer">
+      <button class="btn-save" disabled title="Settings functionality will be connected in a later phase.">
+        Save Changes
+      </button>
+      <small class="save-note">Settings functionality will be connected in a later phase.</small>
+    </div>
+  </div>
+</AdminLayout>
+
+<style>
+  .settings-container {
+    max-width: 1200px;
+  }
+
+  .settings-header {
+    margin-bottom: 2rem;
+  }
+
+  .settings-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .settings-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .settings-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .settings-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-header {
+    background: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1.5rem;
+  }
+
+  .card-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #222;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .card-description {
+    font-size: 0.9rem;
+    color: #999;
+    margin: 0;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  }
+
+  .form-group small {
+    display: block;
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 0.25rem;
+  }
+
+  .business-hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .business-hours-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .business-hours-row label {
+    min-width: 100px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+  }
+
+  .hours-inputs {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .hours-inputs select,
+  .hours-inputs input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+
+  .security-notice {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #856404;
+    margin-top: 1rem;
+  }
+
+  .security-notice strong {
+    font-weight: 600;
+  }
+
+  .settings-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 0;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+  }
+
+  .btn-save {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: #0066cc;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-save:not(:disabled):hover {
+    background: #0052a3;
+  }
+
+  .btn-save:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .save-note {
+    font-size: 0.9rem;
+    color: #999;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .settings-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .hours-inputs {
+      flex-direction: column;
+    }
+
+    .business-hours-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .business-hours-row label {
+      min-width: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .settings-container {
+      padding: 0;
+    }
+
+    .settings-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-grid {
+      gap: 1rem;
+    }
+
+    .card-header,
+    .card-content {
+      padding: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+  }
+</style>
