@@ -7,7 +7,7 @@ import '../styles/admin.css';
 
 interface Props {
   title: string;
-  active?: 'dashboard' | 'new' | 'posts' | 'reviews' | 'bookings' | 'messages' | 'categories' | '';
+  active?: 'dashboard' | 'new' | 'posts' | 'reviews' | 'bookings' | 'messages' | 'categories' | 'settings' | '';
 }
 const { title, active = '' } = Astro.props;
 const isLive = !!Astro.locals.runtime;
@@ -81,6 +81,13 @@ const isLive = !!Astro.locals.runtime;
       </nav>
 
       <div class="sidebar-divider"></div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/settings" class={`nav-link ${active === 'settings' ? 'active' : ''}`}>
+          <span class="nav-icon">⚙️</span>
+          <span>Settings</span>
+        </a>
+      </nav>
 
       <nav class="sidebar-nav">
         <a href="/" target="_blank" rel="noopener" class="nav-link">
