@@ -599,7 +599,7 @@ const base = import.meta.env.BASE_URL;
 
         <div class="form-success" id="formSuccess">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#22A24D" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#22A24D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Thank you! Your message has been received. We'll get back to you shortly.</span>
+          <span id="formSuccessText">Thank you! Your message has been received. We'll get back to you shortly.</span>
         </div>
         <div class="form-success" id="formError" style="background:#FDECEC; border-color:#F5B4B4;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#D14343" stroke-width="1.8"/><path d="M12 7v6M12 16.5v .01" stroke="#D14343" stroke-width="2" stroke-linecap="round"/></svg>
@@ -647,79 +647,162 @@ const base = import.meta.env.BASE_URL;
 
 
 <script>
-  // ===== CONTACT FORM (submits via /api/contact with database backend) =====
+  // ===== CONTACT FORM =====
+  // Sends the enquiry to the Taqwa Autos CRM (Social Inbox > Website Forms)
+  // through its public endpoint, POST https://app.taqwa.autos/api/forms/submit
+  // (taqwa-car-service: src/routes/website-forms.js, WEBSITE_FORMS_SETUP.md).
+  // The CRM validates every field again, and holds back spam (the hidden
+  // `company` field, the time spent on the form) and repeats (same phone +
+  // service within 10 minutes returns the first reference).
+  //
+  // The site's own /api/contact (admin panel at /admin/messages + the email
+  // notification) keeps working: a new enquiry is mirrored there, and if the
+  // CRM cannot be reached the form falls back to it so nothing is lost.
+  var CRM_ENDPOINT = 'https://app.taqwa.autos/api/forms/submit';
+  var LEGACY_ENDPOINT = '/api/contact';
+  var CALL_US = ' Please call us at <a href="tel:+8801854226757" style="color:#D14343; font-weight:700;">01854226757</a>.';
+
+  // Every element is looked up INSIDE this form: the booking modal in the
+  // layout reuses the ids formSuccess, formError, message and phoneNumber,
+  // and document.getElementById would return the modal's (hidden) ones.
   var contactForm = document.getElementById('contactForm');
-  var formSuccess = document.getElementById('formSuccess');
-  var formError = document.getElementById('formError');
-  var submitBtn = document.getElementById('formSubmitBtn');
-  var submitBtnText = document.getElementById('formSubmitBtnText');
+  var inForm = function(id){ return contactForm ? contactForm.querySelector('#' + id) : null; };
+  var formSuccess = inForm('formSuccess');
+  var formSuccessText = inForm('formSuccessText');
+  var formError = inForm('formError');
+  var formErrorText = inForm('formErrorText');
+  var submitBtn = inForm('formSubmitBtn');
+  var submitBtnText = inForm('formSubmitBtnText');
+  var startedAt = Date.now();      // the CRM treats a form sent within 3 seconds as a bot
+  var inFlight = false;            // one submission at a time, whatever is clicked
+
+  function showError(html) {
+    formErrorText.innerHTML = html;
+    formError.classList.add('show');
+    formError.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  function escapeHtml(t) {
+    return String(t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; });
+  }
+  function postJson(url, payload, opts) {
+    return fetch(url, Object.assign({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }, opts || {})).then(function(res){
+      return res.json().catch(function(){ return {}; }).then(function(data){ return { status: res.status, ok: res.ok, data: data }; });
+    });
+  }
 
   if (contactForm) {
-    // Setup character counter
-    var messageField = document.getElementById('message');
-    var charCounter = document.getElementById('charCounter');
+    var messageField = inForm('message');
+    var charCounter = inForm('charCounter');
     if (messageField && charCounter) {
       messageField.addEventListener('input', function() {
         charCounter.textContent = messageField.value.length;
       });
-      // Initialize counter on page load
       charCounter.textContent = messageField.value.length;
     }
 
     contactForm.addEventListener('submit', function(e){
       e.preventDefault();
+      if (inFlight) return;
       if(!contactForm.checkValidity()){
         contactForm.reportValidity();
         return;
       }
 
       var formData = new FormData(contactForm);
-      var message = formData.get('message');
+      var message = String(formData.get('message') || '').trim();
       if(message.length < 1 || message.length > 1000){
-        alert('Message must be between 1 and 1000 characters long.');
+        showError('Please write a message of 1 to 1000 characters.');
         return;
       }
+      var serviceSelect = inForm('serviceInterest');
+      var serviceValue = String(formData.get('serviceInterest') || '');
+      var serviceLabel = serviceValue && serviceSelect ? serviceSelect.options[serviceSelect.selectedIndex].text : '';
 
-      formSuccess.classList.remove('show');
-      formError.classList.remove('show');
-      submitBtn.disabled = true;
-      submitBtnText.textContent = 'Sending...';
-      var payload = {
-        name: formData.get('fullName'),
-        phoneNumber: formData.get('phoneNumber'),
-        email: formData.get('emailAddress'),
-        serviceInterest: formData.get('serviceInterest') || 'other',
-        message: formData.get('message'),
+      // Field mapping: Full Name -> name, Phone -> phone, Email -> email,
+      // Service -> service, Message -> message. The CRM adds status New and
+      // the submitted time itself (server time).
+      var crmPayload = {
+        formType: 'contact',
+        name: String(formData.get('fullName') || '').trim(),
+        phone: String(formData.get('phoneNumber') || '').trim(),
+        email: String(formData.get('emailAddress') || '').trim(),
+        service: serviceLabel,
+        message: message,
+        sourcePage: '/contact',
+        company: String(formData.get('company') || ''),
+        startedAt: startedAt
+      };
+      var legacyPayload = {
+        name: crmPayload.name,
+        phoneNumber: crmPayload.phone,
+        email: crmPayload.email,
+        serviceInterest: serviceValue || 'other',
+        message: message,
         website: formData.get('website'),
         company: formData.get('company')
       };
 
-      fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-        .then(function(res){
-          if(!res.ok){
-            return res.json().then(function(data){ throw Object.assign(new Error(data.message || data.error || 'Form submission failed'), { details: data }); });
+      inFlight = true;
+      formSuccess.classList.remove('show');
+      formError.classList.remove('show');
+      submitBtn.disabled = true;
+      submitBtnText.textContent = 'Sending...';
+
+      function succeeded(reference, duplicate) {
+        formSuccessText.textContent = duplicate
+          ? 'We already have your message' + (reference ? ' (reference ' + reference + ')' : '') + '. Our team will get back to you shortly.'
+          : 'Thank you! Your message has been received' + (reference ? ' (reference ' + reference + ')' : '') + ". We'll get back to you shortly.";
+        formSuccess.classList.add('show');
+        contactForm.reset();
+        if (charCounter) charCounter.textContent = '0';
+        startedAt = Date.now();
+        formSuccess.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+
+      // The CRM could not take it (unreachable, not allowed, server error): try the site's own inbox.
+      function fallBack() {
+        return postJson(LEGACY_ENDPOINT, legacyPayload).then(function(r){
+          if (r.ok) { succeeded('', false); return; }
+          var d = r.data || {};
+          if (d.code === 'DUPLICATE_SUBMISSION_24H') { showError(escapeHtml(d.message || 'You have already sent us a message today.') + CALL_US); return; }
+          showError('Sorry, your message could not be sent right now. Please try again in a few minutes.' + CALL_US);
+        }, function(){
+          showError('Sorry, your message could not be sent. Please check your internet connection and try again.' + CALL_US);
+        });
+      }
+
+      postJson(CRM_ENDPOINT, crmPayload)
+        .then(function(r){
+          var d = r.data || {};
+          if (r.status === 201 || (r.status === 200 && d.data && d.data.duplicate)) {
+            var ref = d.data && d.data.reference;
+            // WEB-0000: the CRM judged it spam and stored nothing -- show no reference, mirror nothing.
+            var held = ref === 'WEB-0000';
+            succeeded(held ? '' : ref, Boolean(d.data && d.data.duplicate));
+            // A NEW enquiry only (not a repeat, not spam): keep the site's own admin panel and email
+            // notification in step (best effort, result ignored; /api/contact also refuses the same
+            // phone twice in 24 hours, so a retry can never send a second email).
+            if (r.status === 201 && !held) postJson(LEGACY_ENDPOINT, legacyPayload, { keepalive: true }).catch(function(){});
+            return;
           }
-          return res.json();
-        })
-        .then(function(data){
-          formSuccess.classList.add('show');
-          contactForm.reset();
-          formSuccess.scrollIntoView({behavior:'smooth', block:'center'});
-        })
-        .catch(function(err){
-          var errorText = document.getElementById('formErrorText');
-          errorText.textContent = err.message;
-          if(err.details && err.details.code === 'DUPLICATE_SUBMISSION_24H'){
-            errorText.innerHTML = err.message + ' Please call us at <a href="tel:+8801854226757" style="color:#D14343; font-weight:700;">01854226757</a> to speak with our team.';
+          if (r.status === 422) {
+            var fields = (d.error && d.error.fields) || {};
+            var lines = Object.keys(fields).map(function(k){ return escapeHtml(fields[k]); });
+            showError(lines.length ? lines.join('<br>') : 'Please check the form and try again.');
+            return;
           }
-          formError.classList.add('show');
-          formError.scrollIntoView({behavior:'smooth', block:'center'});
-        })
+          if (r.status === 429) {
+            showError('You have sent several messages in a short time. Please wait a few minutes and try again.' + CALL_US);
+            return;
+          }
+          return fallBack();
+        }, function(){ return fallBack(); })
         .finally(function(){
+          inFlight = false;
           submitBtn.disabled = false;
           submitBtnText.textContent = 'Send Message';
         });
