@@ -592,9 +592,56 @@
     });
   }
 
+  // ===== SUBMISSION =====
+  // Booking requests go to the Taqwa Autos CRM (Social Inbox > Bookings)
+  // through its public endpoint, POST https://app.taqwa.autos/api/bookings/submit
+  // (taqwa-car-service: src/routes/bookings.js). The CRM validates every field
+  // again and holds back spam (the hidden `company` field, the time spent on
+  // the form) and repeats (the idempotency key; the same phone + date +
+  // service while an earlier request is open returns the first reference).
+  // A booking request is NOT an appointment: the workshop confirms it.
+  //
+  // If the CRM cannot be reached (network, server error), the request falls
+  // back to this site's own /api/bookings/create, so nothing is lost; staff
+  // can then enter it in the CRM by hand.
+  const CRM_ENDPOINT = 'https://app.taqwa.autos/api/bookings/submit';
+  const LEGACY_ENDPOINT = '/api/bookings/create';
+  const successText = document.getElementById('successText') as HTMLElement;
+  const newKey = () => {
+    try { if (crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID(); } catch { /* older browser */ }
+    return `k${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
+  };
+  let startedAt = Date.now();          // the CRM treats a form sent within 3 seconds as a bot
+  let idempotencyKey = newKey();       // one per booking: a retry of the same one cannot create a second
+  let inFlight = false;
+
+  const showError = (text: string) => {
+    errorText.textContent = text;
+    errorMsg.style.display = 'flex';
+  };
+  const postJson = async (url: string, payload: unknown) => {
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    let data: any = {};
+    try { data = await res.json(); } catch { /* no body */ }
+    return { status: res.status, ok: res.ok, data };
+  };
+  const succeeded = (reference: string, duplicate: boolean) => {
+    const ref = reference && reference !== 'BKG-0000' ? ` (reference ${reference})` : '';
+    successText.textContent = duplicate
+      ? `We already have your booking request${ref}. We will contact you shortly to confirm.`
+      : `Booking request received${ref}! We will contact you shortly to confirm.`;
+    successMsg.style.display = 'flex';
+    form.reset();
+    charCountEl.textContent = '0';
+    contactPermissionError.style.display = 'none';
+    startedAt = Date.now();
+    idempotencyKey = newKey();
+  };
+
   // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (inFlight) return;
 
     // Validate contact permission checkbox
     if (!contactPermissionCheckbox.checked) {
@@ -610,49 +657,78 @@
       return;
     }
 
+    inFlight = true;
     successMsg.style.display = 'none';
     errorMsg.style.display = 'none';
     submitBtn.disabled = true;
     submitText.textContent = 'Submitting...';
 
-    try {
-      const formData = new FormData(form);
-      const payload = {
-        name: formData.get('name'),
-        phoneNumber: formData.get('phoneNumber'),
-        email: formData.get('email'),
-        vehicleMake: formData.get('vehicleMake'),
-        vehicleModel: formData.get('vehicleModel'),
-        registrationNo: formData.get('registrationNo'),
-        serviceType: formData.get('serviceType'),
-        preferredDate: formData.get('preferredDate'),
-        preferredTime: formData.get('preferredTime'),
-        message: formData.get('message'),
-        website: formData.get('website'),
-        company: formData.get('company'),
-      };
+    const formData = new FormData(form);
+    const value = (k: string) => String(formData.get(k) || '').trim();
+    // Field mapping: Full Name -> name, Phone -> phone, Email -> email,
+    // Vehicle Make / Model -> vehicleMake / vehicleModel, Registration No ->
+    // registrationNumber, Service Type -> serviceType, Preferred Date / Time,
+    // Message, the contact-permission box -> consent. Source (Website) and
+    // status (New) are set by the CRM.
+    const crmPayload = {
+      name: value('name'),
+      phone: value('phoneNumber'),
+      email: value('email'),
+      vehicleMake: value('vehicleMake'),
+      vehicleModel: value('vehicleModel'),
+      registrationNumber: value('registrationNo'),
+      serviceType: value('serviceType'),
+      preferredDate: value('preferredDate'),
+      preferredTime: value('preferredTime'),
+      message: value('message'),
+      consent: contactPermissionCheckbox.checked === true,
+      company: String(formData.get('company') || ''),
+      startedAt,
+      idempotencyKey,
+    };
+    const legacyPayload = {
+      name: crmPayload.name,
+      phoneNumber: crmPayload.phone,
+      email: crmPayload.email,
+      vehicleMake: crmPayload.vehicleMake,
+      vehicleModel: crmPayload.vehicleModel,
+      registrationNo: crmPayload.registrationNumber,
+      serviceType: crmPayload.serviceType,
+      preferredDate: crmPayload.preferredDate,
+      preferredTime: crmPayload.preferredTime,
+      message: crmPayload.message,
+      website: formData.get('website'),
+      company: formData.get('company'),
+    };
 
-      const response = await fetch('/api/bookings/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        successMsg.style.display = 'flex';
-        form.reset();
-        charCountEl.textContent = '0';
-        contactPermissionError.style.display = 'none';
-      } else {
-        errorText.textContent = data.error || 'Failed to submit booking. Please try again.';
-        errorMsg.style.display = 'flex';
+    // The CRM could not take it: keep the request on this site instead.
+    const fallBack = async () => {
+      try {
+        const r = await postJson(LEGACY_ENDPOINT, legacyPayload);
+        if (r.ok) { succeeded('', false); return; }
+        showError((r.data && r.data.error) || 'Sorry, your booking could not be sent right now. Please call us at 01854226757.');
+      } catch {
+        showError('Sorry, your booking could not be sent. Please check your internet connection and try again, or call us at 01854226757.');
       }
-    } catch (error) {
-      errorText.textContent = 'An error occurred. Please try again.';
-      errorMsg.style.display = 'flex';
+    };
+
+    try {
+      let r: { status: number; ok: boolean; data: any } | null = null;
+      try { r = await postJson(CRM_ENDPOINT, crmPayload); } catch { r = null; }
+      const d = (r && r.data) || {};
+      if (r && (r.status === 201 || (r.status === 200 && d.data && d.data.duplicate))) {
+        succeeded(d.data && d.data.reference, Boolean(d.data && d.data.duplicate));
+      } else if (r && r.status === 422) {
+        const fields = (d.error && d.error.fields) || {};
+        const lines = Object.keys(fields).map((k) => String(fields[k]));
+        showError(lines.length ? lines.join(' ') : 'Please check the form and try again.');
+      } else if (r && r.status === 429) {
+        showError('You have sent several booking requests in a short time. Please wait a few minutes, or call us at 01854226757.');
+      } else {
+        await fallBack();
+      }
     } finally {
+      inFlight = false;
       submitBtn.disabled = false;
       submitText.textContent = 'Book Appointment';
     }
